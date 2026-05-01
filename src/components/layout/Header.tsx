@@ -71,7 +71,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center gap-8 text-lg font-bold text-[#0B4E9B]">
+          <nav className="hidden md:flex items-center gap-8 text-lg font-medium text-[#0B4E9B]">
             <Link href="/" className="hover:text-[#00B7EB] transition-colors">HOME</Link>
             <Link href="/about" className="hover:text-[#00B7EB] transition-colors">ABOUT US</Link>
 
