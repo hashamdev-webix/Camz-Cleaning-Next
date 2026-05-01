@@ -3,9 +3,17 @@
 import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Redirect to home page
+    router.push("/");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
@@ -13,13 +21,17 @@ export default function LoginPage() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
-          <p className="text-gray-500 text-sm mt-2">Please enter your details to sign in</p>
+          <p className="text-gray-500 text-sm mt-2">
+            Please enter your details to sign in
+          </p>
         </div>
 
-        <form className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email Field */}
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-gray-700 ml-1">Email</label>
+            <label className="text-sm font-bold text-gray-700 ml-1">
+              Email
+            </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500">
                 <Mail size={18} />
@@ -36,8 +48,13 @@ export default function LoginPage() {
           {/* Password Field */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center px-1">
-              <label className="text-sm font-bold text-gray-700">Password</label>
-              <button type="button" className="text-xs text-blue-600 hover:underline font-semibold">
+              <label className="text-sm font-bold text-gray-700">
+                Password
+              </label>
+              <button
+                type="button"
+                className="text-xs text-blue-600 hover:underline font-semibold"
+              >
                 Forgot password?
               </button>
             </div>
@@ -75,7 +92,10 @@ export default function LoginPage() {
       <div className="mt-8 text-gray-500">
         <p>
           Don't have an account?{" "}
-          <Link href="/register" className="text-blue-600 font-bold hover:underline">
+          <Link
+            href="/register"
+            className="text-blue-600 font-bold hover:underline"
+          >
             Sign up
           </Link>
         </p>
