@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import { AuthProvider } from "@/context/AuthContext";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -11,7 +12,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Professional Cleaning Services",
-  description: "Camz Cleaning offers trusted residential and commercial cleaning services in Calgary. Book now for a spotless space!",
+  description:
+    "Camz Cleaning offers trusted residential and commercial cleaning services in Calgary. Book now for a spotless space!",
 };
 
 export default function RootLayout({
@@ -20,13 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${poppins.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${poppins.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
+        <AuthProvider>
           <Header />
-        {children}
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
