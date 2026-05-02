@@ -124,7 +124,7 @@ const ContactSection = () => {
             <div className="space-y-2">
               <label className="text-sm font-bold ml-1">Message</label>
               <textarea 
-                rows="4" 
+           
                 placeholder="Message" 
                 className="w-full p-3 bg-white rounded-xl border-none outline-none text-gray-700 placeholder:text-gray-500 resize-none"
               ></textarea>

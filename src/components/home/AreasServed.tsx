@@ -6,7 +6,7 @@ const serviceAreas = [
   {
     city: "Calgary",
     description: "Comprehensive residential and commercial cleaning services across Calgary, delivered by trusted professionals focused on quality, reliability, and outstanding results.",
-    bgColor: "bg-[#0B5394]", // Darker Blue
+    bgColor: "bg-[#2964A8]", // Darker Blue
   },
   {
     city: "Airdrie",
@@ -21,7 +21,7 @@ const serviceAreas = [
   {
     city: "Chestermere",
     description: "High-quality residential and commercial cleaning services in Chestermere, providing flexible scheduling, detailed care, and consistently professional results.",
-    bgColor: "bg-[#0B5394]", // Darker Blue
+    bgColor: "bg-[#2964A8]", // Darker Blue
   },
 ];
 
@@ -56,8 +56,8 @@ const AreasServed = () => {
               className={`${area.bgColor} p-10 md:p-12 rounded-xl text-white flex flex-col justify-start min-h-[220px] transition-transform duration-300 hover:scale-[1.02] shadow-lg`}
             >
               <h3 className="text-3xl font-bold mb-4">{area.city}</h3>
-              <p className="text-white/90 leading-relaxed text-base md:text-lg">
-                {area.description}
+              <p className="text-white leading-relaxed text-base md:text-lg">
+               <span className="text-white" > {area.description}</span>
               </p>
             </motion.div>
           ))}

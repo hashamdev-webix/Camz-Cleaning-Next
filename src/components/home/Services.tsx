@@ -1,9 +1,8 @@
 "use client";
-
-import { motion } from "framer-motion";
+import { motion, Variants } from 'framer-motion';
 import { ArrowRight } from "lucide-react";
 
-const services = [
+const services: { title: string; desc: string; highlighted: boolean; icon: string }[] = [
   {
     title: "Commercial Cleaning",
     desc: "Commercial Cleaning Services for offices, restaurants, and facilities, professional cleaning solutions designed to keep businesses spotless.",
@@ -26,7 +25,7 @@ const services = [
 ];
 
 export default function Services() {
-    const cardVariants = {
+    const cardVariants: Variants = {
   hiddenLeft: { opacity: 0, x: -80 },
   hiddenRight: { opacity: 0, x: 80 },
   hiddenTop: { opacity: 0, y: -80 },

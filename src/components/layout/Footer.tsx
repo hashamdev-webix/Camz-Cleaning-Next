@@ -40,18 +40,18 @@ const Footer = () => {
         {/* Column 1: Logo & Info */}
         <div className="space-y-6">
           <img src="/logo.webp" alt="Camz Cleaning" className="h-16 w-auto " />
-          <p className="text-blue-50 text-sm leading-relaxed">
-            Camz Cleaning delivers reliable, professional residential and commercial cleaning services 
-            focused on quality, consistency, and complete customer satisfaction across communities.
+          <p className="text-white text-sm leading-relaxed">
+           <span className="text-white text-sm"> Camz Cleaning delivers reliable, professional residential and commercial cleaning services 
+            focused on quality, consistency, and complete customer satisfaction across communities.</span>
           </p>
           <div className="flex items-center gap-4">
             <span className="font-bold text-sm">Follow Us On:</span>
             <div className="flex gap-3">
-              <a href="#" className="hover:text-cyan-400 transition-colors"><IoLogoInstagram size={20} /></a>
-              <a href="#" className="hover:text-cyan-400 transition-colors"><FaXTwitter size={18} /></a>
-              <a href="#" className="hover:text-cyan-400 transition-colors"><IoLogoFacebook size={20} /></a>
-              <a href="#" className="hover:text-cyan-400 transition-colors"><IoLogoLinkedin size={20} /></a>
-              <a href="#" className="hover:text-cyan-400 transition-colors"><IoLogoYoutube size={20} /></a>
+              <a href="https://www.instagram.com/camzcleaning" className="hover:text-cyan-400 transition-colors"><IoLogoInstagram size={20} /></a>
+              <a href="https://x.com/camzcleaning" className="hover:text-cyan-400 transition-colors"><FaXTwitter size={18} /></a>
+              <a href="https://web.facebook.com/Camzcleaning1?_rdc=1&_rdr#" className="hover:text-cyan-400 transition-colors"><IoLogoFacebook size={20} /></a>
+              <a href="https://www.linkedin.com/company/camzcleaning" className="hover:text-cyan-400 transition-colors"><IoLogoLinkedin size={20} /></a>
+              <a href="https://www.youtube.com/@CamzCleaning" className="hover:text-cyan-400 transition-colors"><IoLogoYoutube size={20} /></a>
             </div>
           </div>
         </div>
@@ -112,7 +112,7 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium">
-        <p>Copyright © {currentYear} Camz Cleaning All rights reserved</p>
+        <p><span className="text-white">Copyright © {currentYear} Camz Cleaning All rights reserved</span> </p>
         <Link href="/privacy-policy" className="flex items-center gap-2 hover:text-cyan-400 transition-colors">
           <IoCheckmarkCircleOutline size={18} />
           Privacy Policy

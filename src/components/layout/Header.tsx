@@ -16,10 +16,10 @@ export default function Header() {
 
   // Dropdown Data
   const serviceLinks = [
-    { name: "COMMERCIAL CLEANING", href: "/services/commercial" },
-    { name: "RESIDENTIAL CLEANING", href: "/services/residential" },
-    { name: "VEHICLE CLEANING", href: "/services/vehicle" },
-    { name: "SEASONAL CLEANING", href: "/services/seasonal" },
+    { name: "COMMERCIAL CLEANING", href: "/commercial-cleaning-services" },
+    { name: "RESIDENTIAL CLEANING", href: "/residential-cleaning-services" },
+    { name: "VEHICLE CLEANING", href: "/vehicle-cleaning-service" },
+    { name: "SEASONAL CLEANING", href: "/seasonal-property-service" },
   ];
 
   const areaLinks = [
@@ -49,11 +49,11 @@ export default function Header() {
           {/* Right */}
           <div className="flex items-center gap-3">
             <span className="hidden md:block">Follow Us:</span>
-            <a href="#"><FaInstagram size={16} /></a>
-            <a href="#"><FaTwitter size={16} /></a>
-            <a href="#"><FaFacebookF size={16} /></a>
-            <a href="#"><FaLinkedinIn size={16} /></a>
-            <a href="#"><FaYoutube size={16} /></a>
+            <a href="instagram.com/camzcleaning"><FaInstagram size={16} /></a>
+            <a href="https://x.com/camzcleaning"><FaTwitter size={16} /></a>
+            <a href="https://web.facebook.com/Camzcleaning1?_rdc=1&_rdr#"><FaFacebookF size={16} /></a>
+            <a href="https://www.linkedin.com/company/camzcleaning"><FaLinkedinIn size={16} /></a>
+            <a href="https://www.youtube.com/@CamzCleaning"><FaYoutube size={16} /></a>
           </div>
         </div>
       </div>

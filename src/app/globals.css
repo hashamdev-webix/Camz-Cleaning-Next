@@ -42,7 +42,7 @@ h3 {
 }
 
 p {
-  @apply text-base md:text-lg leading-relaxed;
+  @apply text-base md:text-lg leading-relaxed text-black;
 }
 /* Base button (optional for reuse in JSX, not inside @apply) */
 .btn {
