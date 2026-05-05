@@ -23,10 +23,10 @@ export default function Header() {
   ];
 
   const areaLinks = [
-    { name: "CALGARY", href: "/areas/calgary" },
-    { name: "AIRDRIE", href: "/areas/airdrie" },
-    { name: "COCHRANE", href: "/areas/cochrane" },
-    { name: "CHESTERMERE", href: "/areas/chestermere" },
+    { name: "CALGARY", href: "/calgary-cleaning-services" },
+    { name: "AIRDRIE", href: "/airdrie-cleaning-services" },
+    { name: "COCHRANE", href: "/cochrane-cleaning-services" },
+    { name: "CHESTERMERE", href: "/chestermere-cleaning-services" },
   ];
 
   return (
