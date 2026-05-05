@@ -2,11 +2,10 @@
 import AreaCTA from '@/components/common/AreaCTA'
 import CommonHeroSection from '@/components/common/CommonHeroSection'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
-
-import AreasServed from '@/components/cochrane/AreasServed'
-import FAQSection from '@/components/cochrane/FAQSection'
 import ChestermereCleaningServices from '@/components/chestermere/ChestermereCleaningServices'
 import ProfessionalServicesGrid from '@/components/chestermere/ProfessionalServicesGrid'
+import AreasServed from '@/components/chestermere/AreasServed'
+import FAQSection from '@/components/chestermere/FAQSection'
 export default function page() {
   return (
     <div>
