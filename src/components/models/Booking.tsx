@@ -156,7 +156,7 @@ const getCurrentLocation = () => {
               </motion.div>
             )}
 
- {step === 2 && (
+{step === 2 && (
   <LocalizationProvider dateAdapter={AdapterDayjs}>
     <motion.div
       key="step2"
@@ -168,7 +168,6 @@ const getCurrentLocation = () => {
       </h2>
 
       <div className="space-y-5">
-
         {/* DATE PICKER */}
         <div>
           <label className="text-[11px] font-bold text-slate-400 block mb-2 uppercase">
@@ -181,9 +180,8 @@ const getCurrentLocation = () => {
             slotProps={{
               textField: {
                 fullWidth: true,
-                placeholder: "Select date",
-                className:
-                  "bg-slate-50 rounded-xl border border-slate-200",
+              
+                className: "bg-slate-50 rounded-xl border border-slate-200",
               },
             }}
           />
@@ -201,48 +199,43 @@ const getCurrentLocation = () => {
             slotProps={{
               textField: {
                 fullWidth: true,
-                placeholder: "Select time",
-                className:
-                  "bg-slate-50 rounded-xl border border-slate-200",
+                
+                className: "bg-slate-50 rounded-xl border border-slate-200",
               },
             }}
           />
         </div>
 
         <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
-  <h4 className="text-[11px] font-bold text-blue-600 mb-3 flex items-center gap-2 uppercase">
-    📍 Work Location
-  </h4>
+          <h4 className="text-[11px] font-bold text-blue-600 mb-3 flex items-center gap-2 uppercase">
+            📍 Work Location
+          </h4>
 
-  {/* Use Current Location */}
-  <button
-    onClick={getCurrentLocation}
-    className="w-full mb-3 p-3 rounded-xl border border-slate-200 bg-white text-blue-600 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-blue-50 transition"
-  >
-    {loadingLocation ? "Getting location..." : "Use Current Location"}
-  </button>
+          <button
+            onClick={getCurrentLocation}
+            className="w-full mb-3 p-3 rounded-xl border border-slate-200 bg-white text-blue-600 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-blue-50 transition"
+          >
+            {loadingLocation ? "Getting location..." : "Use Current Location"}
+          </button>
 
-  {/* Input */}
-  <div className="relative">
-    <input
-      value={location}
-      onChange={(e) => setLocation(e.target.value)}
-      placeholder="Search Address"
-      className="w-full p-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-    />
-
-    {location && (
-      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-600">
-        ✓
-      </span>
-    )}
-  </div>
-</div>
-
+          <div className="relative">
+            <input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Search Address"
+              className="w-full p-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+            {location && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-600">
+                ✓
+              </span>
+            )}
+          </div>
+        </div>
       </div>
     </motion.div>
   </LocalizationProvider>
-)} 
+)}
             {step === 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}>
                 <h2 className="text-xl font-black text-slate-800 mb-1">Pricing Plan</h2>
