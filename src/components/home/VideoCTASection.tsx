@@ -5,7 +5,13 @@ import { Phone, Star } from "lucide-react";
 
 const VideoCTASection = () => {
   return (
-    <section className="relative bg-[#004A8C] py-20 px-6 md:px-12 lg:px-24 overflow-hidden">
+    <section  className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden text-white bg-cover bg-center"
+  style={{
+    backgroundImage: `
+      linear-gradient(to right, rgba(0,74,140,0.9), rgba(0,74,140,0.85)),
+      url('/video-bg.webp')
+    `,
+  }}>
       {/* Background Texture/Overlay - subtle darken */}
       <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
 
@@ -37,17 +43,24 @@ const VideoCTASection = () => {
           <div className="pt-4 border-t border-white/20">
             <div className="flex flex-wrap items-center gap-6">
               {/* Avatar Group */}
-              <div className="flex -space-x-3">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300">
-                    <img 
-                       src={`https://i.pravatar.cc/150?u=${i + 10}`} 
-                       alt="client" 
-                       className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+<div className="flex -space-x-3">
+  {[
+    "/wp-admin/uploads/call-back-1.webp",
+    "/wp-admin/uploads/call-back-2.webp",
+    "/wp-admin/uploads/call-back-3.webp",
+  ].map((src, index) => (
+    <div
+      key={index}
+      className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300"
+    >
+      <img
+        src={src}
+        alt={`client-${index + 1}`}
+        className="w-full h-full object-cover"
+      />
+    </div>
+  ))}
+</div>
 
               {/* Stars & Text */}
               <div>

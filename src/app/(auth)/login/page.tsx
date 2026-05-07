@@ -70,12 +70,13 @@ export default function LoginPage() {
               <label className="text-sm font-bold text-gray-700">
                 Password
               </label>
-              <button
+              <Link
+                href="/forgot-password"
                 type="button"
                 className="text-xs text-blue-600 hover:underline font-semibold"
               >
                 Forgot password?
-              </button>
+              </Link>
             </div>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500">

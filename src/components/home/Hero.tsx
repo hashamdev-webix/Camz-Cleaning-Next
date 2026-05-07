@@ -3,29 +3,38 @@
 import Image from "next/image";
 import Link from "next/link";
 import {  Mic2 } from "lucide-react";
+import { TfiHeadphoneAlt } from "react-icons/tfi";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#1f5f9b] via-[#2c7fb8] to-[#02C0E6] text-white">
+    <section 
+     className="relative overflow-hidden text-white bg-cover bg-center"
+  style={{
+    backgroundImage: `
+      linear-gradient(to right, rgba(31,95,155,0.9), rgba(2,192,230,0.9)),
+      url('/hero-bg.webp')
+    `,
+  }}
+    >
       
       {/* Background overlay pattern (optional later) */}
       <div className="absolute inset-0 opacity-10 bg-[url('/pattern.png')] bg-cover bg-center" />
 
-      <div className="relative max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
+      <div className="relative max-w-7xl mx-auto px-6  grid md:grid-cols-2 gap-10 items-center">
         
         {/* LEFT CONTENT */}
         <div>
           {/* Small badge */}
-          <span className="inline-block mb-4 px-4 py-1 text-lg rounded-full bg-[#02C0E6] border border-white/30">
+          <span className="inline-block mb-4 px-4 py-1 text-base rounded-full bg-[#02C0E6] border border-white/30">
             Freshness You Feel
           </span>
 
           {/* Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+          <h5 className="text-4xl md:text-[55px]  font-extrabold leading-tight mb-6">
             Trusted Cleaning <br />
             Company Based in <br />
             Calgary
-          </h1>
+          </h5>
 
           {/* Description */}
           <p className="text-white mb-8 max-w-2xl w-full">
@@ -46,7 +55,8 @@ export default function Hero() {
 
             <div className="flex items-center gap-3">
               <div className="bg-white/20 p-3 rounded-full">
-                <Mic2 size={18} />
+                <TfiHeadphoneAlt size={24} />
+
               </div>
               <div>
                 <p className="text-sm ">HAVE ANY QUESTION ?</p>
@@ -58,31 +68,31 @@ export default function Hero() {
         </div>
 
         {/* RIGHT IMAGE */}
-        <div className="relative flex justify-center md:justify-end">
-          <Image
-            src="/Banner-Image.webp"
-            alt="Cleaning Service"
-            width={500}
-            height={500}
-            className="object-contain"
-            priority
-          />
-        </div>
+         <div className="relative flex justify-center md:justify-end mt-10">
+      <Image
+        src="/Banner-Image.webp"
+        alt="Cleaning Service"
+        width={650}
+        height={650}
+        className="object-contain scale-105"
+        priority
+      />
+    </div>
       </div>
 
       {/* Bottom curve */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
-        <svg
-          className="relative block w-full h-[80px]"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1440 320"
-        >
-          <path
-            fill="#ffffff"
-            d="M0,224L80,213.3C160,203,320,181,480,181.3C640,181,800,203,960,218.7C1120,235,1280,245,1360,250.7L1440,256L1440,320L0,320Z"
-          ></path>
-        </svg>
-      </div>
+    {/* <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+  <svg
+    className="relative block w-full h-[100px]"
+    viewBox="0 0 1440 320"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill="#ffffff"
+      d="M0,256L120,245.3C240,235,480,213,720,218.7C960,224,1200,256,1320,272L1440,288L1440,320L0,320Z"
+    />
+  </svg>
+</div> */}
     </section>
   );
 }

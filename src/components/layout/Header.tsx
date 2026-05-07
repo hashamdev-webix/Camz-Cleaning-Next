@@ -16,23 +16,23 @@ export default function Header() {
 
   // Dropdown Data
   const serviceLinks = [
-    { name: "COMMERCIAL CLEANING", href: "/services/commercial" },
-    { name: "RESIDENTIAL CLEANING", href: "/services/residential" },
-    { name: "VEHICLE CLEANING", href: "/services/vehicle" },
-    { name: "SEASONAL CLEANING", href: "/services/seasonal" },
+    { name: "COMMERCIAL CLEANING", href: "/commercial-cleaning-services" },
+    { name: "RESIDENTIAL CLEANING", href: "/residential-cleaning-services" },
+    { name: "VEHICLE CLEANING", href: "/vehicle-cleaning-service" },
+    { name: "SEASONAL CLEANING", href: "/seasonal-property-service" },
   ];
 
   const areaLinks = [
-    { name: "CALGARY", href: "/areas/calgary" },
-    { name: "AIRDRIE", href: "/areas/airdrie" },
-    { name: "COCHRANE", href: "/areas/cochrane" },
-    { name: "CHESTERMERE", href: "/areas/chestermere" },
+    { name: "CALGARY", href: "/calgary-cleaning-services" },
+    { name: "AIRDRIE", href: "/airdrie-cleaning-services" },
+    { name: "COCHRANE", href: "/cochrane-cleaning-services" },
+    { name: "CHESTERMERE", href: "/chestermere-cleaning-services" },
   ];
 
   return (
     <header className="w-full shadow-sm relative z-50">
       {/* 🔵 TOP BAR */}
-      <div className="bg-[#4276B2] text-white text-sm md:text-lg py-2 md:py-3">
+      <div className="bg-[#4276B2] text-white hidden md:block text-sm md:text-lg py-2 md:py-3">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
           {/* Left */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
@@ -49,11 +49,21 @@ export default function Header() {
           {/* Right */}
           <div className="flex items-center gap-3">
             <span className="hidden md:block">Follow Us:</span>
-            <a href="#"><FaInstagram size={16} /></a>
-            <a href="#"><FaTwitter size={16} /></a>
-            <a href="#"><FaFacebookF size={16} /></a>
-            <a href="#"><FaLinkedinIn size={16} /></a>
-            <a href="#"><FaYoutube size={16} /></a>
+            <a href="https://www.instagram.com/camzcleaning">
+              <FaInstagram size={16} />
+            </a>
+            <a href="https://x.com/camzcleaning">
+              <FaTwitter size={16} />
+            </a>
+            <a href="https://web.facebook.com/Camzcleaning1?_rdc=1&_rdr#">
+              <FaFacebookF size={16} />
+            </a>
+            <a href="https://www.linkedin.com/company/camzcleaning">
+              <FaLinkedinIn size={16} />
+            </a>
+            <a href="https://www.youtube.com/@CamzCleaning">
+              <FaYoutube size={16} />
+            </a>
           </div>
         </div>
       </div>
@@ -71,9 +81,16 @@ export default function Header() {
           </Link>
 
           {/* Desktop Menu */}
-          <nav className="hidden md:flex items-center gap-8 text-lg font-bold text-[#0B4E9B]">
-            <Link href="/" className="hover:text-[#00B7EB] transition-colors">HOME</Link>
-            <Link href="/about" className="hover:text-[#00B7EB] transition-colors">ABOUT US</Link>
+          <nav className="hidden md:flex items-center gap-8 text-lg font-medium text-[#0B4E9B]">
+            <Link href="/" className="hover:text-[#00B7EB] transition-colors">
+              HOME
+            </Link>
+            <Link
+              href="/about-us"
+              className="hover:text-[#00B7EB] transition-colors"
+            >
+              ABOUT US
+            </Link>
 
             {/* Services Dropdown */}
             <div className="relative group cursor-pointer py-2">
@@ -111,8 +128,18 @@ export default function Header() {
               </div>
             </div>
 
-            <Link href="/booking" className="hover:text-[#00B7EB] transition-colors">ONLINE BOOKING</Link>
-            <Link href="/contact" className="hover:text-[#00B7EB] transition-colors">CONTACT US</Link>
+            <Link
+              href="/booking"
+              className="hover:text-[#00B7EB] transition-colors"
+            >
+              ONLINE BOOKING
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-[#00B7EB] transition-colors"
+            >
+              CONTACT US
+            </Link>
           </nav>
 
           {/* Desktop Button */}
@@ -136,14 +163,25 @@ export default function Header() {
         {/* 📱 Mobile Menu */}
         {isOpen && (
           <div className="md:hidden bg-white border-t px-6 py-6 flex flex-col gap-4 text-[#0B4E9B] font-bold max-h-[80vh] overflow-y-auto">
-            <Link href="/" onClick={() => setIsOpen(false)}>HOME</Link>
-            <Link href="/about" onClick={() => setIsOpen(false)}>ABOUT US</Link>
+            <Link href="/" onClick={() => setIsOpen(false)}>
+              HOME
+            </Link>
+            <Link href="/about" onClick={() => setIsOpen(false)}>
+              ABOUT US
+            </Link>
 
             {/* Mobile Services */}
             <div className="flex flex-col gap-2">
-              <p className="text-gray-400 text-xs uppercase tracking-widest">Services</p>
+              <p className="text-gray-400 text-xs uppercase tracking-widest">
+                Services
+              </p>
               {serviceLinks.map((link) => (
-                <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)} className="pl-4 py-1 text-sm">
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="pl-4 py-1 text-sm"
+                >
                   {link.name}
                 </Link>
               ))}
@@ -151,16 +189,27 @@ export default function Header() {
 
             {/* Mobile Areas */}
             <div className="flex flex-col gap-2">
-              <p className="text-gray-400 text-xs uppercase tracking-widest">Areas</p>
+              <p className="text-gray-400 text-xs uppercase tracking-widest">
+                Areas
+              </p>
               {areaLinks.map((link) => (
-                <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)} className="pl-4 py-1 text-sm">
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="pl-4 py-1 text-sm"
+                >
                   {link.name}
                 </Link>
               ))}
             </div>
 
-            <Link href="/booking" onClick={() => setIsOpen(false)}>ONLINE BOOKING</Link>
-            <Link href="/contact" onClick={() => setIsOpen(false)}>CONTACT US</Link>
+            <Link href="/booking" onClick={() => setIsOpen(false)}>
+              ONLINE BOOKING
+            </Link>
+            <Link href="/contact" onClick={() => setIsOpen(false)}>
+              CONTACT US
+            </Link>
 
             <Link href="/login" onClick={() => setIsOpen(false)}>
               <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md mt-2">

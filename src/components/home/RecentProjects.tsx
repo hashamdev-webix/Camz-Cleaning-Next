@@ -3,34 +3,42 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+import Link from "next/link";
+
 const projects = [
+
   {
     category: "Residential Cleaning",
     title: "Complete Home Care Solutions",
     description: "Experience spotless, hygienic homes with our complete cleaning solutions. From deep bathroom and kitchen cleaning to carpets, upholstery, and vents, we make every corner shine effortlessly.",
-    image: "/p1.webp", // Replace with your actual image path
+    image: "/wp-admin/uploads/stairs cleaning.webp", 
+    url:"/gallery"
   },
   {
     category: "Commercial Cleaning",
     title: "Reliable Corporate Maintenance",
     description: "Keep your business and restaurant spotless with our reliable commercial cleaning services. From offices to kitchens, we provide tailored, professional solutions for every commercial space.",
-    image: "/p2.webp",
+    image: "/wp-admin/uploads/p4.webp",
+    url:"/gallery"
   },
   {
     category: "Vehicle Cleaning",
     title: "Complete Car Care Service",
     description: "Transform your car inside and out with our Complete Car Care Service from deep interior vacuuming, car seat & carpet cleaning, to full exterior detailing for a spotless, showroom shine",
-    image: "/p4.webp",
+        image: "/wp-admin/uploads/p3.webp",
+        url:"/gallery"
   },
   {
     category: "Seasonal Property",
     title: "Complete Seasonal Property Care",
     description: "Make every season stress-free with CamzCleaning's Seasonal Property Services. From snow removal to lawn care, we keep your home safe, clean, and perfectly maintained all year long.",
-    image: "/p4.webp",
+    image: "/wp-admin/uploads/p4.webp",
+    url:"/gallery"
   },
 ];
 
 const RecentProjects = () => {
+ 
   return (
     <section className="bg-white py-20 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
@@ -92,9 +100,9 @@ const RecentProjects = () => {
                 <p className="text-gray-500 text-sm mb-4 line-clamp-4">
                   {project.description}
                 </p>
-                <button className="text-[#004A8C] font-extrabold text-sm uppercase tracking-wider hover:text-[#00B7EB] transition-colors flex items-center gap-1">
+                <Link href={project.url} className="text-[#004A8C] font-extrabold text-sm uppercase tracking-wider hover:text-[#00B7EB] transition-colors flex items-center gap-1">
                   Learn More...
-                </button>
+                </Link>
               </div>
             </motion.div>
           ))}

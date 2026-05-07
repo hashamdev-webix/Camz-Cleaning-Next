@@ -1,39 +1,46 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from 'framer-motion';
 import Image from "next/image";
 import { ListChecks, CalendarDays, Sparkles } from "lucide-react";
+import { LucideIcon } from 'lucide-react';
 
+interface Step {
+  number: string;
+  title: string;
+  description: string;
+  Icon: LucideIcon; // Use this type
+}
 const HowItWorksSection = () => {
   // --- Define the Steps ---
-  const steps = [
+  const steps: Step[] = [
     {
       number: "01",
-      icon: ListChecks,
+      Icon: ListChecks,
       title: "Select Service",
       description: "Choose the cleaning service that best fits your home or office needs.",
     },
     {
       number: "02",
-      icon: CalendarDays,
+      Icon: CalendarDays,
       title: "Set Schedule",
       description: "Choose a convenient date and time that best fits your schedule.",
     },
     {
       number: "03",
-      icon: Sparkles,
+      Icon: Sparkles,
       title: "Cleaning Done",
       description: "Our team finishes the job carefully, leaving your space spotless and refreshed.",
     },
   ];
 
   // Fix: Assign icons to capitalized variables for JSX parsing
-  const Icon1 = steps[0].icon;
-  const Icon2 = steps[1].icon;
-  const Icon3 = steps[2].icon;
+  const Icon1 = steps[0].Icon;
+  const Icon2 = steps[1].Icon;
+  const Icon3 = steps[2].Icon;
 
   // --- Animation Variants ---
 
-  const centerCircleVariants = {
+  const centerCircleVariants: Variants = {
     hidden: { scale: 0, opacity: 0 },
     visible: {
       scale: 1,
@@ -42,7 +49,7 @@ const HowItWorksSection = () => {
     },
   };
 
-  const leftCircleVariants = {
+  const leftCircleVariants: Variants = {
     hidden: { scale: 0.5, opacity: 0, x: "200%" },
     visible: {
       scale: 1,
@@ -58,7 +65,7 @@ const HowItWorksSection = () => {
     },
   };
 
-  const rightCircleVariants = {
+  const rightCircleVariants: Variants = {
     hidden: { scale: 0.5, opacity: 0, x: "-200%" },
     visible: {
       scale: 1,
@@ -74,7 +81,7 @@ const HowItWorksSection = () => {
     },
   };
 
-  const contentVariants = {
+  const contentVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: (customIndex) => ({
       opacity: 1,
@@ -86,7 +93,7 @@ const HowItWorksSection = () => {
     }),
   };
 
-  const arrowVariants = {
+  const arrowVariants: Variants = {
     hidden: { opacity: 0, x: -10 },
     visible: (customDelay) => ({
       opacity: 1,
@@ -107,9 +114,9 @@ const HowItWorksSection = () => {
           <span className="bg-[#00B7EB] text-white px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
             How It Works
           </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-[#004A8C] leading-tight mb-4 max-w-2xl">
+          <h1 className=" font-extrabold text-[#004A8C] leading-tight mb-4">
             Schedule Your Cleaning Anytime
-          </h2>
+          </h1>
           <p className="text-gray-600 max-w-3xl">
             Book your cleaning service in just minutes through a quick, simple, and flexible process tailored to fit your schedule, making it easy and convenient for you.
           </p>
