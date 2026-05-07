@@ -18,12 +18,13 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const { error: signInError } = await signIn(email, password);
+    const result = await signIn(email, password);
 
-    if (signInError) {
-      setError(signInError);
-      setLoading(false);
+    if (result?.error) {
+      setError(result.error);
+      setLoading(false); // Only reset loading on ERROR
     }
+    // Don't setLoading(false) on success - page will redirect
   };
 
   return (
