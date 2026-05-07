@@ -3,16 +3,27 @@
 import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Redirect to home page
-    router.push("/");
+    setError("");
+    setLoading(true);
+
+    const { error: signInError } = await signIn(email, password);
+
+    if (signInError) {
+      setError(signInError);
+      setLoading(false);
+    }
   };
 
   return (
@@ -25,6 +36,12 @@ export default function LoginPage() {
             Please enter your details to sign in
           </p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email Field */}
@@ -41,6 +58,8 @@ export default function LoginPage() {
                 placeholder="Enter your email"
                 className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50/50 transition-all text-gray-600 placeholder:text-gray-300"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </div>
@@ -68,6 +87,8 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 className="w-full pl-11 pr-12 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50/50 transition-all text-gray-600 placeholder:text-gray-300"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
@@ -82,9 +103,10 @@ export default function LoginPage() {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full bg-[#4182f9] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-600 active:scale-[0.98] transition-all mt-4 text-lg"
+            disabled={loading}
+            className="w-full bg-[#4182f9] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-600 active:scale-[0.98] transition-all mt-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
       </div>

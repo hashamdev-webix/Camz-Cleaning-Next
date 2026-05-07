@@ -1,6 +1,6 @@
 "use client";
 import Image from 'next/image';
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants, Variants } from 'framer-motion';
 import Link from 'next/link';
 
 const AboutSection = () => {

@@ -3,9 +3,35 @@
 import React, { useState } from "react";
 import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signUp } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const { error: signUpError } = await signUp(
+      email,
+      password,
+      fullName,
+      phone,
+    );
+
+    if (signUpError) {
+      setError(signUpError);
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
@@ -15,10 +41,18 @@ export default function Register() {
           Create Account
         </h2>
 
-        <form className="space-y-5">
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Full Name */}
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-gray-700 ml-1">Full Name</label>
+            <label className="text-sm font-bold text-gray-700 ml-1">
+              Full Name
+            </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
                 <User size={18} />
@@ -28,13 +62,17 @@ export default function Register() {
                 placeholder="Enter your full name"
                 className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50/50 transition-all text-gray-600 placeholder:text-gray-300"
                 required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
               />
             </div>
           </div>
 
           {/* Email */}
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-gray-700 ml-1">Email</label>
+            <label className="text-sm font-bold text-gray-700 ml-1">
+              Email
+            </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
                 <Mail size={18} />
@@ -44,13 +82,17 @@ export default function Register() {
                 placeholder="Enter your email"
                 className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50/50 transition-all text-gray-600 placeholder:text-gray-300"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </div>
 
           {/* Phone Number */}
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-gray-700 ml-1">Phone Number</label>
+            <label className="text-sm font-bold text-gray-700 ml-1">
+              Phone Number
+            </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
                 <Phone size={18} />
@@ -60,13 +102,17 @@ export default function Register() {
                 placeholder="+1 416 123 4567"
                 className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50/50 transition-all text-gray-600 placeholder:text-gray-300"
                 required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
             </div>
           </div>
 
           {/* Password */}
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-gray-700 ml-1">Password</label>
+            <label className="text-sm font-bold text-gray-700 ml-1">
+              Password
+            </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors">
                 <Lock size={18} />
@@ -76,6 +122,8 @@ export default function Register() {
                 placeholder="Create a password"
                 className="w-full pl-11 pr-12 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50/50 transition-all text-gray-600 placeholder:text-gray-300"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
@@ -90,9 +138,10 @@ export default function Register() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[#4182f9] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-600 active:scale-[0.98] transition-all mt-4 text-lg"
+            disabled={loading}
+            className="w-full bg-[#4182f9] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-600 active:scale-[0.98] transition-all mt-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Sign Up
+            {loading ? "Creating Account..." : "Sign Up"}
           </button>
         </form>
       </div>
@@ -101,7 +150,10 @@ export default function Register() {
       <div className="mt-8 text-gray-500">
         <p>
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-600 font-bold hover:underline">
+          <Link
+            href="/login"
+            className="text-blue-600 font-bold hover:underline"
+          >
             Login
           </Link>
         </p>
