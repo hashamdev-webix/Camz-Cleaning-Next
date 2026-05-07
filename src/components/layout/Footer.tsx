@@ -19,7 +19,7 @@ const Footer = () => {
 
   const quickLinks = [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
+    { name: "About Us", href: "/about-us" },
     { name: "Our Services", href: "/services" },
     { name: "Our Gallery", href: "/gallery" },
     { name: "Our Blogs", href: "/blogs" },
@@ -40,7 +40,7 @@ const Footer = () => {
         
         {/* Column 1: Logo & Info */}
         <div className="space-y-6">
-          <img src="/logo.webp" alt="Camz Cleaning" className="h-16 w-auto " />
+          <img src="/wp-admin/uploads/footer-logo.webp" alt="Camz Cleaning" className="h-16 w-auto " />
           <p className="text-white text-sm leading-relaxed">
            <span className="text-white text-sm"> Camz Cleaning delivers reliable, professional residential and commercial cleaning services 
             focused on quality, consistency, and complete customer satisfaction across communities.</span>
