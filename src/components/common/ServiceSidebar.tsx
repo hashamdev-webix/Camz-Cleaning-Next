@@ -37,10 +37,10 @@ const ServiceSidebar = () => {
       </div>
 
       {/* 2. Need Help CTA Card */}
-      <div className="relative rounded-[1.5rem] overflow-hidden group h-[400px]">
+      <div className="relative rounded-[1.5rem] overflow-hidden group h-[350px]">
         {/* Background Image */}
         <img
-          src="/p4.webp"
+          src="/wp-admin/uploads/help-bg.webp"
           alt="Cleaning background"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />

@@ -1,10 +1,37 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
 const AreasServed = () => {
+  // Image data for the smooth transition
+  const sliderImages = [
+    { 
+      src: "/wp-admin/uploads/clean wadrobe.webp", 
+      alt: "clean wadrobe" 
+    },
+    { 
+      src: "/wp-admin/uploads/cleaned floor.webp", 
+      alt: "cleaned floor" 
+    },
+    { 
+      src: "/wp-admin/uploads/whole bathroom cleaning.webp", 
+      alt: "whole bathroom cleaning" 
+    }
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Automatic transition every 4 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % sliderImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [sliderImages.length]);
+
   const serviceAreas = [
     {
       city: "Airdrie",
@@ -28,14 +55,26 @@ const AreasServed = () => {
     <section className="bg-white py-16 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
-        {/* Left Side: Image */}
-        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
-          <Image
-            src="/p4.webp" 
-            alt="Clean kitchen cabinets"
-            fill
-            className="object-cover"
-          />
+        {/* Left Side: Animated Image Slider */}
+        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg bg-gray-50">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <Image
+                src={sliderImages[currentIndex].src}
+                alt={sliderImages[currentIndex].alt}
+                fill
+                className="object-cover"
+                priority
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Right Side: Content */}

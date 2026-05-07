@@ -29,12 +29,12 @@ const FAQSection = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         
         {/* Left Side: Image */}
-        <div className="relative h-full min-h-[400px]">
-          <div className="rounded-[2.5rem] overflow-hidden h-full shadow-lg">
+        <div className="relative h-full min-h-[300px]">
+          <div className="rounded-[2.5rem] overflow-hidden  shadow-lg">
             <img 
-              src="/p4.webp" 
-              alt="Clean stairs" 
-              className="w-full h-full object-cover"
+              src="/wp-admin/uploads/stairs cleaning.webp" 
+              alt=" stairs cleaning" 
+              className="w-full h-[700px] object-cover"
             />
           </div>
         </div>

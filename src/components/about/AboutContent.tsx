@@ -1,7 +1,24 @@
-import React from "react";
+
+"use client"
+import { AnimatePresence } from "motion/react";
+import React, { useEffect, useState } from "react";
 import { LuSend, LuBell } from "react-icons/lu";
+import { motion } from 'framer-motion';
 
 const AboutContent = () => {
+
+  const images = [
+    "/wp-admin/uploads/stairs cleaning.webp",
+    "/wp-admin/uploads/whole kitchen cleaning.webp"
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prevValue) => (prevValue + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [images.length])
   return (
     <section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -28,7 +45,7 @@ const AboutContent = () => {
           {/* Mission & Vision Cards */}
           <div className="space-y-4 pt-4">
             {/* Our Mission */}
-            <div className="flex items-start gap-6 p-6 rounded-2xl border border-gray-200 hover:border-[#0B4E9B] transition-colors group">
+            <div className="flex items-start gap-6 p-6 rounded-2xl border border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC] transition-colors group">
               <div className="bg-white p-3 rounded-lg text-[#0B4E9B]">
                 <LuSend size={32} strokeWidth={1.5} className="rotate-[330deg]" />
               </div>
@@ -42,7 +59,7 @@ const AboutContent = () => {
             </div>
 
             {/* Our Vision */}
-            <div className="flex items-start gap-6 p-6 rounded-2xl border border-gray-200 hover:border-[#0B4E9B] transition-colors group">
+            <div className="flex items-start gap-6 p-6 rounded-2xl border border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC]  transition-colors group">
               <div className="bg-white p-3 rounded-lg text-[#0B4E9B]">
                 <LuBell size={32} strokeWidth={1.5} />
               </div>
@@ -58,14 +75,27 @@ const AboutContent = () => {
         </div>
 
         {/* Right Image Column */}
-        <div className="relative">
-          <div className="rounded-[2.5rem] overflow-hidden shadow-2xl">
-            <img 
-              src="/p4.webp" 
-              alt="Clean carpet and stairs" 
-              className="w-full h-full object-cover aspect-[4/5] lg:aspect-auto"
-            />
+      {/* Right Image Column - Updated with Smooth Transition */}
+        <div className="relative h-[400px] md:h-[600px] w-full">
+          <div className="rounded-[2.5rem] overflow-hidden shadow-2xl w-full h-full relative">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={currentIndex}
+                src={images[currentIndex]}
+                alt="Professional Cleaning Services"
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                transition={{ duration: 1.2, ease: "easeInOut" }}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </AnimatePresence>
+
+            {/* Subtle Overlay to match the premium theme */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
           </div>
+
+        
         </div>
 
       </div>

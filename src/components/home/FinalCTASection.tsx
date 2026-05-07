@@ -5,17 +5,19 @@ import { motion } from "framer-motion";
 const FinalCTASection = () => {
   return (
     <section className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden bg-[#134F95]">
-      {/* Background with Image Overlay */}
-      <div 
-        className="absolute inset-0 z-0 bg-[#134F95]"
-        style={{
-          backgroundImage: "url('/p2.webp')", // Reusing the p2.webp for consistent branding
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          mixBlendMode: 'overlay',
-          opacity: 0.2
-        }}
-      />
+    {/* Background Image */}
+  <div 
+    className="absolute inset-0 z-0"
+    style={{
+      backgroundImage: "url('wp-admin/uploads/clean lobby.webp')", // Ensure the extension (.jpg, .png, etc.) matches your file
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }}
+  />
+
+  {/* Overlay to ensure text readability */}
+  <div className="absolute inset-0 bg-[#134F95] opacity-92 z-10" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div

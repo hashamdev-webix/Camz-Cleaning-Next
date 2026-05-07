@@ -1,30 +1,34 @@
 "use client";
 import { motion, Variants } from 'framer-motion';
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRightCircle } from "lucide-react";
+import { useRouter } from 'next/navigation';
 
-const services: { title: string; desc: string; highlighted: boolean; icon: string }[] = [
+const services: { title: string; desc: string; highlighted: boolean; icon: string; url: string }[] = [
   {
     title: "Commercial Cleaning",
     desc: "Commercial Cleaning Services for offices, restaurants, and facilities, professional cleaning solutions designed to keep businesses spotless.",
     highlighted: false,
-    icon:"/market.png"
+    icon:"/market.png",
+    url:"/commercial-cleaning-services"
   },
   {
     title: "Residential Cleaning",
     desc: "Trusted Residential Cleaning Services for healthier homes. We provide dusting, vacuuming, room cleaning, sanitizing, furnace, and duct cleaning for fresh air.",
     highlighted: true,
-    icon:"/house.png"
+    icon:"/house.png",
+    url:"/residential-cleaning-services"
   },
   {
     title: "Vehicle Cleaning Service",
     desc: "Complete vehicle cleaning service including interior vacuuming, car seat & carpet cleaning, dashboard care, and exterior detailing for a spotless, refreshed ride.",
     highlighted: false,
-    icon:"/clean.png"
-  
+    icon:"/clean.png",
+    url:"/vehicle-cleaning-service"
   },
 ];
 
 export default function Services() {
+  const router=useRouter()
     const cardVariants: Variants = {
   hiddenLeft: { opacity: 0, x: -80 },
   hiddenRight: { opacity: 0, x: 80 },
@@ -103,6 +107,7 @@ export default function Services() {
 
         {/* Button */}
         <motion.button
+          onClick={() => router.push(service.url)}
           whileHover={{ y: -5 }}
           whileTap={{ scale: 0.95 }}
           className={`inline-flex items-center gap-2 px-5 py-2.5 cursor-pointer rounded-lg text-sm font-medium transition ${
@@ -111,7 +116,7 @@ export default function Services() {
               : "bg-[#02C0E6] text-white hover:opacity-90"
           }`}
         >
-          Read More
+          Read More <ChevronRightCircle size={18} />
         </motion.button>
       </motion.div>
     );

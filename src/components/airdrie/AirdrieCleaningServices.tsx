@@ -1,12 +1,8 @@
-import React from 'react';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
 const AirdrieCleaningServices = () => {
-
-
   return (
     <section className="bg-white py-20 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -59,7 +55,7 @@ const AirdrieCleaningServices = () => {
           {/* Image Container with Border and Radius */}
           <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-[10px] border-white z-10">
             <Image
-              src="/p4.webp" 
+              src="/wp-admin/uploads/vehicle.webp" 
               alt="Professional Cleaning in Calgary"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"

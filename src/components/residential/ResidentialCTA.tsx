@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-const CommercialCTA = () => {
+const ResidentialCTA = () => {
   return (
     <section className="relative w-full py-16 px-6 overflow-hidden">
       {/* Background Image with Dark Blue Overlay */}
@@ -47,4 +47,4 @@ const CommercialCTA = () => {
   );
 };
 
-export default CommercialCTA;
+export default ResidentialCTA;

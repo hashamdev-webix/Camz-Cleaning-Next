@@ -109,7 +109,24 @@ const SeasonalPropertyContent = () => {
     }
   ];
 
-  const carouselImages = ["/p4.webp", "/p4.webp", "/p4.webp", "/p4.webp"];
+const carouselData = [
+  { 
+    src: "/wp-admin/uploads/seasonal.webp", 
+    alt: "Professional seasonal property maintenance overview" 
+  },
+  { 
+    src: "/wp-admin/uploads/seasonal-1.webp", 
+    alt: "Winter snow removal and sidewalk clearing service" 
+  },
+  { 
+    src: "/wp-admin/uploads/residential-hero.webp", 
+    alt: "Full-scale residential property deep cleaning" 
+  },
+  { 
+    src: "/wp-admin/uploads/residential-bg.webp", 
+    alt: "Spring and summer lawn care and property upkeep" 
+  },
+];
 
   return (
     <div className="space-y-12 text-gray-700">
@@ -119,7 +136,7 @@ const SeasonalPropertyContent = () => {
           Professional Vacation Rentals & Seasonal Property Services Across Alberta
         </h2>
         <div className="rounded-[2rem] overflow-hidden shadow-md">
-          <img src="/seasonal.webp" alt="Professional Seasonal Property Cleaning" className="w-full object-cover h-[300px] md:h-[450px]" />
+          <img src="/wp-admin/uploads/seasonal.webp" alt="Professional Seasonal Property Cleaning" className="w-full object-cover h-[350px] md:h-[450px]" />
         </div>
         <div className="space-y-4 font-medium">
           <p className="leading-relaxed">
@@ -189,16 +206,21 @@ const SeasonalPropertyContent = () => {
             ))}
           </ul>
 
-          {/* CSS-Only Carousel */}
-          <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
-            <div className="flex w-[200%] animate-slide h-full gap-4">
-              {[...carouselImages, ...carouselImages].map((img, i) => (
-                <div key={i} className="w-full h-full flex-shrink-0">
-                  <img src={img} className="w-full h-full object-cover rounded-2xl" alt="Seasonal property maintenance" />
-                </div>
-              ))}
-            </div>
+        {/* CSS-Only Carousel - Showing 2 Images */}
+    <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
+     
+      <div className="flex w-[400%] animate-slide h-full gap-4">
+        {[...carouselData, ...carouselData].map((img, i) => (
+          <div key={i} className="w-1/2 h-full flex-shrink-0 px-2"> 
+            <img 
+              src={img.src} 
+              className="w-full h-full object-cover rounded-2xl" 
+              alt={img.alt} 
+            />
           </div>
+        ))}
+      </div>
+    </div>
         </div>
       </section>
 
@@ -215,15 +237,19 @@ const SeasonalPropertyContent = () => {
         </Link>
       </section>
 
-      <style jsx>{`
-        @keyframes slide {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-slide {
-          animation: slide 15s linear infinite;
-        }
-      `}</style>
+     <style jsx>{`
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    /* We translate by 50% because we duplicated the array [...data, ...data] */
+    100% { transform: translateX(-50%); }
+  }
+  .animate-slide {
+    animation: slide 20s linear infinite;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>
     </div>
   );
 };

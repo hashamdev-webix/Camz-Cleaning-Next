@@ -3,12 +3,12 @@ import Link from "next/link";
 
 const CallToAction = () => {
   return (
-    <section className="relative py-20 px-6 overflow-hidden">
+    <section className="relative py-10 px-6 overflow-hidden">
       {/* Background Image with Overlay */}
       <div 
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('/p4.webp')", // Using your existing p3.webp
+          backgroundImage: "url('/wp-admin/uploads/about2.webp')", 
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

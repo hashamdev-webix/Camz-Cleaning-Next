@@ -32,7 +32,7 @@ export default function Header() {
   return (
     <header className="w-full shadow-sm relative z-50">
       {/* 🔵 TOP BAR */}
-      <div className="bg-[#4276B2] text-white text-sm md:text-lg py-2 md:py-3">
+      <div className="bg-[#4276B2] text-white hidden md:block text-sm md:text-lg py-2 md:py-3">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
           {/* Left */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
@@ -73,7 +73,7 @@ export default function Header() {
           {/* Desktop Menu */}
           <nav className="hidden md:flex items-center gap-8 text-lg font-medium text-[#0B4E9B]">
             <Link href="/" className="hover:text-[#00B7EB] transition-colors">HOME</Link>
-            <Link href="/about" className="hover:text-[#00B7EB] transition-colors">ABOUT US</Link>
+            <Link href="/about-us" className="hover:text-[#00B7EB] transition-colors">ABOUT US</Link>
 
             {/* Services Dropdown */}
             <div className="relative group cursor-pointer py-2">

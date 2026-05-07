@@ -114,9 +114,9 @@ const HowItWorksSection = () => {
           <span className="bg-[#00B7EB] text-white px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
             How It Works
           </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-[#004A8C] leading-tight mb-4 max-w-2xl">
+          <h1 className=" font-extrabold text-[#004A8C] leading-tight mb-4">
             Schedule Your Cleaning Anytime
-          </h2>
+          </h1>
           <p className="text-gray-600 max-w-3xl">
             Book your cleaning service in just minutes through a quick, simple, and flexible process tailored to fit your schedule, making it easy and convenient for you.
           </p>

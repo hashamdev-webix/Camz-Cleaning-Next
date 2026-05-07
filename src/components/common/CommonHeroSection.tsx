@@ -9,7 +9,7 @@ interface HeroProps {
 // 2. Apply the interface to the component
 const CommonHeroSection = ({ backgroundImage, title }: HeroProps) => {
   return (
-    <section className="relative h-[300px] md:h-[400px] flex items-center justify-center overflow-hidden">
+    <section className="relative h-[300px] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 z-0"

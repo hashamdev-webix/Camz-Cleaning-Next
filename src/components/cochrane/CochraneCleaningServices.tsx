@@ -55,7 +55,7 @@ const CochraneCleaningServices = () => {
           {/* Image Container with Border and Radius */}
           <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-[10px] border-white z-10">
             <Image
-              src="/p4.webp" 
+              src="/wp-admin/uploads/floor cleaning.webp" 
               alt="Professional Cleaning in Cochrane"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"

@@ -111,8 +111,24 @@ const ResidentialCleaningContent = () => {
     }
   ];
 
-  const carouselImages = ["/p4.webp", "/p4.webp", "/p4.webp", "/p4.webp"];
-
+   const carouselData = [
+  { 
+    src: "/wp-admin/uploads/residential-hero.webp", 
+    alt: "Professional residential cleaning hero view" 
+  },
+  { 
+    src: "/wp-admin/uploads/residential-bg.webp", 
+    alt: "Spacious residential living area cleaning" 
+  },
+  { 
+    src: "/wp-admin/uploads/help-bg.webp", 
+    alt: "Professional cleaning assistance background" 
+  },
+  { 
+    src: "/wp-admin/uploads/stairs cleaning.webp", 
+    alt: "Detailed stairs and carpet cleaning" 
+  },
+];
   return (
     <div className="space-y-12 text-gray-700">
       {/* Hero Section */}
@@ -121,7 +137,7 @@ const ResidentialCleaningContent = () => {
           Professional House Cleaning Services Across Alberta
         </h2>
         <div className="rounded-[2rem] overflow-hidden shadow-md">
-          <img src="/residential.webp" alt="Clean Home Interior" className="w-full object-cover h-[300px] md:h-[450px]" />
+          <img src="/wp-admin/uploads/residential-hero.webp" alt="Clean Home Interior" className="w-full object-cover h-[350px]" />
         </div>
         <p className="leading-relaxed font-medium">
           Keeping a home clean, fresh, and healthy can be challenging, especially with a busy schedule. Over time, dust, grease, allergens, and bacteria can build up in kitchens, bathrooms, carpets, and other living spaces, affecting both comfort and cleanliness. At <span className="text-[#0B4E9B] font-bold">Camz Cleaning</span>, our Residential Cleaning Services in Calgary, Airdrie, Cochrane, and Chestermere are designed to give homeowners a spotless, sanitized, and well-maintained home without the stress. We deliver reliable, professional house cleaning services that help create a cleaner, healthier, and more comfortable living environment for you and your family.
@@ -192,17 +208,21 @@ const ResidentialCleaningContent = () => {
             ))}
           </ul>
 
-          {/* CSS-Only Carousel */}
-          <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
-            <div className="flex w-[200%] animate-slide h-full gap-4">
-              {/* Double the images for infinite loop effect */}
-              {[...carouselImages, ...carouselImages].map((img, i) => (
-                <div key={i} className="w-full h-full flex-shrink-0">
-                  <img src={img} className="w-full h-full object-cover rounded-2xl" alt="Cleaning view" />
-                </div>
-              ))}
-            </div>
+         {/* CSS-Only Carousel - Showing 2 Images */}
+    <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
+     
+      <div className="flex w-[400%] animate-slide h-full gap-4">
+        {[...carouselData, ...carouselData].map((img, i) => (
+          <div key={i} className="w-1/2 h-full flex-shrink-0 px-2"> 
+            <img 
+              src={img.src} 
+              className="w-full h-full object-cover rounded-2xl" 
+              alt={img.alt} 
+            />
           </div>
+        ))}
+      </div>
+    </div>
         </div>
       </section>
 
@@ -218,17 +238,20 @@ const ResidentialCleaningContent = () => {
           Book Service
         </Link>
       </section>
-
       {/* Internal CSS for Carousel Animation */}
-      <style jsx>{`
-        @keyframes slide {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-slide {
-          animation: slide 15s linear infinite;
-        }
-      `}</style>
+     <style jsx>{`
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    /* We translate by 50% because we duplicated the array [...data, ...data] */
+    100% { transform: translateX(-50%); }
+  }
+  .animate-slide {
+    animation: slide 20s linear infinite;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>
     </div>
   );
 };

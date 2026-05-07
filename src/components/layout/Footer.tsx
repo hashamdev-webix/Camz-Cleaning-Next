@@ -27,14 +27,15 @@ const Footer = () => {
   ];
 
   const services = [
-    { name: "Commercial Cleaning", href: "/services/commercial" },
-    { name: "Residential Cleaning", href: "/services/residential" },
-    { name: "Vehicle Cleaning", href: "/services/vehicle" },
-    { name: "Seasonal Advertising", href: "/services/seasonal" },
-  ];
+  
 
+      { name: "Commercial Cleaning", href: "/commercial-cleaning-services" },
+    { name: "Residential Cleaning", href: "/residential-cleaning-services" },
+    { name: "Vehicle Cleaning", href: "/vehicle-cleaning-service" },
+    { name: "Seasonal Cleaning", href: "/seasonal-property-service" },
+  ];
   return (
-    <footer className="bg-gradient-to-r from-[#1E5D9E] to-[#16497D] text-white pt-16 pb-8 px-6 md:px-12 lg:px-24">
+    <footer className="bg-gradient-to-r from-[#1E5D9E] to-[#16497D] text-white pt-16 pb-8 px-6 md:px-12 lg:px-24 border border-t border-l-0 border-r-0 border-b-0 border-white">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
         
         {/* Column 1: Logo & Info */}
@@ -111,7 +112,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium">
+      <div className="max-w-7xl mx-auto pt-8 border-t border-white/70 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium">
         <p><span className="text-white">Copyright © {currentYear} Camz Cleaning All rights reserved</span> </p>
         <Link href="/privacy-policy" className="flex items-center gap-2 hover:text-cyan-400 transition-colors">
           <IoCheckmarkCircleOutline size={18} />

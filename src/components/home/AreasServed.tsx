@@ -53,7 +53,7 @@ const AreasServed = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
-              className={`${area.bgColor} p-10 md:p-12 rounded-xl text-white flex flex-col justify-start min-h-[220px] transition-transform duration-300 hover:scale-[1.02] shadow-lg`}
+              className={`${area.bgColor} p-8 rounded-xl text-white flex flex-col justify-start min-h-[180px] transition-transform duration-300 hover:scale-[1.02] shadow-lg`}
             >
               <h3 className="text-3xl font-bold mb-4">{area.city}</h3>
               <p className="text-white leading-relaxed text-base md:text-lg">

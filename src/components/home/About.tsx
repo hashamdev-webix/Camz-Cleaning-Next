@@ -1,6 +1,7 @@
 "use client";
 import Image from 'next/image';
 import { motion, Variants } from 'framer-motion';
+import Link from 'next/link';
 
 const AboutSection = () => {
   // Animation variants for the container (staggering children)
@@ -39,7 +40,7 @@ const AboutSection = () => {
           {/* Main Large Image */}
           <div className="relative w-2/3 aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
             <Image 
-              src="/about1.webp" 
+              src="/wp-admin/uploads/kitchen cleaning.webp" 
               alt="Clean Kitchen" 
               fill
               className="object-cover"
@@ -65,7 +66,7 @@ const AboutSection = () => {
             {/* Smaller Secondary Image */}
             <div className="relative aspect-[3/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
               <Image 
-                src="/about2.webp" 
+                src="/wp-admin/uploads/about2.webp" 
                 alt="Cleaning detail" 
                 fill
                 className="object-cover"
@@ -98,7 +99,7 @@ const AboutSection = () => {
           <div className="space-y-8">
             {/* Feature 1 */}
             <motion.div variants={itemVariants} className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-20 h-20 bg-white rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
+              <div className="flex-shrink-0 w-20 h-20 bg-[#D1E0E5] rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
                 <Image src="/home.png" alt="Home" width={40} height={40} />
               </div>
               <div>
@@ -111,8 +112,8 @@ const AboutSection = () => {
 
             {/* Feature 2 */}
             <motion.div variants={itemVariants} className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-20 h-20 bg-white rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
-                <Image src="/clean.png" alt="Office" width={40} height={40} />
+            <div className="flex-shrink-0 w-20 h-20 bg-[#D1E0E5] rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
+                <Image src="/about-icon-2.webp" alt="Office" width={40} height={40} />
               </div>
               <div>
                 <h4 className="text-xl font-bold text-[#004A8C]">Workplace Cleaning Experts</h4>
@@ -123,14 +124,11 @@ const AboutSection = () => {
             </motion.div>
           </div>
 
-          <motion.button 
-            variants={itemVariants}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <Link href="/about-us"
             className="bg-[#0089C4] hover:bg-[#0077AB] text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg"
           >
             More About Us
-          </motion.button>
+          </Link>
         </motion.div>
 
       </div>

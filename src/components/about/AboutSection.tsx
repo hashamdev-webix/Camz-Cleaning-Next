@@ -39,7 +39,7 @@ const AboutSection = () => {
           {/* Main Large Image */}
           <div className="relative w-2/3 aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
             <Image 
-              src="/about-img1.webp" 
+              src="/wp-admin/uploads/clean wadrobe.webp" 
               alt="Clean Kitchen" 
               fill
               className="object-cover"
@@ -65,7 +65,7 @@ const AboutSection = () => {
             {/* Smaller Secondary Image */}
             <div className="relative aspect-[3/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
               <Image 
-                src="/about-img2.webp" 
+                src="/wp-admin/uploads/cleaned kitchen.webp" 
                 alt="Cleaning detail" 
                 fill
                 className="object-cover"

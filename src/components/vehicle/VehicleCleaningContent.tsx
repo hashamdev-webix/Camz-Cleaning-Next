@@ -89,7 +89,24 @@ const VehicleCleaningContent = () => {
     }
   ];
 
-  const carouselImages = ["/p4.webp", "/p4.webp", "/p4.webp", "/p4.webp"];
+ const carouselData = [
+  { 
+    src: "/wp-admin/uploads/vehicle.webp", 
+    alt: "Professional mobile vehicle detailing service" 
+  },
+  { 
+    src: "/wp-admin/uploads/vehicle-cleaning-1.webp", 
+    alt: "Deep interior car seat and upholstery cleaning" 
+  },
+  { 
+    src: "/wp-admin/uploads/vehicle-cleaning2.webp", 
+    alt: "Exterior car wash and tire shine treatment" 
+  },
+  { 
+    src: "/wp-admin/uploads/vehicle-cleaning3.webp", 
+    alt: "Comprehensive dashboard and interior sanitization" 
+  },
+];
 
   return (
     <div className="space-y-12 text-gray-700">
@@ -99,7 +116,7 @@ const VehicleCleaningContent = () => {
           Expert Detailing That Keeps Your Car Fresh & Flawless
         </h2>
         <div className="rounded-[2rem] overflow-hidden shadow-md">
-          <img src="/vehicle.webp" alt="Professional Car Detailing" className="w-full object-cover h-[300px] md:h-[450px]" />
+          <img src="/wp-admin/uploads/vehicle.webp" alt="Professional Car Detailing" className="w-full object-cover h-[300px] md:h-[450px]" />
         </div>
         <div className="space-y-4 font-medium">
         
@@ -146,38 +163,47 @@ const VehicleCleaningContent = () => {
       </section>
 
       {/* Carousel & Coverage Section */}
-      <section className="space-y-6">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
-          Areas We Clean In Your Vehicle
-        </h2>
-        <p className="leading-relaxed mb-6">
-          If you've been looking for a reliable <span className="font-bold">car tire cleaner nearby</span>, Camz Cleaning makes it simple and convenient.
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center overflow-hidden">
-          {/* Checklist */}
-          <ul className="space-y-3">
-            {coverageItems.map((item, idx) => (
-              <li key={idx} className="flex items-center gap-3 font-semibold text-[#0B4E9B]">
-                <IoCheckmarkCircleOutline size={22} className="shrink-0" />
-                <span className="text-gray-700">{item}</span>
-              </li>
-            ))}
-          </ul>
+  
+<section className="space-y-6">
+  <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
+    Areas We Clean In Your Vehicle
+  </h2>
+  <p className="leading-relaxed mb-6">
+    If you've been looking for a reliable <span className="font-bold">car tire cleaner nearby</span>, Camz Cleaning makes it simple and convenient.
+  </p>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center overflow-hidden">
+    {/* Checklist */}
+    <ul className="space-y-3">
+      {coverageItems.map((item, idx) => (
+        <li key={idx} className="flex items-center gap-3 font-semibold text-[#0B4E9B]">
+          <IoCheckmarkCircleOutline size={22} className="shrink-0" />
+          <span className="text-gray-700">{item}</span>
+        </li>
+      ))}
+    </ul>
 
-          {/* CSS-Only Carousel */}
-          <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
-            <div className="flex w-[200%] animate-slide h-full gap-4">
-              {[...carouselImages, ...carouselImages].map((img, i) => (
-                <div key={i} className="w-full h-full flex-shrink-0">
-                  <img src={img} className="w-full h-full object-cover rounded-2xl" alt="Vehicle detail work" />
-                </div>
-              ))}
-            </div>
+    {/* CSS-Only Carousel - Updated for 2 images */}
+    <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
+      {/* Flex container set to w-[400%] 
+        (Number of unique images / Images visible) * 2 (for loop) * 100%
+        Assuming you still have 4 unique images, so (4 / 2) * 2 * 100% = 400%
+      */}
+      <div className="flex w-[400%] animate-slide h-full gap-4">
+        {[...carouselData, ...carouselData].map((img, i) => (
+          /* Each slide is w-1/2 (50% of the parent view) with padding for gap */
+          <div key={i} className="w-1/2 h-full flex-shrink-0 px-2">
+            <img 
+              src={img.src} 
+              className="w-full h-full object-cover rounded-2xl" 
+              alt="Vehicle detail work" 
+            />
           </div>
-        </div>
-      </section>
-
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
       {/* Schedule Section */}
       <section className="space-y-6 pb-10">
         <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
@@ -191,15 +217,19 @@ const VehicleCleaningContent = () => {
         </Link>
       </section>
 
-      <style jsx>{`
-        @keyframes slide {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-slide {
-          animation: slide 15s linear infinite;
-        }
-      `}</style>
+     <style jsx>{`
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    /* We translate by 50% because we duplicated the array [...data, ...data] */
+    100% { transform: translateX(-50%); }
+  }
+  .animate-slide {
+    animation: slide 20s linear infinite;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>
     </div>
   );
 };

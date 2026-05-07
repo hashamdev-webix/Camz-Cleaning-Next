@@ -12,7 +12,12 @@ const CommercialCleaningContent = () => {
     "Waste Collection and Disposal",
   ];
 
-  const carouselImages = ["/p4.webp", "/p4.webp", "/p4.webp", "/p4.webp"];
+  const carouselData = [
+    { src: "/wp-admin/uploads/stairs cleaning.webp", alt: "Professional stairs cleaning service" },
+    { src: "/wp-admin/uploads/floor cleaning of home.webp", alt: "Deep floor cleaning of home" },
+    { src: "/wp-admin/uploads/floor cleaning of home-2.webp", alt: "Residential floor sanitization" },
+    { src: "/wp-admin/uploads/floor cleaning of home-3.webp", alt: "Professional home floor maintenance" },
+  ];
 
   return (
     <div className="space-y-12 text-gray-700">
@@ -59,36 +64,43 @@ const CommercialCleaningContent = () => {
         </div>
       </section>
 
-      {/* Carousel & Coverage Section */}
-      <section className="space-y-6">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
-          Our Commercial Cleaning Covers
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center overflow-hidden">
-          {/* Checklist */}
-          <ul className="space-y-3">
-            {coverageItems.map((item, idx) => (
-              <li key={idx} className="flex items-center gap-3 font-semibold text-[#0B4E9B]">
-                <IoCheckmarkCircleOutline size={22} className="shrink-0" />
-                <span className="text-gray-700">{item}</span>
-              </li>
-            ))}
-          </ul>
+  
+   {/* Carousel & Coverage Section */}
+<section className="space-y-6">
+  <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
+    Our Commercial Cleaning Covers
+  </h2>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center overflow-hidden">
+    {/* Checklist */}
+    <ul className="space-y-3">
+      {coverageItems.map((item, idx) => (
+        <li key={idx} className="flex items-center gap-3 font-semibold text-[#0B4E9B]">
+          <IoCheckmarkCircleOutline size={22} className="shrink-0" />
+          <span className="text-gray-700">{item}</span>
+        </li>
+      ))}
+    </ul>
 
-          {/* CSS-Only Carousel */}
-          <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
-            <div className="flex w-[200%] animate-slide h-full gap-4">
-              {/* Double the images for infinite loop effect */}
-              {[...carouselImages, ...carouselImages].map((img, i) => (
-                <div key={i} className="w-full h-full flex-shrink-0">
-                  <img src={img} className="w-full h-full object-cover rounded-2xl" alt="Cleaning view" />
-                </div>
-              ))}
-            </div>
+    {/* CSS-Only Carousel - Showing 2 Images */}
+    <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
+     
+      <div className="flex w-[400%] animate-slide h-full gap-4">
+        {[...carouselData, ...carouselData].map((img, i) => (
+          <div key={i} className="w-1/2 h-full flex-shrink-0 px-2"> 
+            <img 
+              src={img.src} 
+              className="w-full h-full object-cover rounded-2xl" 
+              alt={img.alt} 
+            />
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
       {/* Schedule Section */}
       <section className="space-y-6 pb-10">
@@ -103,16 +115,20 @@ const CommercialCleaningContent = () => {
         </Link>
       </section>
 
-      {/* Internal CSS for Carousel Animation */}
-      <style jsx>{`
-        @keyframes slide {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-slide {
-          animation: slide 15s linear infinite;
-        }
-      `}</style>
+    {/* Internal CSS for Carousel Animation */}
+<style jsx>{`
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    /* We translate by 50% because we duplicated the array [...data, ...data] */
+    100% { transform: translateX(-50%); }
+  }
+  .animate-slide {
+    animation: slide 20s linear infinite;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+`}</style>
     </div>
   );
 };
