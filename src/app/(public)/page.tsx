@@ -1,7 +1,7 @@
 import CommonFAQ from '@/components/common/CommonFAQ'
 import AboutSection from '@/components/home/About'
 import AreasServed from '@/components/home/AreasServed'
-import FAQSection from '@/components/home/FAQSection'
+
 import FinalCTASection from '@/components/home/FinalCTASection'
 import Hero from '@/components/home/Hero'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
