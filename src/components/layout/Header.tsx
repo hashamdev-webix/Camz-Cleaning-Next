@@ -10,9 +10,11 @@ import {
   FaLinkedinIn,
   FaYoutube,
 } from "react-icons/fa";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
 
   // Dropdown Data
   const serviceLinks = [
@@ -144,11 +146,19 @@ export default function Header() {
 
           {/* Desktop Button */}
           <div className="hidden md:block">
-            <Link href="/login">
-              <button className="bg-[#0B4E9B] text-white px-8 py-2.5 rounded-md font-bold hover:bg-[#00B7EB] transition-all">
-                Login
-              </button>
-            </Link>
+            {user ? (
+              <Link href="/customer-dashboard">
+                <button className="bg-[#0B4E9B] text-white px-8 py-2.5 rounded-md font-bold hover:bg-[#00B7EB] transition-all">
+                  Dashboard
+                </button>
+              </Link>
+            ) : (
+              <Link href="/login">
+                <button className="bg-[#0B4E9B] text-white px-8 py-2.5 rounded-md font-bold hover:bg-[#00B7EB] transition-all">
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -211,11 +221,19 @@ export default function Header() {
               CONTACT US
             </Link>
 
-            <Link href="/login" onClick={() => setIsOpen(false)}>
-              <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md mt-2">
-                Login
-              </button>
-            </Link>
+            {user ? (
+              <Link href="/customer-dashboard" onClick={() => setIsOpen(false)}>
+                <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md mt-2">
+                  Dashboard
+                </button>
+              </Link>
+            ) : (
+              <Link href="/login" onClick={() => setIsOpen(false)}>
+                <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md mt-2">
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
         )}
       </div>

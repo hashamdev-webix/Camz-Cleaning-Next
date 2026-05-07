@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,6 +13,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
   const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,8 +26,20 @@ export default function LoginPage() {
     if (result?.error) {
       setError(result.error);
       setLoading(false); // Only reset loading on ERROR
+    } else {
+      // Show success toast
+      setShowSuccessToast(true);
+
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
     }
     // Don't setLoading(false) on success - page will redirect
+  };
+
+  const handleCloseToast = () => {
+    setShowSuccessToast(false);
   };
 
   return (
@@ -124,6 +139,23 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
+
+      {/* Success Toast */}
+      <Snackbar
+        open={showSuccessToast}
+        autoHideDuration={2000}
+        onClose={handleCloseToast}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseToast}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Welcome back! Login successful.
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
