@@ -21,7 +21,7 @@ const Footer = () => {
 
   const quickLinks = [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
+    { name: "About Us", href: "/about-us" },
     { name: "Our Services", href: "/services" },
     { name: "Our Gallery", href: "/gallery" },
     { name: "Our Blogs", href: "/blogs" },
@@ -39,7 +39,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
         {/* Column 1: Logo & Info */}
         <div className="space-y-6">
-          <img src="/logo.webp" alt="Camz Cleaning" className="h-16 w-auto " />
+          <img src="/wp-admin/uploads/footer-logo.webp" alt="Camz Cleaning" className="h-16 w-auto " />
           <p className="text-white text-sm leading-relaxed">
             <span className="text-white text-sm">
               {" "}
