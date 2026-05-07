@@ -49,11 +49,21 @@ export default function Header() {
           {/* Right */}
           <div className="flex items-center gap-3">
             <span className="hidden md:block">Follow Us:</span>
-            <a href="instagram.com/camzcleaning"><FaInstagram size={16} /></a>
-            <a href="https://x.com/camzcleaning"><FaTwitter size={16} /></a>
-            <a href="https://web.facebook.com/Camzcleaning1?_rdc=1&_rdr#"><FaFacebookF size={16} /></a>
-            <a href="https://www.linkedin.com/company/camzcleaning"><FaLinkedinIn size={16} /></a>
-            <a href="https://www.youtube.com/@CamzCleaning"><FaYoutube size={16} /></a>
+            <a href="https://www.instagram.com/camzcleaning">
+              <FaInstagram size={16} />
+            </a>
+            <a href="https://x.com/camzcleaning">
+              <FaTwitter size={16} />
+            </a>
+            <a href="https://web.facebook.com/Camzcleaning1?_rdc=1&_rdr#">
+              <FaFacebookF size={16} />
+            </a>
+            <a href="https://www.linkedin.com/company/camzcleaning">
+              <FaLinkedinIn size={16} />
+            </a>
+            <a href="https://www.youtube.com/@CamzCleaning">
+              <FaYoutube size={16} />
+            </a>
           </div>
         </div>
       </div>
@@ -72,8 +82,15 @@ export default function Header() {
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex items-center gap-8 text-lg font-medium text-[#0B4E9B]">
-            <Link href="/" className="hover:text-[#00B7EB] transition-colors">HOME</Link>
-            <Link href="/about-us" className="hover:text-[#00B7EB] transition-colors">ABOUT US</Link>
+            <Link href="/" className="hover:text-[#00B7EB] transition-colors">
+              HOME
+            </Link>
+            <Link
+              href="/about-us"
+              className="hover:text-[#00B7EB] transition-colors"
+            >
+              ABOUT US
+            </Link>
 
             {/* Services Dropdown */}
             <div className="relative group cursor-pointer py-2">
@@ -111,8 +128,18 @@ export default function Header() {
               </div>
             </div>
 
-            <Link href="/booking" className="hover:text-[#00B7EB] transition-colors">ONLINE BOOKING</Link>
-            <Link href="/contact" className="hover:text-[#00B7EB] transition-colors">CONTACT US</Link>
+            <Link
+              href="/booking"
+              className="hover:text-[#00B7EB] transition-colors"
+            >
+              ONLINE BOOKING
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-[#00B7EB] transition-colors"
+            >
+              CONTACT US
+            </Link>
           </nav>
 
           {/* Desktop Button */}
@@ -136,14 +163,25 @@ export default function Header() {
         {/* 📱 Mobile Menu */}
         {isOpen && (
           <div className="md:hidden bg-white border-t px-6 py-6 flex flex-col gap-4 text-[#0B4E9B] font-bold max-h-[80vh] overflow-y-auto">
-            <Link href="/" onClick={() => setIsOpen(false)}>HOME</Link>
-            <Link href="/about" onClick={() => setIsOpen(false)}>ABOUT US</Link>
+            <Link href="/" onClick={() => setIsOpen(false)}>
+              HOME
+            </Link>
+            <Link href="/about" onClick={() => setIsOpen(false)}>
+              ABOUT US
+            </Link>
 
             {/* Mobile Services */}
             <div className="flex flex-col gap-2">
-              <p className="text-gray-400 text-xs uppercase tracking-widest">Services</p>
+              <p className="text-gray-400 text-xs uppercase tracking-widest">
+                Services
+              </p>
               {serviceLinks.map((link) => (
-                <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)} className="pl-4 py-1 text-sm">
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="pl-4 py-1 text-sm"
+                >
                   {link.name}
                 </Link>
               ))}
@@ -151,16 +189,27 @@ export default function Header() {
 
             {/* Mobile Areas */}
             <div className="flex flex-col gap-2">
-              <p className="text-gray-400 text-xs uppercase tracking-widest">Areas</p>
+              <p className="text-gray-400 text-xs uppercase tracking-widest">
+                Areas
+              </p>
               {areaLinks.map((link) => (
-                <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)} className="pl-4 py-1 text-sm">
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="pl-4 py-1 text-sm"
+                >
                   {link.name}
                 </Link>
               ))}
             </div>
 
-            <Link href="/booking" onClick={() => setIsOpen(false)}>ONLINE BOOKING</Link>
-            <Link href="/contact" onClick={() => setIsOpen(false)}>CONTACT US</Link>
+            <Link href="/booking" onClick={() => setIsOpen(false)}>
+              ONLINE BOOKING
+            </Link>
+            <Link href="/contact" onClick={() => setIsOpen(false)}>
+              CONTACT US
+            </Link>
 
             <Link href="/login" onClick={() => setIsOpen(false)}>
               <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md mt-2">
