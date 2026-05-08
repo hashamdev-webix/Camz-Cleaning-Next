@@ -97,7 +97,7 @@ const AboutSection = () => {
           {/* Feature List */}
           <div className="space-y-8">
             {/* Feature 1 */}
-            <motion.div variants={itemVariants} className="flex items-start gap-4">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
               <div className="flex-shrink-0 w-20 h-20 bg-white rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
                 <Image src="/home.png" alt="Home" width={40} height={40} />
               </div>
@@ -110,7 +110,7 @@ const AboutSection = () => {
             </motion.div>
 
             {/* Feature 2 */}
-            <motion.div variants={itemVariants} className="flex items-start gap-4">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
               <div className="flex-shrink-0 w-20 h-20 bg-white rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
                 <Image src="/clean.png" alt="Office" width={40} height={40} />
               </div>

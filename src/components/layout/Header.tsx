@@ -14,6 +14,8 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+const [areasOpen, setAreasOpen] = useState(false);
   const { user } = useAuth();
 
   // Dropdown Data
@@ -170,72 +172,138 @@ export default function Header() {
           </button>
         </div>
 
-        {/* 📱 Mobile Menu */}
-        {isOpen && (
-          <div className="md:hidden bg-white border-t px-6 py-6 flex flex-col gap-4 text-[#0B4E9B] font-bold max-h-[80vh] overflow-y-auto">
-            <Link href="/" onClick={() => setIsOpen(false)}>
-              HOME
-            </Link>
-            <Link href="/about" onClick={() => setIsOpen(false)}>
-              ABOUT US
-            </Link>
+      {/* 📱 Mobile Menu */}
+{isOpen && (
+  <div className="md:hidden bg-white border-t text-[#0B4E9B] font-bold max-h-[80vh] overflow-y-auto">
+    
+    <div className="flex flex-col">
 
-            {/* Mobile Services */}
-            <div className="flex flex-col gap-2">
-              <p className="text-gray-400 text-xs uppercase tracking-widest">
-                Services
-              </p>
-              {serviceLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="pl-4 py-1 text-sm"
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
+      {/* HOME */}
+      <Link
+        href="/"
+        onClick={() => setIsOpen(false)}
+        className="px-6 py-5 border-b"
+      >
+        HOME
+      </Link>
 
-            {/* Mobile Areas */}
-            <div className="flex flex-col gap-2">
-              <p className="text-gray-400 text-xs uppercase tracking-widest">
-                Areas
-              </p>
-              {areaLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="pl-4 py-1 text-sm"
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
+      {/* ABOUT */}
+      <Link
+        href="/about-us"
+        onClick={() => setIsOpen(false)}
+        className="px-6 py-5 border-b"
+      >
+        ABOUT US
+      </Link>
 
-            <Link href="/booking" onClick={() => setIsOpen(false)}>
-              ONLINE BOOKING
-            </Link>
-            <Link href="/contact" onClick={() => setIsOpen(false)}>
-              CONTACT US
-            </Link>
+      {/* SERVICES */}
+      <div className="border-b">
+        <button
+          onClick={() => setServicesOpen(!servicesOpen)}
+          className="w-full flex items-center justify-between px-6 py-5"
+        >
+          <span>SERVICES</span>
 
-            {user ? (
-              <Link href="/customer-dashboard" onClick={() => setIsOpen(false)}>
-                <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md mt-2">
-                  Dashboard
-                </button>
+          <div className="bg-[#0B4E9B] text-white rounded-full p-1">
+            <ChevronDown
+              size={18}
+              className={`transition-transform duration-300 ${
+                servicesOpen ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+        </button>
+
+        {servicesOpen && (
+          <div className="bg-gray-50 flex flex-col">
+            {serviceLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className="px-10 py-4 text-sm border-t border-gray-200"
+              >
+                {link.name}
               </Link>
-            ) : (
-              <Link href="/login" onClick={() => setIsOpen(false)}>
-                <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md mt-2">
-                  Login
-                </button>
-              </Link>
-            )}
+            ))}
           </div>
         )}
+      </div>
+
+      {/* AREAS */}
+      <div className="border-b">
+        <button
+          onClick={() => setAreasOpen(!areasOpen)}
+          className="w-full flex items-center justify-between px-6 py-5"
+        >
+          <span>AREAS</span>
+
+          <div className="bg-[#0B4E9B] text-white rounded-full p-1">
+            <ChevronDown
+              size={18}
+              className={`transition-transform duration-300 ${
+                areasOpen ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+        </button>
+
+        {areasOpen && (
+          <div className="bg-gray-50 flex flex-col">
+            {areaLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className="px-10 py-4 text-sm border-t border-gray-200"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* BOOKING */}
+      <Link
+        href="/booking"
+        onClick={() => setIsOpen(false)}
+        className="px-6 py-5 border-b"
+      >
+        ONLINE BOOKING
+      </Link>
+
+      {/* CONTACT */}
+      <Link
+        href="/contact"
+        onClick={() => setIsOpen(false)}
+        className="px-6 py-5 border-b"
+      >
+        CONTACT US
+      </Link>
+
+      {/* LOGIN BUTTON */}
+      <div className="p-6">
+        {user ? (
+          <Link
+            href="/customer-dashboard"
+            onClick={() => setIsOpen(false)}
+          >
+            <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md">
+              Dashboard
+            </button>
+          </Link>
+        ) : (
+          <Link href="/login" onClick={() => setIsOpen(false)}>
+            <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md">
+              Login
+            </button>
+          </Link>
+        )}
+      </div>
+    </div>
+  </div>
+)}
       </div>
     </header>
   );

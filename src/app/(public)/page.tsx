@@ -9,7 +9,7 @@ import RecentProjects from '@/components/home/RecentProjects'
 import Services from '@/components/home/Services'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
 import VideoCTASection from '@/components/home/VideoCTASection'
-import React from 'react'
+
 
 export default function Home() {
 

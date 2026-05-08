@@ -15,6 +15,11 @@ export const metadata: Metadata = {
   title: "Professional Cleaning Services",
   description:
     "Camz Cleaning offers trusted residential and commercial cleaning services in Calgary. Book now for a spotless space!",
+     icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

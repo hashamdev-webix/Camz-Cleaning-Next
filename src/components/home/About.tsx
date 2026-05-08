@@ -98,7 +98,7 @@ const AboutSection = () => {
           {/* Feature List */}
           <div className="space-y-8">
             {/* Feature 1 */}
-            <motion.div variants={itemVariants} className="flex items-start gap-4">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
               <div className="flex-shrink-0 w-20 h-20 bg-[#D1E0E5] rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
                 <Image src="/home.png" alt="Home" width={40} height={40} />
               </div>
@@ -111,7 +111,7 @@ const AboutSection = () => {
             </motion.div>
 
             {/* Feature 2 */}
-            <motion.div variants={itemVariants} className="flex items-start gap-4">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
             <div className="flex-shrink-0 w-20 h-20 bg-[#D1E0E5] rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
                 <Image src="/about-icon-2.webp" alt="Office" width={40} height={40} />
               </div>
@@ -125,7 +125,7 @@ const AboutSection = () => {
           </div>
 
           <Link href="/about-us"
-            className="bg-[#0089C4] hover:bg-[#0077AB] text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg"
+            className="bg-[#0089C4] hover:bg-[#0077AB] text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg ml-12 md:ml-0"
           >
             More About Us
           </Link>

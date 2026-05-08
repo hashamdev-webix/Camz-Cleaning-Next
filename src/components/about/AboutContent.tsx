@@ -45,8 +45,8 @@ const AboutContent = () => {
           {/* Mission & Vision Cards */}
           <div className="space-y-4 pt-4">
             {/* Our Mission */}
-            <div className="flex items-start gap-6 p-6 rounded-2xl border border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC] transition-colors group">
-              <div className="bg-white p-3 rounded-lg text-[#0B4E9B]">
+            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6 p-8 rounded-[40px] border border-[#0B4E9B] md:border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC] transition-colors group">
+              <div className="bg-white p-3 rounded-lg text-[#0B4E9B] flex justify-center">
                 <LuSend size={32} strokeWidth={1.5} className="rotate-[330deg]" />
               </div>
               <div className="space-y-2">
@@ -59,11 +59,11 @@ const AboutContent = () => {
             </div>
 
             {/* Our Vision */}
-            <div className="flex items-start gap-6 p-6 rounded-2xl border border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC]  transition-colors group">
-              <div className="bg-white p-3 rounded-lg text-[#0B4E9B]">
+            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6 p-8 rounded-[40px] border border-[#0B4E9B] md:border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC] transition-colors group">
+              <div className="bg-white p-3 rounded-lg text-[#0B4E9B] flex justify-center">
                 <LuBell size={32} strokeWidth={1.5} />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <h3 className="text-xl font-bold text-[#0B4E9B]">Our Vision</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">
                   To be the most trusted name in residential and commercial cleaning, 
