@@ -44,7 +44,7 @@ const TestimonialsSection = () => {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="container-custom mx-auto relative z-10">
         {/* Header Section */}
         <div className="text-center mb-16">
           <span className="bg-[#00B7EB] text-white px-5 py-1.5 rounded-full text-xs font-bold uppercase mb-6 inline-block">

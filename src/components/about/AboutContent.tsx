@@ -21,7 +21,7 @@ const AboutContent = () => {
   }, [images.length])
   return (
     <section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         
         {/* Left Content Column */}
         <div className="space-y-6">
@@ -45,7 +45,7 @@ const AboutContent = () => {
           {/* Mission & Vision Cards */}
           <div className="space-y-4 pt-4">
             {/* Our Mission */}
-            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6 p-8 rounded-[40px] border border-[#0B4E9B] md:border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC] transition-colors group">
+            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6 p-4 rounded-[40px] border border-[#0B4E9B] md:border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC] transition-colors group">
               <div className="bg-white p-3 rounded-lg text-[#0B4E9B] flex justify-center">
                 <LuSend size={32} strokeWidth={1.5} className="rotate-[330deg]" />
               </div>
@@ -59,7 +59,7 @@ const AboutContent = () => {
             </div>
 
             {/* Our Vision */}
-            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6 p-8 rounded-[40px] border border-[#0B4E9B] md:border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC] transition-colors group">
+            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6 p-4 rounded-[40px] border border-[#0B4E9B] md:border-gray-200 hover:border-[#0B4E9B] hover:bg-[#EFFAFC] transition-colors group">
               <div className="bg-white p-3 rounded-lg text-[#0B4E9B] flex justify-center">
                 <LuBell size={32} strokeWidth={1.5} />
               </div>
@@ -76,7 +76,7 @@ const AboutContent = () => {
 
         {/* Right Image Column */}
       {/* Right Image Column - Updated with Smooth Transition */}
-        <div className="relative h-[400px] md:h-[600px] w-full">
+        <div className="relative h-[400px] md:h-[650px] w-full">
           <div className="rounded-[2.5rem] overflow-hidden shadow-2xl w-full h-full relative">
             <AnimatePresence mode="wait">
               <motion.img

@@ -4,14 +4,14 @@ import { IoCheckmarkCircleOutline, IoCallOutline } from "react-icons/io5";
 
 const ServiceSidebar = () => {
   const services = [
-    { name: "Commercial Cleaning", href: "/services/commercial" },
-    { name: "Residential Cleaning", href: "/services/residential" },
-    { name: "Vehicle Cleaning Service", href: "/services/vehicle" },
-    { name: "Seasonal Property Service", href: "/services/seasonal" },
+    { name: "Commercial Cleaning", href: "/commercial-cleaning-services" },
+    { name: "Residential Cleaning", href: "/residential-cleaning-services" },
+    { name: "Vehicle Cleaning Service", href: "/vehicle-cleaning-service" },
+    { name: "Seasonal Property Service", href: "/seasonal-property-service" },
   ];
 
   return (
-    <div className="w-full space-y-8">
+    <div className="w-full space-y-2">
       {/* 1. Services List Card */}
       <div className="bg-[#0B4E9B] rounded-[1.5rem] p-8 text-white shadow-xl">
         <h3 className="text-2xl font-extrabold mb-6 tracking-tight">Services List</h3>

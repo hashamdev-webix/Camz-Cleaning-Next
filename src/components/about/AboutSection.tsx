@@ -26,7 +26,7 @@ const AboutSection = () => {
 
   return (
     <section className="bg-[#EFFAFC] py-16 px-6 md:px-12 lg:px-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
         {/* Left Side: Image Collage */}
         <motion.div 
@@ -95,33 +95,80 @@ const AboutSection = () => {
           </motion.p>
 
           {/* Feature List */}
-          <div className="space-y-8">
-            {/* Feature 1 */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-              <div className="flex-shrink-0 w-20 h-20 bg-white rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
-                <Image src="/home.png" alt="Home" width={40} height={40} />
-              </div>
-              <div>
-                <h4 className="text-xl font-bold text-[#004A8C]">Trusted Home Care</h4>
-                <p className="text-gray-500 text-sm">
-                 Camz Cleaning provides dependable residential cleaning that keeps your home fresh, hygienic, and comfortable using safe and effective methods.
-                </p>
-              </div>
-            </motion.div>
+        <div className="space-y-8">
 
-            {/* Feature 2 */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-              <div className="flex-shrink-0 w-20 h-20 bg-white rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
-                <Image src="/clean.png" alt="Office" width={40} height={40} />
-              </div>
-              <div>
-                <h4 className="text-xl font-bold text-[#004A8C]">Workplace Cleaning Experts</h4>
-                <p className="text-gray-500 text-sm">
-                  From small offices to large workplaces, Camz Cleaning ensures spotless, organized, and productive environments with reliable and affordable solutions.
-                </p>
-              </div>
-            </motion.div>
-          </div>
+  {/* Feature 1 */}
+  <motion.div
+    variants={itemVariants}
+    className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left"
+  >
+    {/* Icon */}
+    <div className="flex-shrink-0">
+      <div className="w-32 h-32 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
+        
+        {/* Inner Circle */}
+        <div className="w-24 h-24 rounded-full bg-[#D8E2E8] flex items-center justify-center">
+          <Image
+            src="/home.png"
+            alt="Home"
+            width={64}
+            height={64}
+            className="object-contain"
+          />
+        </div>
+      </div>
+    </div>
+
+    {/* Content */}
+    <div>
+      <h4 className="text-2xl font-bold text-[#004A8C]">
+        Trusted Home Care
+      </h4>
+
+      <p className="mt-3 text-gray-500 leading-7">
+        Camz Cleaning provides dependable residential cleaning that keeps
+        your home fresh, hygienic, and comfortable using safe and effective
+        methods.
+      </p>
+    </div>
+  </motion.div>
+
+  {/* Feature 2 */}
+  <motion.div
+    variants={itemVariants}
+    className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left"
+  >
+    {/* Icon */}
+    <div className="flex-shrink-0">
+      <div className="w-32 h-32 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
+
+        {/* Inner Circle */}
+        <div className="w-24 h-24 rounded-full bg-[#D8E2E8] flex items-center justify-center">
+          <Image
+            src="/about-icon-2.webp"
+            alt="Office"
+            width={64}
+            height={64}
+            className="object-contain"
+          />
+        </div>
+      </div>
+    </div>
+
+    {/* Content */}
+    <div>
+      <h4 className="text-2xl font-bold text-[#004A8C]">
+        Workplace Cleaning Experts
+      </h4>
+
+      <p className="mt-3 text-gray-500 leading-7">
+        From small offices to large workplaces, Camz Cleaning ensures
+        spotless, organized, and productive environments with reliable and
+        affordable solutions.
+      </p>
+    </div>
+  </motion.div>
+</div>
 
           
         </motion.div>

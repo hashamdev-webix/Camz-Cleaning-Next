@@ -40,7 +40,7 @@ const page = () => {
       {/* Content Section */}
       <section className="py-16 px-6 md:px-12 lg:px-24">
    
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+        <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
        
           <aside className="lg:col-span-1 lg:sticky lg:top-24">
             <ServiceSidebar  />

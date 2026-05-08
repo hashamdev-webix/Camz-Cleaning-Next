@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const FinalCTASection = () => {
   return (
-    <section className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden bg-[#134F95]">
+    <section className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden bg-[#134D91]">
     {/* Background Image */}
   <div 
     className="absolute inset-0 z-0"
@@ -19,7 +19,7 @@ const FinalCTASection = () => {
   {/* Overlay to ensure text readability */}
   <div className="absolute inset-0 bg-[#134F95] opacity-92 z-10" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="container-custom mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

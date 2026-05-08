@@ -14,7 +14,7 @@ const CommercialHero = () => {
         }}
       >
         {/* Overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-[#265995] opacity-92"></div>
+        <div className="absolute inset-0 bg-[#2D619B] opacity-84"></div>
       </div>
 
       {/* Content */}

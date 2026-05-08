@@ -107,7 +107,7 @@ const HowItWorksSection = () => {
 
   return (
     <section className="bg-white py-16 px-6 md:px-12 lg:px-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto text-center">
+      <div className="container-custom mx-auto text-center">
         
         {/* Header Section */}
         <div className="flex flex-col items-center mb-16 md:mb-24">

@@ -46,7 +46,7 @@ export default function GallerySection() {
 
   return (
     <section className="w-full bg-[#edf6f7] py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto container-custom px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <div className="mb-4 flex justify-center">
           <span className="rounded-full bg-cyan-500 px-5 py-2 text-sm font-semibold text-white shadow">

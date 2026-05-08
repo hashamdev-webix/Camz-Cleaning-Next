@@ -44,12 +44,12 @@ const StatsSection = () => {
   ];
 
   return (
-    <section className="bg-[#0E53A3] py-12 px-6">
-      <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center">
+    <section className="bg-[#0B4E9B] py-12 px-6">
+      <div className="container-custom mx-auto flex flex-wrap justify-between items-center">
         {stats.map((stat, index) => (
           <React.Fragment key={index}>
             {/* Stat Item */}
-            <div className="flex-1 min-w-[200px] text-center text-white py-6">
+            <div className="flex-1 min-w-[150px] text-center text-white py-3">
               <div className="text-5xl md:text-6xl font-semibold mb-3 flex items-center justify-center gap-1">
                 <Counter value={stat.value} />
                 {stat.hasStar && (

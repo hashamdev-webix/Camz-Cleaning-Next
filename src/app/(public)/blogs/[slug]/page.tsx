@@ -74,7 +74,7 @@ export default async function BlogDetailsPage({ params }: Props) {
 
       {/* CONTENT */}
       <section className="py-16">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 lg:grid-cols-3">
+        <div className="mx-auto grid container-custom grid-cols-1 gap-12 px-4 lg:grid-cols-3">
 
           {/* LEFT CONTENT */}
           <div className="lg:col-span-2 space-y-10">

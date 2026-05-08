@@ -9,7 +9,7 @@ const CommercialCTA = () => {
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/wp-admin/uploads/service-cta-bg.webp')" }} // Ensure p3.webp is in your public folder
       >
-        <div className="absolute inset-0 bg-[#0B4E9B]/90 mix-blend-multiply"></div>
+        <div className="absolute inset-0 bg-[#1C5392] mix-blend-multiply"></div>
       </div>
 
       {/* Content Container */}

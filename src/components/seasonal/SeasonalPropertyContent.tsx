@@ -173,7 +173,8 @@ const carouselData = [
                 <ul className="grid grid-cols-1 gap-y-3 gap-x-6 mt-4">
                   {item.bullets.map((bullet, idx) => (
                     <li key={idx} className="flex items-start gap-2 text-sm md:text-base text-gray-700">
-                      <IoCheckmarkCircleOutline size={20} className="text-[#0B4E9B] shrink-0 mt-0.5" />
+                      {/* <IoCheckmarkCircleOutline size={20} className="text-[#0B4E9B] shrink-0 mt-0.5" /> */}
+                       <span>{idx+1}</span>
                       {bullet}
                     </li>
                   ))}
@@ -200,7 +201,9 @@ const carouselData = [
           <ul className="space-y-3">
             {coverageItems.map((item, idx) => (
               <li key={idx} className="flex items-center gap-3 font-semibold text-[#0B4E9B]">
-                <IoCheckmarkCircleOutline size={22} className="shrink-0" />
+                {/* <IoCheckmarkCircleOutline size={22} className="shrink-0" />
+                 */}
+                  <span>{idx+1}</span>
                 <span className="text-gray-700">{item}</span>
               </li>
             ))}

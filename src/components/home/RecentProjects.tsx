@@ -18,7 +18,7 @@ const projects = [
     category: "Commercial Cleaning",
     title: "Reliable Corporate Maintenance",
     description: "Keep your business and restaurant spotless with our reliable commercial cleaning services. From offices to kitchens, we provide tailored, professional solutions for every commercial space.",
-    image: "/wp-admin/uploads/p4.webp",
+    image: "/wp-admin/uploads/residential-bg.webp",
     url:"/gallery"
   },
   {
@@ -41,7 +41,7 @@ const RecentProjects = () => {
  
   return (
     <section className="bg-white py-20 px-6 md:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto">
+      <div className="container-custom mx-auto">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">

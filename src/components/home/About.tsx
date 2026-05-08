@@ -27,7 +27,7 @@ const AboutSection = () => {
 
   return (
     <section className="bg-[#EFFAFC] py-16 px-6 md:px-12 lg:px-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
         {/* Left Side: Image Collage */}
         <motion.div 
@@ -55,7 +55,7 @@ const AboutSection = () => {
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
               transition={{ type: "spring", stiffness: 100, delay: 0.4 }}
-              className="bg-[#00B7EB] aspect-square rounded-full flex flex-col justify-center items-center text-white text-center p-4 shadow-md z-10"
+              className="bg-[#02C0E6] aspect-square rounded-full flex flex-col justify-center items-center text-white text-center p-4 shadow-md z-10"
             >
               <span className="text-3xl md:text-5xl font-bold">6+</span>
               <span className="text-[10px] md:text-sm uppercase font-semibold leading-tight">
@@ -87,9 +87,9 @@ const AboutSection = () => {
             About Us
           </motion.span>
           
-          <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-[#004A8C] leading-tight">
+          <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-[#004A8C] leading-tight">
             Affordable Cleaning for <br /> Homes & Offices
-          </motion.h2>
+          </motion.h1>
           
           <motion.p variants={itemVariants} className="text-gray-600 leading-relaxed">
             Camz Cleaning delivers affordable residential and commercial cleaning designed for modern homes and busy workplaces. With 6+ years of experience, we focus on quality, consistent results, and customer satisfaction using safe, effective cleaning methods that keep every space fresh, spotless, and healthy.
@@ -99,9 +99,23 @@ const AboutSection = () => {
           <div className="space-y-8">
             {/* Feature 1 */}
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-              <div className="flex-shrink-0 w-20 h-20 bg-[#D1E0E5] rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
-                <Image src="/home.png" alt="Home" width={40} height={40} />
-              </div>
+              <div className="flex-shrink-0">
+  <div className="w-32 h-32 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
+    
+    {/* Inner Circle */}
+    <div className="w-26 h-26 rounded-full bg-[#D8E2E8] flex items-center justify-center">
+      
+      {/* Image */}
+      <Image
+        src="/home.png"
+        alt="Home"
+        width={64}
+        height={64}
+        className="object-contain"
+      />
+    </div>
+  </div>
+</div>
               <div>
                 <h4 className="text-xl font-bold text-[#004A8C]">Trusted Home Care</h4>
                 <p className="text-gray-500 text-sm">
@@ -112,9 +126,20 @@ const AboutSection = () => {
 
             {/* Feature 2 */}
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-            <div className="flex-shrink-0 w-20 h-20 bg-[#D1E0E5] rounded-full border-4 border-[#D1EEF4] flex items-center justify-center p-3 shadow-sm">
-                <Image src="/about-icon-2.webp" alt="Office" width={40} height={40} />
-              </div>
+           <div className="flex-shrink-0">
+  <div className="w-32 h-32 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
+    
+    <div className="w-26 h-26 rounded-full bg-[#D8E2E8] flex items-center justify-center">
+      <Image
+        src="/about-icon-2.webp"
+        alt="Office"
+        width={64}
+        height={64}
+        className="object-contain"
+      />
+    </div>
+  </div>
+</div>
               <div>
                 <h4 className="text-xl font-bold text-[#004A8C]">Workplace Cleaning Experts</h4>
                 <p className="text-gray-500 text-sm">

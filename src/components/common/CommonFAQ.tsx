@@ -46,13 +46,13 @@ const CommonFAQ = ({ faqs }: CommonFAQProps) => {
               <div key={faq.id} className="overflow-hidden">
                 <button
                   onClick={() => toggleAccordion(faq.id)}
-                  className={`w-full flex items-center justify-between p-5 md:px-8 md:py-6 text-left transition-all duration-300 rounded-xl ${
+                  className={`w-full flex items-center justify-between p-3 md:px-8 md:py-3 text-left transition-all duration-300 rounded-xl ${
                     isActive 
                       ? "bg-[#00B7EB] text-white shadow-lg" 
                       : "bg-[#004A8C] text-white hover:bg-[#003d75]"
                   }`}
                 >
-                  <span className="text-lg md:text-xl font-bold">
+                  <span className="text-lg">
                     {faq.question}
                   </span>
                   {isActive ? (
@@ -70,7 +70,7 @@ const CommonFAQ = ({ faqs }: CommonFAQProps) => {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
-                      <div className="p-6 md:px-8 text-gray-700 text-lg leading-relaxed border-x border-b border-gray-100 rounded-b-xl -mt-2 pt-8">
+                      <div className="p-4 md:px-8 text-gray-700 text-lg leading-relaxed border-x border-b border-gray-100 rounded-b-xl -mt-2 pt-8">
                         {faq.answer}
                       </div>
                     </motion.div>

@@ -8,7 +8,7 @@ import { TfiHeadphoneAlt } from "react-icons/tfi";
 export default function Hero() {
   return (
     <section 
-     className="relative overflow-hidden text-white bg-cover bg-center"
+     className="  relative overflow-hidden text-white bg-cover bg-center"
   style={{
     backgroundImage: `
       linear-gradient(to right, rgba(31,95,155,0.9), rgba(2,192,230,0.9)),
@@ -20,7 +20,7 @@ export default function Hero() {
       {/* Background overlay pattern (optional later) */}
       <div className="absolute inset-0 opacity-10 bg-[url('/pattern.png')] bg-cover bg-center" />
 
-      <div className="relative max-w-7xl mx-auto px-6  grid md:grid-cols-2 gap-10 items-center">
+      <div className="relative container-custom  grid md:grid-cols-2 gap-10 items-center">
         
         {/* LEFT CONTENT */}
         <div>

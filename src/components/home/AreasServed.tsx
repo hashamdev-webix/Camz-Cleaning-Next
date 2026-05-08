@@ -1,34 +1,42 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const serviceAreas = [
   {
     city: "Calgary",
     description: "Comprehensive residential and commercial cleaning services across Calgary, delivered by trusted professionals focused on quality, reliability, and outstanding results.",
     bgColor: "bg-[#2964A8]", // Darker Blue
+    url:"/calgary-cleaning-services"
   },
   {
     city: "Airdrie",
     description: "Affordable and reliable cleaning services for homes and businesses across Airdrie, tailored to meet your specific needs with consistent quality.",
     bgColor: "bg-[#00B7EB]", // Bright Cyan
+    url:"/airdrie-cleaning-services"
   },
   {
     city: "Cochrane",
     description: "Professional home and office cleaning services in Cochrane, delivering spotless, hygienic, and carefully maintained spaces with reliable, consistent results.",
     bgColor: "bg-[#00B7EB]", // Bright Cyan
+    url:"/cochrane-cleaning-services"
   },
   {
     city: "Chestermere",
     description: "High-quality residential and commercial cleaning services in Chestermere, providing flexible scheduling, detailed care, and consistently professional results.",
     bgColor: "bg-[#2964A8]", // Darker Blue
+    url:"/chestermere-cleaning-services"
+
   },
 ];
 
 const AreasServed = () => {
+
+  const router=useRouter()
   return (
     <section className="bg-[#EFFAFC] py-20 px-6 md:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto">
+      <div className="container-custom mx-auto">
         
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -53,7 +61,8 @@ const AreasServed = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
-              className={`${area.bgColor} p-8 rounded-xl text-white flex flex-col justify-start min-h-[180px] transition-transform duration-300 hover:scale-[1.02] shadow-lg`}
+              className={`${area.bgColor} p-8 rounded-xl text-white flex flex-col justify-start min-h-[180px] cursor-pointer transition-transform duration-300 hover:scale-[1.02] shadow-lg`}
+              onClick={()=>router.push(area.url)}
             >
               <h3 className="text-3xl font-bold mb-4">{area.city}</h3>
               <p className="text-white leading-relaxed text-base md:text-lg">

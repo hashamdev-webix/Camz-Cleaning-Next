@@ -88,7 +88,7 @@ const ProfessionalServicesGrid = () => {
 
   return (
     <section className="bg-[#EFFAFC] py-20 px-6 md:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto">
+      <div className="container-custom mx-auto">
         <h2 className="text-3xl md:text-5xl font-extrabold text-[#0B4E9B] text-center mb-16">
          Keep Your Cochrane Home Fresh & Comfortable with Camz Cleaning
         </h2>

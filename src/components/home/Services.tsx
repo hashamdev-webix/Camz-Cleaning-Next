@@ -42,7 +42,7 @@ export default function Services() {
 };
   return (
     <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6 text-center">
+      <div className="container-custom mx-auto px-6 text-center">
         
         {/* Badge */}
         <span className="inline-block mb-4 px-4 py-1 text-sm rounded-full bg-[#02C0E6] text-white">
@@ -70,55 +70,64 @@ export default function Services() {
     if (index === 2) initialVariant = "hiddenRight";
 
     return (
-      <motion.div
-        key={index}
-        variants={cardVariants}
-        initial={initialVariant}
-        whileInView="visible"
-        viewport={{ once: true }}
-        className={`rounded-xl border p-6 text-left transition ${
-          isMiddle
-            ? "bg-[#0B4E9B] text-white border-transparent"
-            : "bg-white border-[#0B4E9B]"
-        }`}
-      >
-        {/* Icon */}
-        <div className="mb-4 text-4xl">
-            <img src={service.icon} alt={`${service.title} icon`} className="w-16 h-16"/>
-        </div>
+     <motion.div
+  key={index}
+  variants={cardVariants}
+  initial={initialVariant}
+  whileInView="visible"
+  viewport={{ once: true }}
+  className={`rounded-xl border p-6 text-left transition flex flex-col h-full ${
+    isMiddle
+      ? "bg-[#0B4E9B] text-white border-transparent"
+      : "bg-white border-[#0B4E9B]"
+  }`}
+>
+  {/* Icon */}
+  <div className="mb-5">
+    <img
+      src={service.icon}
+      alt={`${service.title} icon`}
+      className="w-16 h-16 object-contain"
+    />
+  </div>
 
-        {/* Title */}
-        <h3
-          className={`text-xl font-semibold mb-3 ${
-            isMiddle ? "text-white" : "text-[#0B4E9B]"
-          }`}
-        >
-          {service.title}
-        </h3>
+  {/* Title */}
+  <h3
+    className={`text-2xl font-bold mb-4 leading-tight ${
+      isMiddle ? "text-white" : "text-[#0B4E9B]"
+    }`}
+  >
+    {service.title}
+  </h3>
 
-        {/* Description */}
-        <p
-          className={`mb-6 ${
-            isMiddle ? "text-white/90" : "text-gray-600"
-          }`}
-        >
-          {service.desc}
-        </p>
+  {/* Content Area */}
+  <div className="flex flex-col flex-1">
 
-        {/* Button */}
-        <motion.button
-          onClick={() => router.push(service.url)}
-          whileHover={{ y: -5 }}
-          whileTap={{ scale: 0.95 }}
-          className={`inline-flex items-center gap-2 px-5 py-2.5 cursor-pointer rounded-lg text-sm font-medium transition ${
-            isMiddle
-              ? "border border-white text-white hover:bg-white hover:text-[#0B4E9B]"
-              : "bg-[#02C0E6] text-white hover:opacity-90"
-          }`}
-        >
-          Read More <ChevronRightCircle size={18} />
-        </motion.button>
-      </motion.div>
+    {/* Description */}
+    <p
+      className={`flex-1 mb-8 leading-7 ${
+        isMiddle ? "text-white/90" : "text-gray-600"
+      }`}
+    >
+      {service.desc}
+    </p>
+
+    {/* Button */}
+    <motion.button
+      onClick={() => router.push(service.url)}
+      whileHover={{ y: -3 }}
+      whileTap={{ scale: 0.97 }}
+      className={`inline-flex self-start items-center gap-2 px-5 py-3 cursor-pointer rounded-lg text-sm font-semibold transition ${
+        isMiddle
+          ? "border border-white text-white hover:bg-white hover:text-[#0B4E9B]"
+          : "bg-[#0077AB] text-white hover:bg-[#0B4E9B]"
+      }`}
+    >
+      Read More <ChevronRightCircle size={18} />
+    </motion.button>
+  </div>
+</motion.div>
+     
     );
   })}
 </div>

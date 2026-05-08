@@ -27,7 +27,7 @@ const CommercialCleaningContent = () => {
           Reliable Commercial Cleaning  Service for Businesses Across Alberta
         </h2>
         <div className="rounded-[2rem] overflow-hidden shadow-md">
-          <img src="/commercial-cleaning.webp" alt="Clean Office Floor" className="w-full object-cover h-[300px] md:h-[450px]" />
+          <img src="/commercial-cleaning.webp" alt="Clean Office Floor" className="w-full object-cover h-[300px] md:h-[400px]" />
         </div>
         <p className="leading-relaxed font-semibold">
           A clean and well-maintained workplace plays an important role in creating a positive impression on clients and supporting employee productivity. Dusty corners, stained carpets, and unclean surfaces can quickly make any office look unprofessional and uncomfortable. At <span className="text-[#0B4E9B] font-bold">Camz Cleaning</span>, we offer dependable Commercial Cleaning Services in Calgary, Airdrie, Cochrane, and Chestermere to keep your workspace spotless, sanitized, and welcoming.
@@ -76,7 +76,8 @@ const CommercialCleaningContent = () => {
     <ul className="space-y-3">
       {coverageItems.map((item, idx) => (
         <li key={idx} className="flex items-center gap-3 font-semibold text-[#0B4E9B]">
-          <IoCheckmarkCircleOutline size={22} className="shrink-0" />
+          {/* <IoCheckmarkCircleOutline size={22} className="shrink-0" /> */}
+           <span>{idx+1}</span>
           <span className="text-gray-700">{item}</span>
         </li>
       ))}

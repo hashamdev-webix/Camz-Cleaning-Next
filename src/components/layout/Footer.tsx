@@ -36,10 +36,10 @@ const Footer = () => {
   ];
   return (
     <footer className="bg-gradient-to-r from-[#1E5D9E] to-[#16497D] text-white pt-16 pb-8 px-6 md:px-12 lg:px-24 border border-t border-l-0 border-r-0 border-b-0 border-white">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+      <div className="container-custom mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
         {/* Column 1: Logo & Info */}
         <div className="space-y-6">
-          <img src="/wp-admin/uploads/footer-logo.webp" alt="Camz Cleaning" className="h-16 w-auto " />
+          <img src="/wp-admin/uploads/footer-logo.webp" alt="Camz Cleaning" className="h-auto w-auto " />
           <p className="text-white text-sm leading-relaxed">
             <span className="text-white text-sm">
               {" "}
@@ -93,7 +93,7 @@ const Footer = () => {
               <li key={link.name}>
                 <Link
                   href={link.href}
-                  className="flex items-center gap-2 text-blue-50 hover:text-cyan-400 transition-colors text-sm"
+                  className="flex items-center gap-2 text-blue-50 hover:text-cyan-400 transition-colors text-base"
                 >
                   <IoCheckmarkCircleOutline size={18} className="text-white" />
                   {link.name}
@@ -111,7 +111,7 @@ const Footer = () => {
               <li key={service.name}>
                 <Link
                   href={service.href}
-                  className="flex items-center gap-2 text-blue-50 hover:text-cyan-400 transition-colors text-sm"
+                  className="flex items-center gap-2 text-blue-50 hover:text-cyan-400 transition-colors text-base"
                 >
                   <IoCheckmarkCircleOutline size={18} className="text-white" />
                   {service.name}
@@ -125,25 +125,25 @@ const Footer = () => {
         <div>
           <h3 className="text-xl font-extrabold mb-6">Contact Info</h3>
           <ul className="space-y-5">
-            <li className="flex items-center gap-3 text-sm">
+            <li className="flex items-center gap-3 text-base">
               <div className="bg-white/10 p-2 rounded-md">
                 <IoMailOutline size={20} />
               </div>
               info@camzcleaning.com
             </li>
-            <li className="flex items-center gap-3 text-sm">
+            <li className="flex items-center gap-3 text-base">
               <div className="bg-white/10 p-2 rounded-md">
                 <IoCallOutline size={20} />
               </div>
               +1 587-837-1977
             </li>
-            <li className="flex items-center gap-3 text-sm">
+            <li className="flex items-center gap-3 text-base">
               <div className="bg-white/10 p-2 rounded-md">
                 <IoTimeOutline size={20} />
               </div>
               9:00 AM – 5:00 PM
             </li>
-            <li className="flex items-center gap-3 text-sm">
+            <li className="flex items-center gap-3 text-base">
               <div className="bg-white/10 p-2 rounded-md">
                 <IoLocationOutline size={20} />
               </div>
@@ -154,7 +154,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="max-w-7xl mx-auto pt-8 border-t border-white/70 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium">
+      <div className="container-custom mx-auto pt-8 border-t border-white/70 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium">
         <p>
           <span className="text-white">
             Copyright © {currentYear} Camz Cleaning All rights reserved

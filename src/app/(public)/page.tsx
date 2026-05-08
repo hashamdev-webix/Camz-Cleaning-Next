@@ -43,7 +43,6 @@ export default function Home() {
   return (
     <div>
       <Hero />
-      {/* <img src="/banner-shape.webp" alt="" /> */}
       <Services/>
       <AboutSection/>
       <HowItWorksSection/>

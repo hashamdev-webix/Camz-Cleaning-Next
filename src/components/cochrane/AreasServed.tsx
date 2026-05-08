@@ -5,7 +5,7 @@ const AreasServed = () => {
  
   return (
     <section className="bg-white py-16 px-6 md:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
         {/* Left Side: Image */}
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">

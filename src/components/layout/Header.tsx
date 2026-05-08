@@ -37,17 +37,24 @@ const [areasOpen, setAreasOpen] = useState(false);
     <header className="w-full shadow-sm relative z-50">
       {/* 🔵 TOP BAR */}
       <div className="bg-[#4276B2] text-white hidden md:block text-sm md:text-lg py-2 md:py-3">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
+        <div className="container-custom mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
           {/* Left */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
-            <span className="flex items-center gap-2">
-              <Mail size={14} />
-              info@camzcleaning.com
-            </span>
-            <span className="flex items-center gap-2">
-              <Phone size={14} />
-              +1 587-837-1977
-            </span>
+           <a
+  href="mailto:info@camzcleaning.com"
+  className="flex items-center gap-2 text-sm hover:text-[#00B7EB] transition-colors"
+>
+  <Mail size={18} />
+  info@camzcleaning.com
+</a>
+
+<a
+  href="tel:+15878371977"
+  className="flex items-center gap-2 text-sm hover:text-[#00B7EB] transition-colors"
+>
+  <Phone size={18} />
+  +1 587-837-1977
+</a>
           </div>
 
           {/* Right */}
@@ -74,7 +81,7 @@ const [areasOpen, setAreasOpen] = useState(false);
 
       {/* ⚪ NAVBAR */}
       <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="container-custom mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo */}
           <Link href="/">
             <img

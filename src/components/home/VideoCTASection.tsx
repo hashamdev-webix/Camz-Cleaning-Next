@@ -13,9 +13,9 @@ const VideoCTASection = () => {
     `,
   }}>
       {/* Background Texture/Overlay - subtle darken */}
-      <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
+      <div className="absolute inset-0  pointer-events-none"></div>
 
-      <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container-custom mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
         {/* Left Side: Content */}
         <motion.div
@@ -84,8 +84,13 @@ const VideoCTASection = () => {
                 <Phone size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wider text-blue-200 font-semibold">Call Us Anytime</p>
-                <p className="text-xl font-bold">+1 587-837-1977</p>
+                <h6 className="text-lg uppercase tracking-wider text-white font-semibold">Call Us Anytime</h6>
+              <a
+  href="tel:+15878371977"
+  className="text-xl font-extrabold text-white hover:text-[#00B7EB] transition-colors"
+>
+  +1 587-837-1977
+</a>
               </div>
             </div>
           </div>

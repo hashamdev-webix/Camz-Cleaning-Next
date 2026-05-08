@@ -15,7 +15,7 @@ export default function page() {
           </>
         }
       />
-     <div className="mx-auto max-w-7xl px-4">
+     <div className="mx-auto container-custom px-4">
 
      
     {/* Blog Grid */}
