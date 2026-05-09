@@ -45,7 +45,7 @@ const FAQSection = () => {
             <span className="bg-[#00CFE8] text-white text-[10px] md:text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
               FAQs
             </span>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#0B4E9B] leading-tight">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#0B4E9B] leading-tight my-4">
               Frequently Asked Questions
             </h2>
             <p className="text-gray-600 leading-relaxed max-w-lg text-sm">

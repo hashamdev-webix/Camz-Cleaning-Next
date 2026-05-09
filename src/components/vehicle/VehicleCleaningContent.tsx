@@ -214,7 +214,7 @@ const VehicleCleaningContent = () => {
         <p>
           Contact Camz Cleaning today to schedule your vehicle cleaning service and enjoy a spotless, refreshed ride.
         </p>
-        <Link href="/contact" className="inline-block bg-[#0091C1] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#0B4E9B] transition-colors shadow-lg">
+        <Link href="/booking" className="inline-block bg-[#0091C1] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#0B4E9B] transition-colors shadow-lg">
           Book Service
         </Link>
       </section>

@@ -14,7 +14,7 @@ const AboutHero = () => {
         }}
       >
         {/* Overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-[#255892] opacity-92"></div>
+        <div className="absolute inset-0 bg-[#255892]/80"></div>
       </div>
 
       {/* Content */}

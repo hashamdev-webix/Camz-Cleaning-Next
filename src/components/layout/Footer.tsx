@@ -124,32 +124,66 @@ const Footer = () => {
         {/* Column 4: Contact Info */}
         <div>
           <h3 className="text-xl font-extrabold mb-6">Contact Info</h3>
-          <ul className="space-y-5">
-            <li className="flex items-center gap-3 text-base">
-              <div className="bg-white/10 p-2 rounded-md">
-                <IoMailOutline size={20} />
-              </div>
-              info@camzcleaning.com
-            </li>
-            <li className="flex items-center gap-3 text-base">
-              <div className="bg-white/10 p-2 rounded-md">
-                <IoCallOutline size={20} />
-              </div>
-              +1 587-837-1977
-            </li>
-            <li className="flex items-center gap-3 text-base">
-              <div className="bg-white/10 p-2 rounded-md">
-                <IoTimeOutline size={20} />
-              </div>
-              9:00 AM – 5:00 PM
-            </li>
-            <li className="flex items-center gap-3 text-base">
-              <div className="bg-white/10 p-2 rounded-md">
-                <IoLocationOutline size={20} />
-              </div>
-              Calgary, AB, Canada
-            </li>
-          </ul>
+        <ul className="space-y-5">
+
+  {/* Email */}
+  <li>
+    <a
+      href="mailto:info@camzcleaning.com"
+      className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
+    >
+      <div className="bg-white/10 p-2 rounded-md">
+        <IoMailOutline size={20} />
+      </div>
+
+      info@camzcleaning.com
+    </a>
+  </li>
+
+  {/* Phone */}
+  <li>
+    <a
+      href="tel:+15878371977"
+      className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
+    >
+      <div className="bg-white/10 p-2 rounded-md">
+        <IoCallOutline size={20} />
+      </div>
+
+      +1 587-837-1977
+    </a>
+  </li>
+
+  {/* Time */}
+  <li>
+    <a
+      href="#"
+      className="flex items-center gap-3 text-base cursor-default"
+    >
+      <div className="bg-white/10 p-2 rounded-md">
+        <IoTimeOutline size={20} />
+      </div>
+
+      9:00 AM – 5:00 PM
+    </a>
+  </li>
+
+  {/* Location */}
+  <li>
+    <a
+      href="https://maps.google.com/?q=Calgary,AB,Canada"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
+    >
+      <div className="bg-white/10 p-2 rounded-md">
+        <IoLocationOutline size={20} />
+      </div>
+
+      Calgary, AB, Canada
+    </a>
+  </li>
+</ul>
         </div>
       </div>
 

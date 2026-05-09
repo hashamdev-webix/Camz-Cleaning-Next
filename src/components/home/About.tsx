@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
 
+
 const AboutSection = () => {
   // Animation variants for the container (staggering children)
   const containerVariants: Variants = {
@@ -14,6 +15,7 @@ const AboutSection = () => {
       },
     },
   };
+
 
   // Animation variants for individual items sliding up
   const itemVariants: Variants = {

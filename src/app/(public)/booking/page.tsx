@@ -9,7 +9,8 @@ import {
   CalendarClock, 
   CheckCircle2, 
   Clock, 
-  ArrowRight 
+  ArrowRight, 
+  Sofa
 } from 'lucide-react';
 import CommonHeroSection from '@/components/common/CommonHeroSection';
 import BookingModal from '@/components/models/Booking';
@@ -44,34 +45,42 @@ const handleBookNow = (title: string) => {
   setSelectedServiceTitle(title);
   setIsModalOpen(true);
 };
-  const categories: Category[] = [
-    {
-      id: "Commercial",
-      title: "Commercial Cleaning",
-      description: "Professional commercial cleaning ensuring spotless, hygienic, and productive workspaces.",
-      icon: <Building2 className="w-10 h-10" />,
-    },
-    {
-      id: "Residential",
-      title: "Residential Cleaning",
-      description: "Reliable residential cleaning services delivering fresh, spotless, and comfortable living spaces.",
-      icon: <Home className="w-10 h-10" />,
-      dark: true,
-    },
-    {
-      id: "Vehicle",
-      title: "Vehicle Cleaning Service",
-      description: "Professional vehicle cleaning services restoring shine, freshness, comfort, and lasting protection.",
-      icon: <Car className="w-10 h-10" />,
-    },
-    {
-      id: "Seasonal",
-      title: "Seasonal Property Service",
-      description: "Professional seasonal property cleaning ensuring freshness, maintenance, and reliable protection.",
-      icon: <CalendarClock className="w-10 h-10" />,
-      dark: true,
-    },
-  ];
+ const categories: Category[] = [
+
+   {
+    id: "Residential",
+    title: "Residential",
+    description: "Homes & apartments",
+
+    icon: <Home className="w-8 h-8" />,
+  },
+
+  {
+    id: "Commercial",
+    title: "Commercial",
+    description: "Offices, retail & clinics",
+
+    icon: <Building2 className="w-8 h-8" />,
+  },
+  {
+    id: "Vehicle",
+    title: "Vehicle",
+    description: "Auto detailing & car cleaning",
+  
+    icon: <Car className="w-8 h-8" />,
+  },
+
+  {
+    id: "Seasonal",
+    title: "Property",
+    description: "Carpet, sofa & move-in/out",
+
+    icon: <Sofa className="w-8 h-8" />,
+    dark: true,
+  },
+
+ 
+];
 
   const allServices: Service[] = [
     {
@@ -122,7 +131,7 @@ const handleBookNow = (title: string) => {
   return (
     <>
       <CommonHeroSection 
-        backgroundImage="/p4.webp" // <-- Put your image name here (e.g., "/car-cleaning.jpg")
+        backgroundImage="/p4.webp" 
         title={
           <>
             Book Your Cleaning Service
@@ -130,13 +139,13 @@ const handleBookNow = (title: string) => {
         }
       />
   
-    <main className="min-h-screen bg-[#F8FAFC] py-16 px-6 md:px-12 lg:px-24">
+    <main className="min-h-screen bg-[#F8FAFC] py-6 px-6 md:px-12 lg:px-24">
 
       
       <div className="container-custom mx-auto">
         
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center">
           <span className="bg-[#00B7EB] text-white px-4 py-1 rounded-full text-sm font-bold uppercase">
             Our services
           </span>
@@ -148,44 +157,70 @@ const handleBookNow = (title: string) => {
           </p>
         </div>
 
-        {/* Category Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
-          {categories.map((cat) => (
-            <div 
-              key={cat.id}
-              onClick={() => setActiveCategory(activeCategory === cat.id ? "All" : cat.id)}
-              className={`cursor-pointer group p-8 rounded-2xl shadow-sm border transition-all duration-300 ${
-                activeCategory === cat.id ? 'ring-4 ring-[#00B7EB]' : ''
-              } ${
-                cat.dark 
-                ? 'bg-[#004A8C] text-white border-transparent' 
-                : 'bg-white text-gray-800 border-gray-100 hover:border-[#00B7EB]'
-              }`}
-            >
-              <div className={`${cat.dark ? 'text-white' : 'text-[#00B7EB]'} mb-6`}>
-                {cat.icon}
-              </div>
-              <h3 className="text-2xl font-bold mb-4">{cat.title}</h3>
-              <p className={`text-sm mb-8 leading-relaxed ${cat.dark ? 'text-blue-100' : 'text-gray-500'}`}>
-                {cat.description}
-              </p>
-              <button className={`flex items-center gap-2 font-bold text-sm uppercase px-6 py-2 rounded-lg transition-colors ${
-                cat.dark 
-                ? 'bg-transparent border border-white text-white hover:bg-white hover:text-[#004A8C]' 
-                : 'bg-[#00B7EB] text-white hover:bg-[#004A8C]'
-              }`}>
-                Read More <ArrowRight size={16} />
-              </button>
+    
+    {/* Category Cards */}
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
+  {categories.map((cat) => {
+    const isActive = activeCategory === cat.id;
+
+    return (
+      <div
+        key={cat.id}
+        onClick={() =>
+          setActiveCategory(isActive ? "All" : cat.id)
+        }
+        className={`relative overflow-hidden cursor-pointer rounded-[22px] p-6 transition-all duration-300 border min-h-[220px] ${
+  isActive
+    ? "border-white ring-2 ring-[#2F80FF]"
+    : "border-transparent"
+} bg-[#0B4E9B]`}
+      >
+        {/* Check Icon */}
+        {isActive && (
+          <div className="absolute right-5 top-5">
+            <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center">
+              <svg
+                viewBox="0 0 24 24"
+                className="w-4 h-4 text-[#2F80FF] fill-current"
+              >
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+              </svg>
             </div>
-          ))}
+          </div>
+        )}
+
+        {/* Icon */}
+        <div className="mb-8">
+          <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center text-white">
+            {cat.icon}
+          </div>
         </div>
 
+        {/* Title */}
+        <h3 className="text-3xl font-bold text-white mb-3 leading-tight">
+          {cat.title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-white/80 leading-7 mb-8">
+          {cat.description}
+        </p>
+
+        {/* Service Badge */}
+        {/* <div className="inline-flex items-center rounded-full bg-white/20 px-4 py-2 text-sm font-semibold text-white">
+          1 service
+        </div> */}
+      </div>
+    );
+  })}
+</div>
+
         {/* Services Display Section */}
-        <div className="text-center mb-12">
+        <div className="text-center mt-8">
           <h2 className="text-4xl font-bold text-[#004A8C]">
             {activeCategory === "All" ? "All Services" : `${activeCategory} Services`}
           </h2>
-          <p className="text-gray-500 mt-2">From homes to offices, carpets to cars — professional cleaning for every need.</p>
+          <p className="text-gray-500 my-4">From homes to offices, carpets to cars — professional cleaning for every need.</p>
         </div>
 
         <motion.div 

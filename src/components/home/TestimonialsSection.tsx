@@ -33,18 +33,21 @@ const reviews = [
 
 const TestimonialsSection = () => {
   return (
-    <section className="relative py-24 px-6 md:px-12 lg:px-24 bg-white overflow-hidden">
-      {/* Background Image with low opacity */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/p2.webp"
-          alt="Background Texture"
-          fill
-          className="object-cover opacity-[0.07] grayscale"
-        />
-      </div>
+    <section className="relative py-24 bg-white overflow-hidden">
+     
+    {/* Background Image */}
+<div className="absolute inset-0 z-0">
+  <Image
+    src="/wp-admin/uploads/testimonial-bg.webp"
+    alt="Background"
+    fill
+    priority
+    className="object-cover"
+  />
+</div>
+<div className="absolute inset-0 bg-white/80 z-[1]" />
 
-      <div className="container-custom mx-auto relative z-10">
+      <div className="container-custom relative z-10">
         {/* Header Section */}
         <div className="text-center mb-16">
           <span className="bg-[#00B7EB] text-white px-5 py-1.5 rounded-full text-xs font-bold uppercase mb-6 inline-block">
@@ -62,12 +65,12 @@ const TestimonialsSection = () => {
         {/* Testimonials Slider Area */}
         <div className="relative group">
           {/* Navigation Arrows */}
-          <button className="absolute left-[-20px] md:left-[-50px] top-1/2 -translate-y-1/2 z-20 p-2 text-gray-400 hover:text-[#004A8C] transition-colors">
+          {/* <button className="absolute left-[-20px] md:left-[-50px] top-1/2 -translate-y-1/2 z-20 p-2 text-gray-400 hover:text-[#004A8C] transition-colors">
             <ChevronLeft size={32} />
           </button>
           <button className="absolute right-[-20px] md:right-[-50px] top-1/2 -translate-y-1/2 z-20 p-2 text-gray-400 hover:text-[#004A8C] transition-colors">
             <ChevronRight size={32} />
-          </button>
+          </button> */}
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -27,44 +27,74 @@ const ContactSection = () => {
             </p>
           </div>
 
-          <div className="space-y-6">
-            {/* Phone */}
-            <div className="flex items-center gap-5">
-              <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200">
-                <IoCallOutline size={24} />
-              </div>
-              <div>
-                <h4 className="text-xl font-extrabold text-[#0B4E9B]">Phone Number:</h4>
-                <p className="text-gray-600 font-medium">+1 587-837-1977</p>
-              </div>
-            </div>
+         <div className="space-y-6">
 
-            {/* Email */}
-            <div className="flex items-center gap-5">
-              <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200">
-                <IoMailOutline size={24} />
-              </div>
-              <div>
-                <h4 className="text-xl font-extrabold text-[#0B4E9B]">Email:</h4>
-                <p className="text-gray-600 font-medium">info@camzcleaning.com</p>
-              </div>
-            </div>
+  {/* Phone */}
+  <a
+    href="tel:+15878371977"
+    className="flex items-center gap-5 group"
+  >
+    <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
+      <IoCallOutline size={24} />
+    </div>
 
-            {/* Location */}
-            <div className="flex items-center gap-5">
-              <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200">
-                <IoLocationOutline size={24} />
-              </div>
-              <div>
-                <h4 className="text-xl font-extrabold text-[#0B4E9B]">Location:</h4>
-                <p className="text-gray-600 font-medium">Calgary, AB, Canada</p>
-              </div>
-            </div>
-          </div>
+    <div>
+      <h4 className="text-xl font-extrabold text-[#0B4E9B]">
+        Phone Number:
+      </h4>
+
+      <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
+        +1 587-837-1977
+      </p>
+    </div>
+  </a>
+
+  {/* Email */}
+  <a
+    href="mailto:info@camzcleaning.com"
+    className="flex items-center gap-5 group"
+  >
+    <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
+      <IoMailOutline size={24} />
+    </div>
+
+    <div>
+      <h4 className="text-xl font-extrabold text-[#0B4E9B]">
+        Email:
+      </h4>
+
+      <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
+        info@camzcleaning.com
+      </p>
+    </div>
+  </a>
+
+  {/* Location */}
+  <a
+    href="https://maps.google.com/?q=Calgary,AB,Canada"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center gap-5 group"
+  >
+    <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
+      <IoLocationOutline size={24} />
+    </div>
+
+    <div>
+      <h4 className="text-xl font-extrabold text-[#0B4E9B]">
+        Location:
+      </h4>
+
+      <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
+        Calgary, AB, Canada
+      </p>
+    </div>
+  </a>
+</div>
         </div>
 
         {/* Right Side: Quote Form */}
-        <div className="bg-[#0B4E9B] p-8 md:p-12 rounded-[2rem] shadow-2xl text-white">
+        <div className="bg-[#0B4E9B] p-2 md:p-12 rounded-[2rem] shadow-2xl text-white w-lg">
           <h3 className="text-2xl md:text-3xl font-bold text-center mb-8 leading-snug">
             Complete the form below to receive your free cleaning quote.
           </h3>

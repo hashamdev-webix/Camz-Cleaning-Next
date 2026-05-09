@@ -14,7 +14,7 @@ const CallToAction = () => {
         }}
       >
         {/* Deep Blue Gradient Overlay matching the design */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1E5D9E]/90 to-[#16497D]/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1E5D9E]/90 to-[#16497D]/80"></div>
       </div>
 
       {/* Content Container */}

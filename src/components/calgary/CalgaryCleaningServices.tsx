@@ -41,7 +41,8 @@ const CalgaryCleaningServices = () => {
           <ul className="space-y-3 pt-2">
             {checklistItems.map((item, index) => (
               <li key={index} className="flex items-center gap-3.5  text-gray-700 font-semibold">
-                <IoCheckmarkCircleOutline size={22} className="text-[#004A8C] flex-shrink-0" />
+                {/* <IoCheckmarkCircleOutline size={22} className="text-[#004A8C] flex-shrink-0" /> */}
+                <span>{index+1}</span>
                 <span>{item}</span>
               </li>
             ))}
