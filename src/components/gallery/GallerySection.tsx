@@ -1,44 +1,54 @@
 // components/GallerySection.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
 
 type GalleryItem = {
-  id: number;
-  image: string;
+  id: string;
+  image_url: string;
+  created_at: string;
 };
 
-const TOTAL_IMAGES = 60;
-const IMAGES_PER_LOAD = 20;
-
-// Dummy Unsplash images
-const galleryData: GalleryItem[] = Array.from(
-  { length: TOTAL_IMAGES },
-  (_, index) => ({
-    id: index + 1,
-    image: `https://images.unsplash.com/photo-${
-      [
-        "1521791136064-7986c2920216",
-        "1581578731548-c64695cc6952",
-        "1520607162513-77705c0f0d4a",
-        "1505693416388-ac5ce068fe85",
-        "1484154218962-a197022b5858",
-        "1513694203232-719a280e022f",
-        "1497366754035-f200968a6e72",
-        "1527515637462-cff94eecc1ac",
-      ][index % 8]
-    }?auto=format&fit=crop&w=1000&q=80`,
-  })
-);
+const IMAGES_PER_LOAD = 8;
 
 export default function GallerySection() {
+  const [images, setImages] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(IMAGES_PER_LOAD);
 
-  const visibleImages = useMemo(
-    () => galleryData.slice(0, visibleCount),
-    [visibleCount]
-  );
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        console.log("Fetching gallery images...");
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("gallery")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        console.log("Gallery data:", data);
+        console.log("Gallery error:", error);
+
+        if (error) {
+          console.error("Supabase error:", error);
+          setImages([]);
+        } else {
+          setImages(data || []);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setImages([]);
+      } finally {
+        setLoading(false); // ALWAYS set loading false
+      }
+    };
+
+    fetchImages();
+  }, []);
+
+  const visibleImages = images.slice(0, visibleCount);
 
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + IMAGES_PER_LOAD);
@@ -67,36 +77,57 @@ export default function GallerySection() {
           </p>
         </div>
 
-        {/* Masonry Grid */}
-        <div className="columns-1 gap-5 sm:columns-2 lg:columns-4">
-          {visibleImages.map((item) => (
-            <div
-              key={item.id}
-              className="group mb-5 break-inside-avoid overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-xl"
-            >
-              <div className="relative w-full overflow-hidden">
-                <Image
-                  src={item.image}
-                  alt={`Gallery Image ${item.id}`}
-                  width={1000}
-                  height={1000}
-                  className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
-                />
-              </div>
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center py-12">
+            <div className="text-center">
+              <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-cyan-500"></div>
+              <p className="mt-4 text-gray-600">Loading gallery...</p>
             </div>
-          ))}
-        </div>
-
-        {/* Load More Button */}
-        {visibleCount < galleryData.length && (
-          <div className="mt-14 flex justify-center">
-            <button
-              onClick={handleLoadMore}
-              className="rounded-full bg-[#0d4ea6] px-8 py-4 text-sm font-semibold text-white transition hover:bg-[#083b7e]"
-            >
-              Load More
-            </button>
           </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && images.length === 0 && (
+          <div className="flex justify-center py-12">
+            <p className="text-lg text-gray-600">No images yet</p>
+          </div>
+        )}
+
+        {/* Masonry Grid */}
+        {!loading && images.length > 0 && (
+          <>
+            <div className="columns-1 gap-5 sm:columns-2 lg:columns-4">
+              {visibleImages.map((item) => (
+                <div
+                  key={item.id}
+                  className="group mb-5 break-inside-avoid overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-xl"
+                >
+                  <div className="relative w-full overflow-hidden">
+                    <Image
+                      src={item.image_url}
+                      alt={`Gallery Image ${item.id}`}
+                      width={1000}
+                      height={1000}
+                      className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Load More Button */}
+            {visibleCount < images.length && (
+              <div className="mt-14 flex justify-center">
+                <button
+                  onClick={handleLoadMore}
+                  className="rounded-full bg-[#0d4ea6] px-8 py-4 text-sm font-semibold text-white transition hover:bg-[#083b7e]"
+                >
+                  Load More
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>

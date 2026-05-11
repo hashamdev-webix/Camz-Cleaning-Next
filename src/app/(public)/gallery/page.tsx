@@ -1,4 +1,3 @@
-
 import CommonHeroSection from '@/components/common/CommonHeroSection'
 import GallerySection from '@/components/gallery/GallerySection'
 export default function page() {
