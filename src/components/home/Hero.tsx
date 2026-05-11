@@ -23,7 +23,7 @@ export default function Hero() {
       <div className="relative container-custom  grid md:grid-cols-2 gap-10 items-center">
         
         {/* LEFT CONTENT */}
-        <div>
+        <div className="mb-28">
           {/* Small badge */}
           <span className="inline-block mb-4 px-4 py-1 text-base rounded-full bg-[#02C0E6] border border-white/30">
             Freshness You Feel

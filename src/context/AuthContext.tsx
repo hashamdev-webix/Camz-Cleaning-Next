@@ -181,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Use window.location for hard navigation after auth
       // This ensures the auth state is properly picked up
-      window.location.href = "/";
+      window.location.href = "/customer-dashboard";
 
       return { error: null };
     } catch (error) {

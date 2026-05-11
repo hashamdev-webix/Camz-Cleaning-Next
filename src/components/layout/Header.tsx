@@ -36,7 +36,7 @@ const [areasOpen, setAreasOpen] = useState(false);
   return (
     <header className="w-full shadow-sm relative z-50">
       {/* 🔵 TOP BAR */}
-      <div className="bg-[#4276B2] text-white hidden md:block text-sm md:text-lg py-2 md:py-3">
+      <div className="bg-[#4276B2] text-white hidden md:block text-sm md:text-lg py-2">
         <div className="container-custom mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
           {/* Left */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
@@ -81,7 +81,7 @@ const [areasOpen, setAreasOpen] = useState(false);
 
       {/* ⚪ NAVBAR */}
       <div className="bg-white">
-        <div className="container-custom mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="container-custom mx-auto px-4 py-2 flex items-center justify-between">
           {/* Logo */}
           <Link href="/">
             <img
