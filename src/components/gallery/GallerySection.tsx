@@ -13,6 +13,12 @@ type GalleryItem = {
 
 const IMAGES_PER_LOAD = 8;
 
+const getAltFromUrl = (url: string): string => {
+  const filename = url.split("/").pop() || "";
+  const nameOnly = filename.split(".")[0];
+  return nameOnly.replace(/-|_/g, " ");
+};
+
 export default function GallerySection() {
   const [images, setImages] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -106,7 +112,7 @@ export default function GallerySection() {
                   <div className="relative w-full overflow-hidden">
                     <Image
                       src={item.image_url}
-                      alt={`Gallery Image ${item.id}`}
+                      alt={getAltFromUrl(item.image_url)}
                       width={1000}
                       height={1000}
                       className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"

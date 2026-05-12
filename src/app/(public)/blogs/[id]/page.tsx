@@ -35,6 +35,12 @@ type Blog = {
   detail_images: string[];
 };
 
+const getAltFromUrl = (url: string): string => {
+  const filename = url.split("/").pop() || "";
+  const nameOnly = filename.split(".")[0];
+  return nameOnly.replace(/-|_/g, " ");
+};
+
 export default function BlogDetailsPage() {
   const params = useParams();
   const id = params.id as string;
@@ -166,7 +172,7 @@ export default function BlogDetailsPage() {
             <div className="overflow-hidden rounded-3xl">
               <Image
                 src={blog.image_url}
-                alt={blog.title}
+                alt={getAltFromUrl(blog.image_url)}
                 width={1200}
                 height={700}
                 className="w-full object-cover"
@@ -187,7 +193,7 @@ export default function BlogDetailsPage() {
                   <div key={index} className="overflow-hidden rounded-3xl">
                     <Image
                       src={img}
-                      alt={`Detail ${index + 1}`}
+                      alt={getAltFromUrl(img)}
                       width={1200}
                       height={700}
                       className="w-full object-cover"
