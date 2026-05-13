@@ -47,7 +47,7 @@ export default function Hero() {
           {/* CTA + Phone */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             
-            <Link href="/services">
+            <Link href="/booking">
               <button className="px-6 py-3 rounded-md cursor-pointer  border border-white bg-transparent hover:bg-white hover:transition-all duration-300 transition-transform hover:text-black">
                 Our Services
               </button>

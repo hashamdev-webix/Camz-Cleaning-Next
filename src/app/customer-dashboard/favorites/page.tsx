@@ -100,21 +100,21 @@ export default function FavoritesPage() {
         </div>
       ) : (
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
 
           {favorites.map((service) => (
             <div
               key={service.id}
-              className="overflow-hidden rounded-[28px] border border-white/10 bg-[#071224]"
+              className="overflow-hidden rounded-[24px] border border-white/10 bg-[#071224] hover:border-[#4A86F7]/40 transition-all duration-300"
             >
 
-              <div className="p-5 md:p-6">
+              <div className="p-5">
 
                 {/* Top */}
                 <div className="flex items-start justify-between gap-4 mb-6">
 
                   {/* Icon */}
-                  <div className="w-20 h-20 rounded-3xl bg-[#0B1B34] flex items-center justify-center text-[#4A86F7] flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-[#0B1B34] flex items-center justify-center text-[#4A86F7] flex-shrink-0">
                     {service.icon}
                   </div>
 
@@ -132,12 +132,12 @@ export default function FavoritesPage() {
                 </span>
 
                 {/* Title */}
-                <h3 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
+                <h3 className="text-xl md:text-2xl font-bold mb-3 leading-tight">
                   {service.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-gray-400 leading-7 mb-8 text-sm md:text-base">
+                <p className="text-gray-400 leading-6 mb-6 text-sm">
                   {service.description}
                 </p>
 
@@ -146,7 +146,7 @@ export default function FavoritesPage() {
 
                   {/* Price */}
                   <div>
-                    <h4 className="text-3xl font-bold text-[#4A86F7]">
+                    <h4 className="text-2xl font-bold text-[#4A86F7]">
                       {service.price}
                     </h4>
 
@@ -158,7 +158,7 @@ export default function FavoritesPage() {
                   {/* Button */}
                   <Link
                     href="/booking"
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#4A86F7] px-6 py-4 font-bold hover:bg-[#2563EB] transition"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4A86F7] px-5 py-3 text-sm font-semibold hover:bg-[#2563EB] transition"
                   >
                     Book Now
 
