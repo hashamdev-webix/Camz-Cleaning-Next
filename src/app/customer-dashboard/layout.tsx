@@ -16,7 +16,7 @@ export default function CustomerDashboardLayout({
       <div className="flex-1 lg:ml-[280px]">
         <DashboardHeader />
 
-        <main className="p-4 md:p-8">
+        <main className="">
           {children}
         </main>
       </div>
