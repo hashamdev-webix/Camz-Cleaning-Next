@@ -109,74 +109,77 @@ export default function BookingsPage() {
         <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6">
 
           {filteredBookings.map((booking) => (
-            <div
-              key={booking.id}
-              className="overflow-hidden rounded-[28px] border border-white/10 bg-[#071224]"
-            >
+           <div
+  key={booking.id}
+  className="overflow-hidden rounded-[22px] border border-white/10 bg-[#071224]"
+>
 
-              {/* Card Body */}
-              <div className="p-5 md:p-6">
+  {/* Card Body */}
+  <div className="p-4">
 
-                <div className="flex gap-4">
+    <div className="flex gap-3">
 
-                  {/* Date */}
-                  <div className="overflow-hidden rounded-2xl bg-[#0B1B34] w-[72px] flex-shrink-0 h-fit">
-                    <div className="bg-[#4A86F7] py-2 text-center text-xs font-bold">
-                      {booking.date}
-                    </div>
+      {/* Date */}
+      <div className="overflow-hidden rounded-xl bg-[#0B1B34] w-[60px] flex-shrink-0 h-fit">
 
-                    <div className="py-4 text-center text-3xl font-bold">
-                      {booking.day}
-                    </div>
-                  </div>
+        <div className="bg-[#4A86F7] py-1.5 text-center text-[10px] font-bold">
+          {booking.date}
+        </div>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
+        <div className="py-3 text-center text-2xl font-bold">
+          {booking.day}
+        </div>
+      </div>
 
-                    {/* Status */}
-                    <span className="inline-flex rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-400 mb-3">
-                      {booking.status}
-                    </span>
+      {/* Content */}
+      <div className="flex-1 min-w-0">
 
-                    {/* Title */}
-                    <h3 className="text-2xl font-bold leading-tight mb-3">
-                      {booking.service}
-                    </h3>
+        {/* Status */}
+        <span className="inline-flex rounded-full bg-yellow-500/20 px-2.5 py-1 text-[10px] font-semibold text-yellow-400 mb-2">
+          {booking.status}
+        </span>
 
-                    {/* Location */}
-                    <div className="flex items-center gap-2 text-gray-400 text-sm mb-5">
-                      <MapPin size={16} />
+        {/* Title */}
+        <h3 className="text-lg md:text-xl font-bold leading-tight mb-2">
+          {booking.service}
+        </h3>
 
-                      <span>{booking.location}</span>
-                    </div>
+        {/* Location */}
+        <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-4">
 
-                    {/* Price */}
-                    <h4 className="text-3xl md:text-4xl font-bold text-[#4A86F7]">
-                      {booking.price}
-                    </h4>
-                  </div>
-                </div>
-              </div>
+          <MapPin size={14} />
 
-              {/* Footer */}
-              <div className="border-t border-white/10 px-5 md:px-6 py-4 flex items-center justify-between">
+          <span>{booking.location}</span>
+        </div>
 
-                <div className="flex items-center gap-2 text-gray-400 text-sm">
-                  <Clock3 size={16} />
+        {/* Price */}
+        <h4 className="text-2xl md:text-3xl font-bold text-[#4A86F7]">
+          {booking.price}
+        </h4>
+      </div>
+    </div>
+  </div>
 
-                  <span>{booking.time}</span>
-                </div>
+  {/* Footer */}
+  <div className="border-t border-white/10 px-4 py-3 flex items-center justify-between">
 
-                <Link
-                  href={`/customer-dashboard/bookings/${booking.id}`}
-                  className="inline-flex items-center gap-2 text-[#4A86F7] font-semibold hover:text-blue-300 transition"
-                >
-                  View Details
+    <div className="flex items-center gap-1.5 text-gray-400 text-xs">
 
-                  <ChevronRight size={18} />
-                </Link>
-              </div>
-            </div>
+      <Clock3 size={14} />
+
+      <span>{booking.time}</span>
+    </div>
+
+    <Link
+      href={`/customer-dashboard/bookings/${booking.id}`}
+      className="inline-flex items-center gap-1.5 text-[#4A86F7] text-sm font-medium hover:text-blue-300 transition"
+    >
+      View Details
+
+      <ChevronRight size={15} />
+    </Link>
+  </div>
+</div>
           ))}
         </div>
       )}

@@ -103,70 +103,70 @@ export default function FavoritesPage() {
        <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
 
           {favorites.map((service) => (
-            <div
-              key={service.id}
-              className="overflow-hidden rounded-[24px] border border-white/10 bg-[#071224] hover:border-[#4A86F7]/40 transition-all duration-300"
-            >
+          <div
+  key={service.id}
+  className="overflow-hidden rounded-[20px] border border-white/10 bg-[#071224] hover:border-[#4A86F7]/30 transition-all duration-300"
+>
 
-              <div className="p-5">
+  <div className="p-4">
 
-                {/* Top */}
-                <div className="flex items-start justify-between gap-4 mb-6">
+    {/* Top */}
+    <div className="flex items-start justify-between gap-3 mb-4">
 
-                  {/* Icon */}
-                  <div className="w-16 h-16 rounded-2xl bg-[#0B1B34] flex items-center justify-center text-[#4A86F7] flex-shrink-0">
-                    {service.icon}
-                  </div>
+      {/* Icon */}
+      <div className="w-12 h-12 rounded-xl bg-[#0B1B34] flex items-center justify-center text-[#4A86F7] flex-shrink-0">
+        {service.icon}
+      </div>
 
-                  {/* Heart */}
-                  <button className="text-red-400 hover:scale-110 transition">
-                    <Heart size={24} fill="currentColor" />
-                  </button>
-                </div>
+      {/* Heart */}
+      <button className="text-red-400 hover:scale-110 transition">
+        <Heart size={18} fill="currentColor" />
+      </button>
+    </div>
 
-                {/* Verified */}
-                <span className="inline-flex items-center gap-2 rounded-full bg-[#4A86F7]/10 px-4 py-2 text-xs font-semibold text-[#4A86F7] mb-5">
-                  <Star size={14} fill="currentColor" />
+    {/* Verified */}
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4A86F7]/10 px-3 py-1 text-[10px] font-semibold text-[#4A86F7] mb-4">
+      <Star size={11} fill="currentColor" />
 
-                  VERIFIED
-                </span>
+      VERIFIED
+    </span>
 
-                {/* Title */}
-                <h3 className="text-xl md:text-2xl font-bold mb-3 leading-tight">
-                  {service.title}
-                </h3>
+    {/* Title */}
+    <h3 className="text-lg font-bold mb-2 leading-tight">
+      {service.title}
+    </h3>
 
-                {/* Description */}
-                <p className="text-gray-400 leading-6 mb-6 text-sm">
-                  {service.description}
-                </p>
+    {/* Description */}
+    <p className="text-gray-400 leading-5 mb-5 text-xs">
+      {service.description}
+    </p>
 
-                {/* Bottom */}
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5">
+    {/* Bottom */}
+    <div className="flex items-end justify-between gap-3">
 
-                  {/* Price */}
-                  <div>
-                    <h4 className="text-2xl font-bold text-[#4A86F7]">
-                      {service.price}
-                    </h4>
+      {/* Price */}
+      <div>
+        <h4 className="text-xl font-bold text-[#4A86F7]">
+          {service.price}
+        </h4>
 
-                    <p className="text-sm text-gray-500 mt-1">
-                      {service.type}
-                    </p>
-                  </div>
+        <p className="text-[11px] text-gray-500 mt-0.5">
+          {service.type}
+        </p>
+      </div>
 
-                  {/* Button */}
-                  <Link
-                    href="/booking"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4A86F7] px-5 py-3 text-sm font-semibold hover:bg-[#2563EB] transition"
-                  >
-                    Book Now
+      {/* Button */}
+      <Link
+        href="/booking"
+        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#4A86F7] px-4 py-2 text-xs font-semibold hover:bg-[#2563EB] transition"
+      >
+        Book
 
-                    <ArrowRight size={18} />
-                  </Link>
-                </div>
-              </div>
-            </div>
+        <ArrowRight size={14} />
+      </Link>
+    </div>
+  </div>
+</div>
           ))}
         </div>
       )}

@@ -166,51 +166,57 @@ export default function DashboardHomePage() {
           const Icon = service.icon;
 
           return (
-            <div
-              key={index}
-              className="rounded-[32px] border border-blue-500/20 bg-[#071224] p-7 shadow-[0_0_40px_rgba(37,99,235,0.08)]"
-            >
-              <div className="flex flex-col sm:flex-row gap-5">
+           <div
+  key={index}
+  className="rounded-[24px] border border-blue-500/10 bg-[#071224] p-5 shadow-[0_0_20px_rgba(37,99,235,0.05)]"
+>
+  <div className="flex flex-col sm:flex-row gap-4">
 
-                {/* Icon */}
-                <div className="w-20 h-20 rounded-3xl bg-[#0B1B34] flex items-center justify-center text-blue-400 flex-shrink-0 mx-auto sm:mx-0">
-                  <Icon size={34} />
-                </div>
+    {/* Icon */}
+    <div className="w-14 h-14 rounded-2xl bg-[#0B1B34] flex items-center justify-center text-blue-400 flex-shrink-0 mx-auto sm:mx-0">
+      <Icon size={24} />
+    </div>
 
-                {/* Content */}
-                <div className="flex-1">
+    {/* Content */}
+    <div className="flex-1">
 
-                  <span className="inline-block rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold text-blue-400 mb-4">
-                    VERIFIED
-                  </span>
+      {/* Badge */}
+      <span className="inline-block rounded-full bg-blue-500/20 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-blue-400 mb-3">
+        VERIFIED
+      </span>
 
-                  <h4 className="text-2xl md:text-3xl font-bold mb-3 leading-tight">
-                    {service.title}
-                  </h4>
+      {/* Title */}
+      <h4 className="text-lg md:text-xl font-bold mb-2 leading-tight">
+        {service.title}
+      </h4>
 
-                  <p className="text-gray-400 leading-7 mb-6 text-sm md:text-base">
-                    {service.description}
-                  </p>
+      {/* Description */}
+      <p className="text-gray-400 leading-6 mb-5 text-sm">
+        {service.description}
+      </p>
 
-                  <div className="flex flex-col gap-5">
+      {/* Bottom */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
 
-                    <div>
-                      <h5 className="text-2xl md:text-3xl font-bold text-blue-400 break-words">
-                        {service.price}
-                      </h5>
+        {/* Price */}
+        <div>
+          <h5 className="text-xl md:text-2xl font-bold text-blue-400">
+            {service.price}
+          </h5>
 
-                      <p className="text-sm text-gray-500 mt-1">
-                        {service.type}
-                      </p>
-                    </div>
+          <p className="text-xs text-gray-500 mt-1">
+            {service.type}
+          </p>
+        </div>
 
-                    <button className="w-full sm:w-fit rounded-2xl bg-[#4A86F7] px-8 py-4 font-bold hover:bg-[#2563EB] transition">
-                      Book Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Button */}
+        <button className="w-full sm:w-fit rounded-xl bg-[#4A86F7] px-5 py-2.5 text-sm font-semibold hover:bg-[#2563EB] transition">
+          Book Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
           );
         })}
       </div>
