@@ -11,6 +11,8 @@ import {
   Loader2,
   Calendar,
   MapPin,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import {
   LocalizationProvider,
@@ -18,8 +20,9 @@ import {
   TimePicker,
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 // --- Types ---
 interface Service {
@@ -36,6 +39,13 @@ interface Service {
   base_rate?: number;
   bedroom_rate?: number;
   washroom_rate?: number;
+  hourly_rate?: number;
+  sqft_rate?: number;
+  vehicle_sedan_rate?: number;
+  vehicle_suv_rate?: number;
+  fridge_price?: number;
+  oven_price?: number;
+  window_price?: number;
 }
 
 interface ServiceConfig {
@@ -55,17 +65,25 @@ interface BookingModalProps {
 }
 
 const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [config, setConfig] = useState<ServiceConfig>({});
   const [loadingConfig, setLoadingConfig] = useState(false);
+  // Submission state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [bookingId, setBookingId] = useState<string | null>(null);
+  // Coordinates from geolocation
+  const [coordinates, setCoordinates] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [pricingType, setPricingType] = useState("Fixed");
   const [hours, setHours] = useState(3);
   const [date, setDate] = useState<Dayjs | null>(null);
   const [time, setTime] = useState<Dayjs | null>(null);
-  const [activePicker, setActivePicker] = useState<"none" | "date" | "time">(
-    "none",
-  );
   const [location, setLocation] = useState("");
   const [loadingLocation, setLoadingLocation] = useState(false);
 
@@ -97,20 +115,91 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
 
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
-  const handleConfirm = () => {
-    console.log({
-      service: service?.title,
-      serviceType: service?.service_type,
-      serviceId: service?.id,
-      formData,
-      date: date?.format("YYYY-MM-DD"),
-      time: time?.format("HH:mm"),
-      location,
-      pricingType,
-      hours: pricingType === "Hourly" ? hours : null,
-    });
-    alert("Booking submitted! Database integration coming in Part 5.");
-    onClose();
+  const handleConfirm = async () => {
+    if (!user) {
+      setSubmitError("Please log in to book a service");
+      return;
+    }
+
+    if (!service || !date || !time) {
+      setSubmitError("Missing required booking information");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const supabase = createClient();
+      const { total, taxRate } = calculatePricing();
+
+      // Combine date and time into a single timestamp
+      const bookingDateTime = date
+        .hour(time.hour())
+        .minute(time.minute())
+        .second(0)
+        .toISOString();
+
+      // Build the job record
+      const jobRecord: Record<string, any> = {
+        customer_id: user.id,
+        service_id: service.id,
+        service_name: service.title,
+        service_type: service.service_type,
+        date: bookingDateTime,
+        address: location,
+        billing_type: pricingType.toLowerCase(),
+        total_price: total,
+        tax_rate: taxRate,
+        price: `$${total.toFixed(2)}`,
+        status: "pending",
+        service_data: formData,
+      };
+
+      // Add coordinates if available
+      if (coordinates) {
+        jobRecord.job_lat = coordinates.lat;
+        jobRecord.job_lng = coordinates.lng;
+      }
+
+      // Add billing-specific fields
+      if (pricingType === "Hourly") {
+        jobRecord.estimated_hours = hours;
+        if (service.hourly_rate) {
+          jobRecord.hourly_rate = Number(service.hourly_rate);
+        }
+      }
+
+      // Add bedrooms/washrooms if present in formData
+      if (formData.bedrooms !== undefined) {
+        jobRecord.bedrooms = Number(formData.bedrooms);
+      }
+      if (formData.washrooms !== undefined) {
+        jobRecord.washrooms = Number(formData.washrooms);
+      }
+
+      console.log("Submitting booking:", jobRecord);
+
+      const { data, error } = await supabase
+        .from("jobs")
+        .insert(jobRecord)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Booking insert error:", error);
+        throw new Error(error.message || "Failed to create booking");
+      }
+
+      console.log("Booking created successfully:", data);
+      setBookingId(data.id);
+      setSubmitSuccess(true);
+    } catch (err: any) {
+      console.error("Booking submission failed:", err);
+      setSubmitError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const updateField = (key: string, value: any) => {
@@ -323,6 +412,11 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
       setLocation("");
       setHours(3);
       setPricingType("Fixed");
+      setIsSubmitting(false);
+      setSubmitSuccess(false);
+      setSubmitError(null);
+      setBookingId(null);
+      setCoordinates(null);
     }
   }, [isOpen]);
 
@@ -335,6 +429,7 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        setCoordinates({ lat: latitude, lng: longitude });
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
@@ -636,6 +731,65 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
 
   if (!isOpen || !service) return null;
 
+  // SUCCESS STATE — show success screen instead of form
+  if (submitSuccess) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white rounded-[2rem] w-full max-w-md shadow-2xl overflow-hidden p-8 text-center"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <CheckCircle2 className="w-12 h-12 text-green-600" />
+          </motion.div>
+
+          <h2 className="text-2xl font-black text-slate-800 mb-2">
+            Booking Confirmed!
+          </h2>
+          <p className="text-sm text-slate-500 mb-6">
+            Your booking has been received. Our team will assign a cleaner and
+            contact you shortly.
+          </p>
+
+          {bookingId && (
+            <div className="bg-slate-50 rounded-2xl p-4 mb-6">
+              <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">
+                Booking ID
+              </p>
+              <p className="text-sm font-bold text-slate-700 font-mono">
+                {bookingId.slice(0, 8).toUpperCase()}
+              </p>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => {
+                onClose();
+                window.location.href = "/customer-dashboard/bookings";
+              }}
+              className="w-full py-3 rounded-xl bg-blue-600 text-white text-xs font-black hover:bg-blue-700 transition-all"
+            >
+              View My Bookings
+            </button>
+            <button
+              onClick={onClose}
+              className="w-full py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all"
+            >
+              Close
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
       <motion.div
@@ -828,8 +982,13 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
                 )}
 
                 {(() => {
-                  const { lineItems, subtotal, tax, total, taxRate } =
-                    calculatePricing();
+                  const {
+                    lineItems,
+                    subtotal,
+                    tax,
+                    total,
+                    taxRate = 0,
+                  } = calculatePricing();
                   return (
                     <div className="space-y-3 px-2">
                       {lineItems.length === 0 ? (
@@ -893,6 +1052,18 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
                 <p className="text-[11px] font-bold text-slate-400 mb-6 uppercase tracking-wider">
                   Please verify details before confirming
                 </p>
+
+                {submitError && (
+                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-black text-red-700 mb-1">
+                        Booking Failed
+                      </p>
+                      <p className="text-xs text-red-600">{submitError}</p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-3">
                   <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
@@ -1023,24 +1194,35 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
           <div className="flex gap-3 mt-10">
             <button
               onClick={step === 1 ? onClose : prevStep}
-              className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all"
+              disabled={isSubmitting}
+              className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {step === 1 ? "Cancel" : "Back"}
             </button>
             <button
               onClick={step === totalSteps ? handleConfirm : nextStep}
+              disabled={isSubmitting}
               className={`flex-1 py-3 rounded-xl text-white text-xs font-black flex items-center justify-center gap-2 shadow-xl shadow-blue-200 transition-all ${
-                !isStepValid()
+                !isStepValid() || isSubmitting
                   ? "bg-blue-300 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
-              {step === 4
-                ? "Confirm Booking"
-                : step === 3
-                  ? "Review"
-                  : "Continue"}{" "}
-              <ChevronRight size={16} />
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  {step === 4
+                    ? "Confirm Booking"
+                    : step === 3
+                      ? "Review"
+                      : "Continue"}{" "}
+                  <ChevronRight size={16} />
+                </>
+              )}
             </button>
           </div>
         </div>
