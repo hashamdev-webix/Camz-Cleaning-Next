@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, Variants } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   Building2,
   Home,
@@ -10,9 +10,13 @@ import {
   Clock,
   ArrowRight,
   Sofa,
+  Lock,
+  X,
 } from "lucide-react";
 import CommonHeroSection from "@/components/common/CommonHeroSection";
 import BookingModal from "@/components/models/Booking";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 // --- Types ---
@@ -39,8 +43,11 @@ interface Service {
 }
 
 const BookingPage = () => {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [selectedServiceTitle, setSelectedServiceTitle] = useState("");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -83,6 +90,18 @@ const BookingPage = () => {
   }, []);
 
   const handleBookNow = (service: Service) => {
+    // Wait for auth state to load
+    if (authLoading) return;
+
+    // If not logged in, show custom login prompt
+    if (!user) {
+      setSelectedService(service);
+      setSelectedServiceTitle(service.title);
+      setShowLoginPrompt(true);
+      return;
+    }
+
+    // User is logged in - open the booking modal
     setSelectedService(service);
     setSelectedServiceTitle(service.title);
     setIsModalOpen(true);
@@ -373,6 +392,92 @@ const BookingPage = () => {
           onClose={() => setIsModalOpen(false)}
           service={selectedService}
         />
+
+        {/* Login Required Modal */}
+        <AnimatePresence>
+          {showLoginPrompt && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md"
+              onClick={() => setShowLoginPrompt(false)}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-[2rem] w-full max-w-md shadow-2xl overflow-hidden relative p-8"
+              >
+                <button
+                  onClick={() => setShowLoginPrompt(false)}
+                  className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-all"
+                  aria-label="Close"
+                >
+                  <X size={16} className="text-slate-600" />
+                </button>
+
+                <div className="text-center">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+                    className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6"
+                  >
+                    <Lock className="w-10 h-10 text-blue-600" />
+                  </motion.div>
+
+                  <h2 className="text-2xl font-black text-slate-800 mb-2">
+                    Login Required
+                  </h2>
+                  <p className="text-sm text-slate-500 mb-2">
+                    Please log in to book{" "}
+                    <span className="font-bold text-blue-600">
+                      {selectedServiceTitle}
+                    </span>
+                  </p>
+                  <p className="text-xs text-slate-400 mb-8">
+                    Your account helps us track your bookings and provide better
+                    service.
+                  </p>
+
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={() => {
+                        setShowLoginPrompt(false);
+                        router.push("/login?redirect=/booking");
+                      }}
+                      className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-sm font-black hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
+                    >
+                      Continue to Login
+                      <ArrowRight size={16} />
+                    </button>
+                    <button
+                      onClick={() => setShowLoginPrompt(false)}
+                      className="w-full py-3 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-all"
+                    >
+                      Maybe Later
+                    </button>
+                  </div>
+
+                  <p className="text-[11px] text-slate-400 mt-6">
+                    Don&apos;t have an account?{" "}
+                    <button
+                      onClick={() => {
+                        setShowLoginPrompt(false);
+                        router.push("/signup");
+                      }}
+                      className="text-blue-600 font-bold hover:underline"
+                    >
+                      Sign up
+                    </button>
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </>
   );
