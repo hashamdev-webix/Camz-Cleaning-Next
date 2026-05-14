@@ -371,7 +371,7 @@ const BookingPage = () => {
         <BookingModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          serviceTitle={selectedServiceTitle}
+          service={selectedService}
         />
       </main>
     </>
