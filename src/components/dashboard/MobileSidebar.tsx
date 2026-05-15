@@ -1,5 +1,5 @@
 "use client";
-
+import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -39,16 +39,17 @@ const links = [
   },
 ];
 
-export default function MobileSidebar({
-  open,
-  setOpen,
-}: Props) {
-
+export default function MobileSidebar({ open, setOpen }: Props) {
   const pathname = usePathname();
 
-  const handleLogout = () => {
-    // Add logout logic here
-    console.log("Logout");
+  const { signOut } = useAuth();
+  const handleLogout = async () => {
+    setOpen(false);
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -57,9 +58,7 @@ export default function MobileSidebar({
       <div
         onClick={() => setOpen(false)}
         className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${
-          open
-            ? "opacity-100 visible"
-            : "opacity-0 invisible"
+          open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       />
 
@@ -69,10 +68,8 @@ export default function MobileSidebar({
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-
         {/* Top */}
         <div className="flex items-center justify-between mb-10">
-
           <img
             src="/logo.webp"
             alt="Logo"
@@ -89,7 +86,6 @@ export default function MobileSidebar({
 
         {/* Links */}
         <nav className="space-y-3 flex-1">
-
           {links.map((link) => {
             const active = pathname === link.href;
             const Icon = link.icon;
@@ -120,9 +116,7 @@ export default function MobileSidebar({
         >
           <LogOut size={20} />
 
-          <span className="font-semibold">
-            Logout
-          </span>
+          <span className="font-semibold">Logout</span>
         </button>
       </aside>
     </>

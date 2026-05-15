@@ -1,5 +1,5 @@
 "use client";
-
+import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -36,14 +36,17 @@ const links = [
 export default function DashboardSidebar() {
   const pathname = usePathname();
 
-  const handleLogout = () => {
-    // Add logout logic here
-    console.log("Logout");
+  const { signOut } = useAuth();
+  const handleLogout = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
     <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-[280px] bg-[#020817] border-r border-white/10 text-white flex-col p-6">
-
       {/* Logo */}
       <Link href="/" className="mb-10">
         <img
@@ -55,7 +58,6 @@ export default function DashboardSidebar() {
 
       {/* Navigation */}
       <nav className="space-y-3 flex-1">
-
         {links.map((link) => {
           const Icon = link.icon;
           const active = pathname === link.href;
@@ -72,9 +74,7 @@ export default function DashboardSidebar() {
             >
               <Icon size={20} />
 
-              <span className="font-semibold">
-                {link.name}
-              </span>
+              <span className="font-semibold">{link.name}</span>
             </Link>
           );
         })}
@@ -87,9 +87,7 @@ export default function DashboardSidebar() {
       >
         <LogOut size={20} />
 
-        <span className="font-semibold">
-          Logout
-        </span>
+        <span className="font-semibold">Logout</span>
       </button>
     </aside>
   );
