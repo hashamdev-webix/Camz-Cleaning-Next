@@ -1,173 +1,276 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Heart,
   Star,
   ArrowRight,
-  Car,
-  Home,
-  Building2,
-  Sparkles,
+  Loader2,
+  UserCheck,
+  Mail,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { createClient } from "@/lib/supabase/client";
 
-const favorites = [
-  {
-    id: 1,
-    title: "Vehicle Detailing",
-    description:
-      "Professional exterior and interior car detailing service.",
-    price: "CAD $40.00",
-    type: "Fixed & Hourly",
-    icon: <Car size={28} />,
-  },
+interface Cleaner {
+  id: string;
+  name: string;
+  email: string;
+}
 
-  {
-    id: 2,
-    title: "Residential Cleaning",
-    description:
-      "Complete home cleaning for bedrooms, kitchens, and bathrooms.",
-    price: "CAD $120.00",
-    type: "Fixed Price",
-    icon: <Home size={28} />,
-  },
-
-  {
-    id: 3,
-    title: "Commercial Cleaning",
-    description:
-      "Professional office and commercial space cleaning solutions.",
-    price: "CAD $200.00",
-    type: "Monthly Plan",
-    icon: <Building2 size={28} />,
-  },
-
-  {
-    id: 4,
-    title: "Deep Cleaning",
-    description:
-      "Detailed deep cleaning for homes and workplaces.",
-    price: "CAD $180.00",
-    type: "Fixed Price",
-    icon: <Sparkles size={28} />,
-  },
-];
+interface FavoriteCleaner {
+  id: string;
+  customer_id: string;
+  cleaner_id: string;
+  cleaner?: Cleaner;
+}
 
 export default function FavoritesPage() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+  const [favorites, setFavorites] = useState<FavoriteCleaner[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login?redirect=/customer-dashboard/favorites");
+    }
+  }, [authLoading, user, router]);
+
+  // Fetch favorite cleaners from Supabase
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchFavorites = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const supabase = createClient();
+
+        // First get favorite_cleaners (without ordering by created_at)
+        const { data: favData, error: favError } = await supabase
+          .from("favorite_cleaners")
+          .select("*")
+          .eq("customer_id", user.id);
+
+        if (favError) {
+          console.error("Favorite cleaners error:", favError);
+          throw favError;
+        }
+
+        // If no favorites, show empty state
+        if (!favData || favData.length === 0) {
+          setFavorites([]);
+          setLoading(false);
+          return;
+        }
+
+        // Then get cleaner details for each favorite
+        const cleanerIds = favData.map((fav) => fav.cleaner_id);
+
+        const { data: cleanersData, error: cleanersError } = await supabase
+          .from("users")
+          .select("id, name, email")
+          .in("id", cleanerIds);
+
+        if (cleanersError) {
+          console.error("Cleaners data error:", cleanersError);
+          throw cleanersError;
+        }
+
+        // Combine the data
+        const combined = favData.map((fav) => ({
+          ...fav,
+          cleaner: cleanersData?.find((c) => c.id === fav.cleaner_id),
+        }));
+
+        setFavorites(combined);
+      } catch (err: any) {
+        console.error("Error fetching favorite cleaners:", err);
+        // Don't show error for empty favorites
+        if (err.message && !err.message.includes("created_at")) {
+          setError(err.message || "Failed to load favorite cleaners");
+        }
+        setFavorites([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
+  }, [user]);
+
+  // Remove from favorites
+  const handleRemoveFavorite = async (favoriteId: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to remove this cleaner from favorites?",
+    );
+    if (!confirmed) return;
+
+    try {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("favorite_cleaners")
+        .delete()
+        .eq("id", favoriteId);
+
+      if (error) throw error;
+
+      // Update local state
+      setFavorites((prev) => prev.filter((fav) => fav.id !== favoriteId));
+    } catch (err: any) {
+      console.error("Error removing favorite:", err);
+      alert("Failed to remove favorite. Please try again.");
+    }
+  };
+
+  // Get cleaner's initials for avatar
+  const getInitials = (name: string) => {
+    if (!name) return "C";
+    const parts = name.split(" ");
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  // Loading state
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-[#020817] text-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-10 h-10 animate-spin text-[#4A86F7] mx-auto mb-3" />
+          <p className="text-gray-400 text-sm">Loading favorite cleaners...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#020817] text-white px-4 md:px-8 py-6">
-
       {/* Heading */}
       <div className="flex items-center gap-4 mb-10">
-
         <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-400">
           <Heart size={28} fill="currentColor" />
         </div>
 
         <div>
-          <h1 className="text-4xl md:text-5xl font-bold">
-            Favorite Services
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold">Favorite Cleaners</h1>
 
           <p className="text-gray-400 mt-2">
-            Your saved cleaning services.
+            {favorites.length > 0
+              ? `${favorites.length} favorite cleaner${favorites.length === 1 ? "" : "s"}`
+              : "Your trusted cleaning professionals."}
           </p>
         </div>
       </div>
 
-      {/* Empty State */}
-      {favorites.length === 0 ? (
-        <div className="rounded-[32px] border border-white/10 bg-[#071224] p-10 text-center">
+      {/* Error State */}
+      {error && (
+        <div className="rounded-[22px] border border-red-500/30 bg-red-500/10 p-6 text-center mb-6">
+          <p className="text-red-400 font-bold mb-2">
+            Failed to load favorite cleaners
+          </p>
+          <p className="text-gray-400 text-sm">{error}</p>
+        </div>
+      )}
 
+      {/* Empty State */}
+      {!error && favorites.length === 0 ? (
+        <div className="rounded-[32px] border border-white/10 bg-[#071224] p-10 text-center">
           <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6 text-gray-500">
             <Heart size={40} />
           </div>
 
-          <h3 className="text-3xl font-bold mb-4">
-            No Favorites Yet
-          </h3>
+          <h3 className="text-3xl font-bold mb-4">No Favorite Cleaners Yet</h3>
 
           <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-            Save your favorite services to quickly book them later.
+            After a cleaner completes your booking, you can add them to your
+            favorites for quick rebooking.
           </p>
 
           <Link
-            href="/services"
+            href="/booking"
             className="inline-flex items-center justify-center rounded-2xl bg-[#4A86F7] px-8 py-4 font-bold hover:bg-[#2563EB] transition"
           >
-            Browse Services
+            Book a Service
           </Link>
         </div>
       ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
+          {favorites.map((favorite) => {
+            const cleaner = favorite.cleaner;
+            if (!cleaner) return null;
 
-       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
+            return (
+              <div
+                key={favorite.id}
+                className="overflow-hidden rounded-[20px] border border-white/10 bg-[#071224] hover:border-[#4A86F7]/30 transition-all duration-300"
+              >
+                <div className="p-5">
+                  {/* Top - Avatar & Heart */}
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    {/* Avatar */}
+                    <div className="flex items-center gap-3">
+                      <div className="w-14 h-14 rounded-full bg-[#4A86F7] flex items-center justify-center text-white font-bold text-lg">
+                        {getInitials(cleaner.name)}
+                      </div>
 
-          {favorites.map((service) => (
-          <div
-  key={service.id}
-  className="overflow-hidden rounded-[20px] border border-white/10 bg-[#071224] hover:border-[#4A86F7]/30 transition-all duration-300"
->
+                      <div>
+                        <h3 className="text-lg font-bold leading-tight">
+                          {cleaner.name}
+                        </h3>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          Professional Cleaner
+                        </p>
+                      </div>
+                    </div>
 
-  <div className="p-4">
+                    {/* Heart - Remove from favorites */}
+                    <button
+                      onClick={() => handleRemoveFavorite(favorite.id)}
+                      className="text-red-400 hover:scale-110 transition flex-shrink-0"
+                      title="Remove from favorites"
+                    >
+                      <Heart size={20} fill="currentColor" />
+                    </button>
+                  </div>
 
-    {/* Top */}
-    <div className="flex items-start justify-between gap-3 mb-4">
+                  {/* Verified Badge */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4A86F7]/10 px-3 py-1 text-[10px] font-semibold text-[#4A86F7]">
+                      <Star size={11} fill="currentColor" />
+                      VERIFIED
+                    </span>
+                  </div>
 
-      {/* Icon */}
-      <div className="w-12 h-12 rounded-xl bg-[#0B1B34] flex items-center justify-center text-[#4A86F7] flex-shrink-0">
-        {service.icon}
-      </div>
+                  {/* Contact Info */}
+                  <div className="space-y-2 mb-5">
+                    {cleaner.email && (
+                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <Mail size={14} className="text-[#4A86F7]" />
+                        <span className="truncate">{cleaner.email}</span>
+                      </div>
+                    )}
+                  </div>
 
-      {/* Heart */}
-      <button className="text-red-400 hover:scale-110 transition">
-        <Heart size={18} fill="currentColor" />
-      </button>
-    </div>
-
-    {/* Verified */}
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#4A86F7]/10 px-3 py-1 text-[10px] font-semibold text-[#4A86F7] mb-4">
-      <Star size={11} fill="currentColor" />
-
-      VERIFIED
-    </span>
-
-    {/* Title */}
-    <h3 className="text-lg font-bold mb-2 leading-tight">
-      {service.title}
-    </h3>
-
-    {/* Description */}
-    <p className="text-gray-400 leading-5 mb-5 text-xs">
-      {service.description}
-    </p>
-
-    {/* Bottom */}
-    <div className="flex items-end justify-between gap-3">
-
-      {/* Price */}
-      <div>
-        <h4 className="text-xl font-bold text-[#4A86F7]">
-          {service.price}
-        </h4>
-
-        <p className="text-[11px] text-gray-500 mt-0.5">
-          {service.type}
-        </p>
-      </div>
-
-      {/* Button */}
-      <Link
-        href="/booking"
-        className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#4A86F7] px-4 py-2 text-xs font-semibold hover:bg-[#2563EB] transition"
-      >
-        Book
-
-        <ArrowRight size={14} />
-      </Link>
-    </div>
-  </div>
-</div>
-          ))}
+                  {/* Action Button */}
+                  <Link
+                    href="/booking"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#4A86F7] px-4 py-2.5 text-sm font-semibold hover:bg-[#2563EB] transition"
+                  >
+                    <UserCheck size={16} />
+                    Book with {cleaner.name.split(" ")[0]}
+                    <ArrowRight size={14} />
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
