@@ -43,6 +43,14 @@ interface Service {
 }
 
 const BookingPage = () => {
+  const serviceImageMap: Record<string, string> = {
+    residential: "/residential.webp",
+    move_in_out: "/seasonal.webp",
+    commercial: "/commercial-cleaning.webp",
+    vehicle: "/vehicle.webp",
+    specialty: "/work.webp",
+  };
+
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<string>("All");
@@ -321,9 +329,12 @@ const BookingPage = () => {
                     {/* Image Container */}
                     <div className="relative h-64 w-full">
                       <Image
-                        src="/p4.webp"
+                        src={
+                          serviceImageMap[service.service_type] || "/p4.webp"
+                        }
                         alt={service.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover"
                       />
                       {/* Badges */}
