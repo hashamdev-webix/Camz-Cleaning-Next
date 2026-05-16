@@ -170,11 +170,24 @@ export default function SavedAddressesPage() {
           </div>
 
           <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 rounded-xl bg-[#4A86F7] px-4 py-2.5 text-sm font-semibold hover:bg-[#2563EB] transition"
+            onClick={() => {
+              setShowForm(!showForm);
+              setSuccess(null);
+              setError(null);
+            }}
+            className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+              showForm
+                ? "bg-white/10 text-white hover:bg-white/20"
+                : "bg-[#4A86F7] hover:bg-[#2563EB]"
+            }`}
           >
-            <Plus size={18} />
-            Add New
+            {showForm ? (
+              <>✕ Close</>
+            ) : (
+              <>
+                <Plus size={18} /> Add New
+              </>
+            )}
           </button>
         </div>
 

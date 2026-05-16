@@ -84,23 +84,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-
-      if (session?.user) {
-        // Fetch user data but don't block anything if it fails
-        try {
-          const userData = await getCurrentUser();
-          setUserData(userData);
-        } catch (error) {
-          console.error("Failed to fetch user data on init:", error);
+    supabase.auth
+      .getSession()
+      .then(async ({ data: { session }, error }) => {
+        // If session is invalid/expired, sign out cleanly
+        if (error) {
+          console.error("Session error:", error.message);
+          await supabase.auth.signOut();
+          setSession(null);
+          setUser(null);
           setUserData(null);
+          setLoading(false);
+          return;
         }
-      }
 
-      setLoading(false);
-    });
+        setSession(session);
+        setUser(session?.user ?? null);
+
+        if (session?.user) {
+          // Fetch user data but don't block anything if it fails
+          try {
+            const userData = await getCurrentUser();
+            setUserData(userData);
+          } catch (error) {
+            console.error("Failed to fetch user data on init:", error);
+            setUserData(null);
+          }
+        }
+
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Auth init failed:", err);
+        setLoading(false);
+      });
 
     // Listen for auth changes
     const {
