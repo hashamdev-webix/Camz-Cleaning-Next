@@ -278,7 +278,8 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         break;
       }
 
-      case "specialty": {
+      case "specialty":
+      case "carpet_sofa": {
         const rates = (config.rates as Record<string, number>) || {};
         const item = formData.item_type;
         const qty = Number(formData.quantity) || 1;
@@ -363,7 +364,8 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         setFormData({ vehicle_type: firstVehicle, package: firstPackage });
         break;
       }
-      case "specialty": {
+      case "specialty":
+      case "carpet_sofa": {
         const firstItem = cfg.rates ? Object.keys(cfg.rates)[0] : "";
         setFormData({ item_type: firstItem, quantity: 1, heavy: false });
         break;
@@ -605,7 +607,8 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         );
       }
 
-      case "specialty": {
+      case "specialty":
+      case "carpet_sofa": {
         const itemTypes = config.rates ? Object.keys(config.rates) : [];
         return (
           <>
