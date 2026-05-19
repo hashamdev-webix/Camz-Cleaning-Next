@@ -5,16 +5,15 @@ const VehicleCTA = () => {
   return (
     <section className="relative w-full py-16 px-6 overflow-hidden">
       {/* Background Image with Dark Blue Overlay */}
-      <div 
+      <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/p4.webp')" }} // Ensure p3.webp is in your public folder
       >
-        <div className="absolute inset-0 bg-[#0B4E9B]/90 mix-blend-multiply"></div>
+        <div className="absolute inset-0 bg-[#316092]/70 mix-blend-multiply"></div>
       </div>
 
       {/* Content Container */}
       <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
-        
         {/* Top Badge */}
         <div className="flex justify-center">
           <span className="border-2 border-[#00CFE8] text-white text-[10px] md:text-xs font-bold px-5 py-1.5 rounded-full uppercase tracking-widest bg-transparent">
@@ -29,14 +28,18 @@ const VehicleCTA = () => {
 
         {/* Subtext */}
         <p className="text-white text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-        <span className="text-white"> Book your vehicle cleaning service today and restore shine, freshness, and comfort with our professional interior and exterior detailing.</span>
-         
+          <span className="text-white">
+            {" "}
+            Book your vehicle cleaning service today and restore shine,
+            freshness, and comfort with our professional interior and exterior
+            detailing.
+          </span>
         </p>
 
         {/* Action Button */}
         <div className="pt-4">
-          <Link 
-            href="/contact" 
+          <Link
+            href="/contact"
             className="inline-block border-2 border-white/60 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-[#0B4E9B] transition-all duration-300 shadow-xl"
           >
             Get Free Quote

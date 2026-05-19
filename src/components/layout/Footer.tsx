@@ -39,7 +39,11 @@ const Footer = () => {
       <div className="container-custom mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
         {/* Column 1: Logo & Info */}
         <div className="space-y-6">
-          <img src="/wp-admin/uploads/footer-logo.webp" alt="Camz Cleaning" className="h-auto w-auto " />
+          <img
+            src="/wp-admin/uploads/footer-logo.webp"
+            alt="Camz Cleaning"
+            className="h-auto w-auto "
+          />
           <p className="text-white text-sm leading-relaxed">
             <span className="text-white text-sm">
               {" "}
@@ -124,66 +128,61 @@ const Footer = () => {
         {/* Column 4: Contact Info */}
         <div>
           <h3 className="text-xl font-extrabold mb-6">Contact Info</h3>
-        <ul className="space-y-5">
+          <ul className="space-y-5">
+            {/* Email */}
+            <li>
+              <a
+                href="mailto:info@camzcleaning.com"
+                className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
+              >
+                <div className="bg-white/10 p-2 rounded-md">
+                  <IoMailOutline size={20} />
+                </div>
+                info@camzcleaning.com
+              </a>
+            </li>
 
-  {/* Email */}
-  <li>
-    <a
-      href="mailto:info@camzcleaning.com"
-      className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
-    >
-      <div className="bg-white/10 p-2 rounded-md">
-        <IoMailOutline size={20} />
-      </div>
+            {/* Phone */}
+            <li>
+              <a
+                href="tel:+15878371977"
+                className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
+              >
+                <div className="bg-white/10 p-2 rounded-md">
+                  <IoCallOutline size={20} />
+                </div>
+                +1 587-837-1977
+              </a>
+            </li>
 
-      info@camzcleaning.com
-    </a>
-  </li>
+            {/* Time */}
+            <li>
+              <a
+                href="#"
+                className="flex items-center gap-3 text-base cursor-default"
+              >
+                <div className="bg-white/10 p-2 rounded-md">
+                  <IoTimeOutline size={20} />
+                </div>
+                9:00 AM – 5:00 PM
+              </a>
+            </li>
 
-  {/* Phone */}
-  <li>
-    <a
-      href="tel:+15878371977"
-      className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
-    >
-      <div className="bg-white/10 p-2 rounded-md">
-        <IoCallOutline size={20} />
-      </div>
-
-      +1 587-837-1977
-    </a>
-  </li>
-
-  {/* Time */}
-  <li>
-    <a
-      href="#"
-      className="flex items-center gap-3 text-base cursor-default"
-    >
-      <div className="bg-white/10 p-2 rounded-md">
-        <IoTimeOutline size={20} />
-      </div>
-
-      9:00 AM – 5:00 PM
-    </a>
-  </li>
-
-  {/* Location */}
-  <li>
-    <a
-      href="https://maps.google.com/?q=Calgary,AB,Canada"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
-    >
-      <div className="bg-white/10 p-2 rounded-md">
-        <IoLocationOutline size={20} />
-      </div>
-
-      Calgary, AB, Canada
-    </a>
-  </li>
-</ul>
+            {/* Location */}
+            <li>
+              <a
+                href="https://maps.google.com/?q=Calgary,AB,Canada"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
+              >
+                <div className="bg-white/10 p-2 rounded-md">
+                  <IoLocationOutline size={20} />
+                </div>
+                Calgary, AB, Canada
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
 

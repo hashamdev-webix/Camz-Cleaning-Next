@@ -1,6 +1,6 @@
 "use client";
-import Image from 'next/image';
-import { motion, Variants } from 'framer-motion';
+import Image from "next/image";
+import { motion, Variants } from "framer-motion";
 
 const AboutSection = () => {
   // Animation variants for the container (staggering children)
@@ -27,9 +27,8 @@ const AboutSection = () => {
   return (
     <section className="bg-[#EFFAFC] py-16 px-6 md:px-12 lg:px-24 overflow-hidden">
       <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        
         {/* Left Side: Image Collage */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -38,9 +37,9 @@ const AboutSection = () => {
         >
           {/* Main Large Image */}
           <div className="relative w-2/3 aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
-            <Image 
-              src="/wp-admin/uploads/clean wadrobe.webp" 
-              alt="Clean Kitchen" 
+            <Image
+              src="/wp-admin/uploads/clean wadrobe.webp"
+              alt="Clean Kitchen"
               fill
               className="object-cover"
             />
@@ -49,7 +48,7 @@ const AboutSection = () => {
           {/* Right Column of Collage */}
           <div className="w-1/3 flex flex-col gap-4">
             {/* Experience Circle with Pop Animation */}
-            <motion.div 
+            <motion.div
               initial={{ scale: 0 }}
               whileInView={{ scale: 1 }}
               viewport={{ once: true }}
@@ -58,15 +57,17 @@ const AboutSection = () => {
             >
               <span className="text-3xl md:text-5xl font-bold">6+</span>
               <span className="text-[10px] md:text-sm uppercase font-semibold leading-tight">
-                Years of<br/>Experiences
+                Years of
+                <br />
+                Experiences
               </span>
             </motion.div>
-            
+
             {/* Smaller Secondary Image */}
             <div className="relative aspect-[3/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
-              <Image 
-                src="/wp-admin/uploads/cleaned kitchen.webp" 
-                alt="Cleaning detail" 
+              <Image
+                src="/wp-admin/uploads/cleaned kitchen.webp"
+                alt="Cleaning detail"
                 fill
                 className="object-cover"
               />
@@ -75,104 +76,109 @@ const AboutSection = () => {
         </motion.div>
 
         {/* Right Side: Content */}
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           className="space-y-6"
         >
-          <motion.span variants={itemVariants} className="inline-block bg-[#00B7EB] text-white px-4 py-1 rounded-full text-sm font-semibold">
+          <motion.span
+            variants={itemVariants}
+            className="inline-block bg-[#00B7EB] text-white px-4 py-1 rounded-full text-sm font-semibold"
+          >
             About Us
           </motion.span>
-          
-          <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-[#004A8C] leading-tight">
-            Reliable & Affordable  <br /> Cleaning Experts
+
+          <motion.h2
+            variants={itemVariants}
+            className="text-4xl md:text-5xl font-bold text-[#004A8C] leading-tight"
+          >
+            Reliable & Affordable <br /> Cleaning Experts
           </motion.h2>
-          
-          <motion.p variants={itemVariants} className="text-gray-600 leading-relaxed">
-           Focused on professional cleaning excellence, Camz Cleaning provides trusted services designed to keep your space spotless and well-maintained.
+
+          <motion.p
+            variants={itemVariants}
+            className="text-gray-600 leading-relaxed"
+          >
+            Focused on professional cleaning excellence, Camz Cleaning provides
+            trusted services designed to keep your space spotless and
+            well-maintained.
           </motion.p>
 
           {/* Feature List */}
-        <div className="space-y-8">
+          <div className="space-y-8">
+            {/* Feature 1 */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left"
+            >
+              {/* Icon */}
+              <div className="flex-shrink-0">
+                <div className="w-28 h-28 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
+                  {/* Inner Circle */}
+                  <div className="w-22 h-22 rounded-full bg-[#D8E2E8] flex items-center justify-center">
+                    <Image
+                      src="/home.png"
+                      alt="Home"
+                      width={64}
+                      height={64}
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
 
-  {/* Feature 1 */}
-  <motion.div
-    variants={itemVariants}
-    className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left"
-  >
-    {/* Icon */}
-    <div className="flex-shrink-0">
-      <div className="w-32 h-32 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
-        
-        {/* Inner Circle */}
-        <div className="w-24 h-24 rounded-full bg-[#D8E2E8] flex items-center justify-center">
-          <Image
-            src="/home.png"
-            alt="Home"
-            width={64}
-            height={64}
-            className="object-contain"
-          />
-        </div>
-      </div>
-    </div>
+              {/* Content */}
+              <div>
+                <h4 className="text-2xl font-bold text-[#004A8C]">
+                  Trusted Home Care
+                </h4>
 
-    {/* Content */}
-    <div>
-      <h4 className="text-2xl font-bold text-[#004A8C]">
-        Trusted Home Care
-      </h4>
+                <p className="mt-3 text-gray-500 leading-7">
+                  Camz Cleaning provides dependable residential cleaning that
+                  keeps your home fresh, hygienic, and comfortable using safe
+                  and effective methods.
+                </p>
+              </div>
+            </motion.div>
 
-      <p className="mt-3 text-gray-500 leading-7">
-        Camz Cleaning provides dependable residential cleaning that keeps
-        your home fresh, hygienic, and comfortable using safe and effective
-        methods.
-      </p>
-    </div>
-  </motion.div>
+            {/* Feature 2 */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left"
+            >
+              {/* Icon */}
+              <div className="flex-shrink-0">
+                <div className="w-28 h-28 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
+                  {/* Inner Circle */}
+                  <div className="w-22 h-22 rounded-full bg-[#D8E2E8] flex items-center justify-center">
+                    <Image
+                      src="/about-icon-2.webp"
+                      alt="Office"
+                      width={64}
+                      height={64}
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
 
-  {/* Feature 2 */}
-  <motion.div
-    variants={itemVariants}
-    className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left"
-  >
-    {/* Icon */}
-    <div className="flex-shrink-0">
-      <div className="w-32 h-32 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
+              {/* Content */}
+              <div>
+                <h4 className="text-2xl font-bold text-[#004A8C]">
+                  Workplace Cleaning Experts
+                </h4>
 
-        {/* Inner Circle */}
-        <div className="w-24 h-24 rounded-full bg-[#D8E2E8] flex items-center justify-center">
-          <Image
-            src="/about-icon-2.webp"
-            alt="Office"
-            width={64}
-            height={64}
-            className="object-contain"
-          />
-        </div>
-      </div>
-    </div>
-
-    {/* Content */}
-    <div>
-      <h4 className="text-2xl font-bold text-[#004A8C]">
-        Workplace Cleaning Experts
-      </h4>
-
-      <p className="mt-3 text-gray-500 leading-7">
-        From small offices to large workplaces, Camz Cleaning ensures
-        spotless, organized, and productive environments with reliable and
-        affordable solutions.
-      </p>
-    </div>
-  </motion.div>
-</div>
-
-          
+                <p className="mt-3 text-gray-500 leading-7">
+                  From small offices to large workplaces, Camz Cleaning ensures
+                  spotless, organized, and productive environments with reliable
+                  and affordable solutions.
+                </p>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
-
       </div>
     </section>
   );

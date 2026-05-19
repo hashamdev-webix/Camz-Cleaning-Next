@@ -1,96 +1,94 @@
 import React from "react";
-import { 
-  IoCallOutline, 
-  IoMailOutline, 
-  IoLocationOutline, 
-  IoChevronDown 
+import {
+  IoCallOutline,
+  IoMailOutline,
+  IoLocationOutline,
+  IoChevronDown,
 } from "react-icons/io5";
 
 const ContactSection = () => {
   return (
     <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#EFFAFC]">
       <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-        
         {/* Left Side: Contact Info */}
         <div className="space-y-8">
           <div className="space-y-4">
             <span className="bg-[#00CFE8] text-white text-[10px] md:text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">
               Get In Touch
             </span>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#0B4E9B] leading-tight">
+            <h2 className="text-4xl md:text-5xl mt-4 font-extrabold text-[#0B4E9B] leading-tight">
               Contact Camz Cleaning <br /> Today
             </h2>
             <p className="text-gray-600 leading-relaxed max-w-lg">
-              Contact Camz Cleaning today to schedule reliable, professional 
-              cleaning services tailored to your home, business, vehicle, or 
+              Contact Camz Cleaning today to schedule reliable, professional
+              cleaning services tailored to your home, business, vehicle, or
               seasonal property needs.
             </p>
           </div>
 
-         <div className="space-y-6">
+          <div className="space-y-6">
+            {/* Phone */}
+            <a
+              href="tel:+15878371977"
+              className="flex items-center gap-5 group"
+            >
+              <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
+                <IoCallOutline size={28} />
+              </div>
 
-  {/* Phone */}
-  <a
-    href="tel:+15878371977"
-    className="flex items-center gap-5 group"
-  >
-    <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
-      <IoCallOutline size={24} />
-    </div>
+              <div>
+                <h4 className="text-xl font-extrabold text-[#0B4E9B]">
+                  Phone Number:
+                </h4>
 
-    <div>
-      <h4 className="text-xl font-extrabold text-[#0B4E9B]">
-        Phone Number:
-      </h4>
+                <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
+                  +1 587-837-1977
+                </p>
+              </div>
+            </a>
 
-      <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
-        +1 587-837-1977
-      </p>
-    </div>
-  </a>
+            {/* Email */}
+            <a
+              href="mailto:info@camzcleaning.com"
+              className="flex items-center gap-5 group"
+            >
+              <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
+                <IoMailOutline size={28} />
+              </div>
 
-  {/* Email */}
-  <a
-    href="mailto:info@camzcleaning.com"
-    className="flex items-center gap-5 group"
-  >
-    <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
-      <IoMailOutline size={24} />
-    </div>
+              <div>
+                <h4 className="text-xl font-extrabold text-[#0B4E9B]">
+                  Email:
+                </h4>
 
-    <div>
-      <h4 className="text-xl font-extrabold text-[#0B4E9B]">
-        Email:
-      </h4>
+                <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
+                  info@camzcleaning.com
+                </p>
+              </div>
+            </a>
 
-      <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
-        info@camzcleaning.com
-      </p>
-    </div>
-  </a>
+            {/* Location */}
+            <a
+              href="https://maps.google.com/?q=Calgary,AB,Canada"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-5 group"
+            >
+              <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
+                <IoLocationOutline size={28} />
+              </div>
 
-  {/* Location */}
-  <a
-    href="https://maps.google.com/?q=Calgary,AB,Canada"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="flex items-center gap-5 group"
-  >
-    <div className="bg-[#0B4E9B] p-4 rounded-full text-white shadow-lg shadow-blue-200 transition group-hover:bg-[#00B7EB]">
-      <IoLocationOutline size={24} />
-    </div>
+              <div>
+                <h4 className="text-xl font-extrabold text-[#0B4E9B]">
+                  Location:
+                </h4>
 
-    <div>
-      <h4 className="text-xl font-extrabold text-[#0B4E9B]">
-        Location:
-      </h4>
-
-      <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
-        Calgary, AB, Canada
-      </p>
-    </div>
-  </a>
-</div>
+                <p className="text-gray-600 font-medium group-hover:text-[#00B7EB] transition">
+                  Calgary, AB, Canada
+                </p>
+              </div>
+            </a>
+          </div>
         </div>
 
         {/* Right Side: Quote Form */}
@@ -98,14 +96,14 @@ const ContactSection = () => {
           <h3 className="text-2xl md:text-3xl font-bold text-center mb-8 leading-snug">
             Complete the form below to receive your free cleaning quote.
           </h3>
-          
+
           <form className="space-y-5 text-left">
             {/* Name */}
             <div className="space-y-2">
               <label className="text-sm font-bold ml-1">Name</label>
-              <input 
-                type="text" 
-                placeholder="Full Name" 
+              <input
+                type="text"
+                placeholder="Full Name"
                 className="w-full p-3 bg-white rounded-xl border-none outline-none text-gray-700 placeholder:text-gray-500"
               />
             </div>
@@ -114,17 +112,19 @@ const ContactSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-bold ml-1">Email</label>
-                <input 
-                  type="email" 
-                  placeholder="Email Address" 
+                <input
+                  type="email"
+                  placeholder="Email Address"
                   className="w-full p-3 bg-white rounded-xl border-none outline-none text-gray-700 placeholder:text-gray-500"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-bold ml-1">Telephone/Mobile</label>
-                <input 
-                  type="tel" 
-                  placeholder="Phone Number" 
+                <label className="text-sm font-bold ml-1">
+                  Telephone/Mobile
+                </label>
+                <input
+                  type="tel"
+                  placeholder="Phone Number"
                   className="w-full p-3 bg-white rounded-xl border-none outline-none text-gray-700 placeholder:text-gray-500"
                 />
               </div>
@@ -134,13 +134,19 @@ const ContactSection = () => {
             <div className="space-y-2">
               <label className="text-sm font-bold ml-1">Select</label>
               <div className="relative">
-                <select 
+                <select
                   className="w-full p-3 rounded-xl border-none outline-none text-gray-700 appearance-none bg-white cursor-pointer"
                   defaultValue="Seasonal Property"
                 >
-                  <option value="" disabled>Select</option>
-                  <option value="Residential Cleaning">Residential Cleaning</option>
-                  <option value="Commercial Cleaning">Commercial Cleaning</option>
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  <option value="Residential Cleaning">
+                    Residential Cleaning
+                  </option>
+                  <option value="Commercial Cleaning">
+                    Commercial Cleaning
+                  </option>
                   <option value="Vehicle Cleaning">Vehicle Cleaning</option>
                   <option value="Seasonal Property">Seasonal Property</option>
                 </select>
@@ -153,17 +159,16 @@ const ContactSection = () => {
             {/* Message */}
             <div className="space-y-2">
               <label className="text-sm font-bold ml-1">Message</label>
-              <textarea 
-           
-                placeholder="Message" 
+              <textarea
+                placeholder="Message"
                 className="w-full p-3 bg-white rounded-xl border-none outline-none text-gray-700 placeholder:text-gray-500 resize-none"
               ></textarea>
             </div>
 
             {/* Submit Button */}
             <div className="pt-2">
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="border-2 border-white/60 hover:bg-[#02C0E6] hover:text-white cursor-pointer transition-all px-8 py-3 rounded-xl font-bold tracking-wide"
               >
                 Request a Quote
@@ -171,7 +176,6 @@ const ContactSection = () => {
             </div>
           </form>
         </div>
-
       </div>
     </section>
   );

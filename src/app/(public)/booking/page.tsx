@@ -221,7 +221,7 @@ const BookingPage = () => {
         title={<>Book Your Cleaning Service</>}
       />
 
-      <main className="min-h-screen bg-[#F8FAFC] py-6 px-6 md:px-12 lg:px-24">
+      <main className="min-h-screen bg-[#F8FAFC] py-6 pb-32 px-6 md:px-12 lg:px-24">
         <div className="container-custom mx-auto">
           {/* Header */}
           <div className="text-center">
@@ -341,7 +341,7 @@ const BookingPage = () => {
                       <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-sm font-bold text-gray-800 shadow-sm">
                         {service.price}
                       </div>
-                      <div className="absolute top-4 right-4 bg-[#004A8C]/90 backdrop-blur px-3 py-1 rounded-full text-sm font-bold text-white flex items-center gap-1 shadow-sm">
+                      <div className="absolute top-4 right-4 bg-[#0B4E9B]/90 backdrop-blur px-3 py-1 rounded-full text-sm font-bold text-white flex items-center gap-1 shadow-sm">
                         <Clock size={14} /> {getServiceDuration(service)}
                       </div>
                     </div>
@@ -367,7 +367,7 @@ const BookingPage = () => {
                             >
                               <CheckCircle2
                                 size={18}
-                                className="text-[#00B7EB]"
+                                className="text-[#1F5BA0]"
                               />
                               {feature}
                             </li>
@@ -377,7 +377,7 @@ const BookingPage = () => {
 
                       <button
                         onClick={() => handleBookNow(service)}
-                        className="mt-auto flex items-center gap-2 text-[#00B7EB] font-bold hover:text-[#004A8C] transition-colors group cursor-pointer"
+                        className="mt-auto flex items-center gap-2 text-[#1F5BA0] font-bold hover:text-[#004A8C] transition-colors group cursor-pointer"
                       >
                         Book now{" "}
                         <ArrowRight

@@ -5,7 +5,7 @@
   --foreground: #171717;
 
   /* Custom Colors */
-  --primary: #02C0E6;
+  --primary: #02c0e6;
   --btn-color: #fff0;
 
   /* Font */
@@ -38,7 +38,7 @@ h1 {
 }
 
 h2 {
-  @apply text-3xl  font-bold;
+  @apply text-[42px]  font-bold;
 }
 
 h3 {
@@ -46,7 +46,7 @@ h3 {
 }
 
 p {
-  @apply text-base  leading-relaxed ;
+  @apply text-base  leading-relaxed;
 }
 /* Base button (optional for reuse in JSX, not inside @apply) */
 .btn {

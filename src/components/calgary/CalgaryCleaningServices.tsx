@@ -1,7 +1,7 @@
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
 const CalgaryCleaningServices = () => {
@@ -14,7 +14,6 @@ const CalgaryCleaningServices = () => {
   return (
     <section className="bg-white py-20 px-6 md:px-12 lg:px-24">
       <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        
         {/* Left Side: Content */}
         <div className="space-y-8">
           {/* Badge */}
@@ -28,35 +27,51 @@ const CalgaryCleaningServices = () => {
           </h2>
 
           {/* Description Paragraphs */}
-          <div className="space-y-5 text-gray-700 leading-relaxed font-medium">
+          <div className="space-y-3 text-gray-700 leading-relaxed font-medium">
             <p>
-              Looking for top-rated home cleaning services in Calgary? Our professional team delivers dependable, high-quality cleaning tailored to your needs, with a strong commitment to consistency, detail, and customer satisfaction.
+              Looking for top-rated home cleaning services in Calgary? Our
+              professional team delivers dependable, high-quality cleaning
+              tailored to your needs, with a strong commitment to consistency,
+              detail, and customer satisfaction.
             </p>
             <p>
-              We provide trusted residential and commercial cleaning services in Calgary for homes, apartments, condos, offices, and commercial spaces. From routine house cleaning and deep cleaning to dependable office and commercial cleaning, we help keep your property clean, healthy, and welcoming. Our services are customized to your schedule and cleaning needs, delivering reliable results with the quality and consistency you expect.
+              We provide trusted residential and commercial cleaning services in
+              Calgary for homes, apartments, condos, offices, and commercial
+              spaces. From routine house cleaning and deep cleaning to
+              dependable office and commercial cleaning, we help keep your
+              property clean, healthy, and welcoming. Our services are
+              customized to your schedule and cleaning needs, delivering
+              reliable results with the quality and consistency you expect.
             </p>
           </div>
 
           {/* Checklist */}
-          <ul className="space-y-3 pt-2">
+          <ul className="space-y-1 pt-2">
             {checklistItems.map((item, index) => (
-              <li key={index} className="flex items-center gap-3.5  text-gray-700 font-semibold">
+              <li
+                key={index}
+                className="flex items-center gap-3.5  text-gray-700 font-semibold"
+              >
                 {/* <IoCheckmarkCircleOutline size={22} className="text-[#004A8C] flex-shrink-0" /> */}
-                <span>{index+1}</span>
+                <span>{index + 1}</span>
                 <span>{item}</span>
               </li>
             ))}
           </ul>
 
           {/* Subtitle / Promise */}
-          <h3 className="text-2xl md:text-3xl font-extrabold text-[#004A8C] pt-4">
-            100% Satisfaction Assured
-          </h3>
+          <div className="inline-flex items-center gap-2 bg-[#004A8C] text-white px-5 py-2 rounded-full shadow-md mt-4">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+
+            <span className="text-sm md:text-base font-semibold tracking-wide">
+              100% Satisfaction Assured
+            </span>
+          </div>
 
           {/* Call to Action Button */}
           <div className="pt-2">
-            <Link 
-              href="/contact" 
+            <Link
+              href="/contact"
               className="inline-block bg-gradient-to-r from-[#0091C1] to-[#004A8C] text-white px-10 py-4 rounded-xl font-bold hover:shadow-lg transition-shadow duration-300 active:scale-95"
             >
               Contact Us
@@ -68,19 +83,18 @@ const CalgaryCleaningServices = () => {
         <div className="relative group">
           {/* Decorative Background Element */}
           <div className="absolute -inset-4 bg-gradient-to-r from-[#00CEE6]/10 to-[#004A8C]/10 rounded-3xl blur-2xl group-hover:blur-xl transition-all duration-500" />
-          
+
           {/* Image Container with Border and Radius */}
           <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-[10px] border-white z-10">
             <Image
-              src="/p4.webp" 
+              src="/p4.webp"
               alt="Professional Cleaning in Calgary"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-              priority 
+              priority
             />
           </div>
         </div>
-
       </div>
     </section>
   );

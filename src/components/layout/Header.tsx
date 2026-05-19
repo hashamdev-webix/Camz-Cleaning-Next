@@ -11,11 +11,12 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
-const [areasOpen, setAreasOpen] = useState(false);
+  const [areasOpen, setAreasOpen] = useState(false);
   const { user } = useAuth();
 
   // Dropdown Data
@@ -33,6 +34,7 @@ const [areasOpen, setAreasOpen] = useState(false);
     { name: "CHESTERMERE", href: "/chestermere-cleaning-services" },
   ];
 
+  const router = useRouter();
   return (
     <header className="w-full shadow-sm relative z-50">
       {/* 🔵 TOP BAR */}
@@ -40,21 +42,21 @@ const [areasOpen, setAreasOpen] = useState(false);
         <div className="container-custom mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
           {/* Left */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-center sm:text-left">
-           <a
-  href="mailto:info@camzcleaning.com"
-  className="flex items-center gap-2 text-sm hover:text-[#00B7EB] transition-colors"
->
-  <Mail size={18} />
-  info@camzcleaning.com
-</a>
+            <a
+              href="mailto:info@camzcleaning.com"
+              className="flex items-center gap-2 text-sm hover:text-[#00B7EB] transition-colors"
+            >
+              <Mail size={18} />
+              info@camzcleaning.com
+            </a>
 
-<a
-  href="tel:+15878371977"
-  className="flex items-center gap-2 text-sm hover:text-[#00B7EB] transition-colors"
->
-  <Phone size={18} />
-  +1 587-837-1977
-</a>
+            <a
+              href="tel:+15878371977"
+              className="flex items-center gap-2 text-sm hover:text-[#00B7EB] transition-colors"
+            >
+              <Phone size={18} />
+              +1 587-837-1977
+            </a>
           </div>
 
           {/* Right */}
@@ -104,23 +106,30 @@ const [areasOpen, setAreasOpen] = useState(false);
             </Link>
 
             {/* Services Dropdown */}
-            <div className="relative group cursor-pointer py-2">
-              <div className="flex items-center gap-1 group-hover:text-[#00B7EB] transition-colors">
-                SERVICES <ChevronDown size={16} />
-              </div>
-              <div className="absolute left-0 top-full hidden group-hover:block bg-white shadow-xl border-t-2 border-[#00B7EB] min-w-[250px] py-2">
+
+            <div className="relative group py-2">
+              {/* Services Button */}
+              <button
+                onClick={() => router.push("/services")}
+                className="flex items-center gap-1 cursor-pointer transition-colors group-hover:text-[#00B7EB]"
+              >
+                SERVICES
+                <ChevronDown size={16} />
+              </button>
+
+              {/* Dropdown */}
+              <div className="absolute left-0 top-full hidden min-w-[250px] border-t-2 border-[#00B7EB] bg-white py-2 shadow-xl group-hover:block z-50">
                 {serviceLinks.map((link) => (
                   <Link
                     key={link.name}
                     href={link.href}
-                    className="block px-6 py-3 hover:bg-gray-50 hover:text-[#00B7EB] transition-all border-b border-gray-50 last:border-0"
+                    className="block border-b border-gray-50 px-6 py-3 transition-all hover:bg-gray-50 hover:text-[#00B7EB] last:border-0"
                   >
                     {link.name}
                   </Link>
                 ))}
               </div>
             </div>
-
             {/* Areas Dropdown */}
             <div className="relative group cursor-pointer py-2">
               <div className="flex items-center gap-1 group-hover:text-[#00B7EB] transition-colors">
@@ -179,138 +188,136 @@ const [areasOpen, setAreasOpen] = useState(false);
           </button>
         </div>
 
-      {/* 📱 Mobile Menu */}
-{isOpen && (
-  <div className="md:hidden bg-white border-t text-[#0B4E9B] font-bold max-h-[80vh] overflow-y-auto">
-    
-    <div className="flex flex-col">
-
-      {/* HOME */}
-      <Link
-        href="/"
-        onClick={() => setIsOpen(false)}
-        className="px-6 py-5 border-b"
-      >
-        HOME
-      </Link>
-
-      {/* ABOUT */}
-      <Link
-        href="/about-us"
-        onClick={() => setIsOpen(false)}
-        className="px-6 py-5 border-b"
-      >
-        ABOUT US
-      </Link>
-
-      {/* SERVICES */}
-      <div className="border-b">
-        <button
-          onClick={() => setServicesOpen(!servicesOpen)}
-          className="w-full flex items-center justify-between px-6 py-5"
-        >
-          <span>SERVICES</span>
-
-          <div className="bg-[#0B4E9B] text-white rounded-full p-1">
-            <ChevronDown
-              size={18}
-              className={`transition-transform duration-300 ${
-                servicesOpen ? "rotate-180" : ""
-              }`}
-            />
-          </div>
-        </button>
-
-        {servicesOpen && (
-          <div className="bg-gray-50 flex flex-col">
-            {serviceLinks.map((link) => (
+        {/* 📱 Mobile Menu */}
+        {isOpen && (
+          <div className="md:hidden bg-white border-t text-[#0B4E9B] font-bold max-h-[80vh] overflow-y-auto">
+            <div className="flex flex-col">
+              {/* HOME */}
               <Link
-                key={link.name}
-                href={link.href}
+                href="/"
                 onClick={() => setIsOpen(false)}
-                className="px-10 py-4 text-sm border-t border-gray-200"
+                className="px-6 py-5 border-b"
               >
-                {link.name}
+                HOME
               </Link>
-            ))}
-          </div>
-        )}
-      </div>
 
-      {/* AREAS */}
-      <div className="border-b">
-        <button
-          onClick={() => setAreasOpen(!areasOpen)}
-          className="w-full flex items-center justify-between px-6 py-5"
-        >
-          <span>AREAS</span>
-
-          <div className="bg-[#0B4E9B] text-white rounded-full p-1">
-            <ChevronDown
-              size={18}
-              className={`transition-transform duration-300 ${
-                areasOpen ? "rotate-180" : ""
-              }`}
-            />
-          </div>
-        </button>
-
-        {areasOpen && (
-          <div className="bg-gray-50 flex flex-col">
-            {areaLinks.map((link) => (
+              {/* ABOUT */}
               <Link
-                key={link.name}
-                href={link.href}
+                href="/about-us"
                 onClick={() => setIsOpen(false)}
-                className="px-10 py-4 text-sm border-t border-gray-200"
+                className="px-6 py-5 border-b"
               >
-                {link.name}
+                ABOUT US
               </Link>
-            ))}
+
+              {/* SERVICES */}
+              <div className="border-b">
+                <button
+                  onClick={() => setServicesOpen(!servicesOpen)}
+                  className="w-full flex items-center justify-between px-6 py-5"
+                >
+                  <span>SERVICES</span>
+
+                  <div className="bg-[#0B4E9B] text-white rounded-full p-1">
+                    <ChevronDown
+                      size={18}
+                      className={`transition-transform duration-300 ${
+                        servicesOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+
+                {servicesOpen && (
+                  <div className="bg-gray-50 flex flex-col">
+                    {serviceLinks.map((link) => (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className="px-10 py-4 text-sm border-t border-gray-200"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* AREAS */}
+              <div className="border-b">
+                <button
+                  onClick={() => setAreasOpen(!areasOpen)}
+                  className="w-full flex items-center justify-between px-6 py-5"
+                >
+                  <span>AREAS</span>
+
+                  <div className="bg-[#0B4E9B] text-white rounded-full p-1">
+                    <ChevronDown
+                      size={18}
+                      className={`transition-transform duration-300 ${
+                        areasOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+
+                {areasOpen && (
+                  <div className="bg-gray-50 flex flex-col">
+                    {areaLinks.map((link) => (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className="px-10 py-4 text-sm border-t border-gray-200"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* BOOKING */}
+              <Link
+                href="/booking"
+                onClick={() => setIsOpen(false)}
+                className="px-6 py-5 border-b"
+              >
+                ONLINE BOOKING
+              </Link>
+
+              {/* CONTACT */}
+              <Link
+                href="/contact"
+                onClick={() => setIsOpen(false)}
+                className="px-6 py-5 border-b"
+              >
+                CONTACT US
+              </Link>
+
+              {/* LOGIN BUTTON */}
+              <div className="p-6">
+                {user ? (
+                  <Link
+                    href="/customer-dashboard"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md">
+                      Dashboard
+                    </button>
+                  </Link>
+                ) : (
+                  <Link href="/login" onClick={() => setIsOpen(false)}>
+                    <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md">
+                      Login
+                    </button>
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         )}
-      </div>
-
-      {/* BOOKING */}
-      <Link
-        href="/booking"
-        onClick={() => setIsOpen(false)}
-        className="px-6 py-5 border-b"
-      >
-        ONLINE BOOKING
-      </Link>
-
-      {/* CONTACT */}
-      <Link
-        href="/contact"
-        onClick={() => setIsOpen(false)}
-        className="px-6 py-5 border-b"
-      >
-        CONTACT US
-      </Link>
-
-      {/* LOGIN BUTTON */}
-      <div className="p-6">
-        {user ? (
-          <Link
-            href="/customer-dashboard"
-            onClick={() => setIsOpen(false)}
-          >
-            <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md">
-              Dashboard
-            </button>
-          </Link>
-        ) : (
-          <Link href="/login" onClick={() => setIsOpen(false)}>
-            <button className="bg-[#0B4E9B] text-white w-full py-3 rounded-md">
-              Login
-            </button>
-          </Link>
-        )}
-      </div>
-    </div>
-  </div>
-)}
       </div>
     </header>
   );
