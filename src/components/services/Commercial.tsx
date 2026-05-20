@@ -13,7 +13,7 @@ const Commercial = () => {
   ];
 
   return (
-    <section className="bg-[#EEF5F7] py-20">
+    <section className="bg-[#EEF5F7] max-w-7xl mx-auto py-20">
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           {/* LEFT CONTENT */}
@@ -66,7 +66,7 @@ const Commercial = () => {
 
           {/* RIGHT IMAGE */}
           <div className="relative">
-            <div className="overflow-hidden rounded-2xl h-[350px] md:h-[550px]">
+            <div className="overflow-hidden rounded-2xl h-[350px] md:h-[500px]">
               <Image
                 src="/commercial.webp"
                 alt="Commercial Cleaning"

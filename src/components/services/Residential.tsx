@@ -12,7 +12,7 @@ const Residential = () => {
         {/* Left Side Image */}
         <div className="relative w-full h-[500px] rounded-[28px] overflow-hidden shadow-xl">
           <Image
-            src="/wp-admin/uploads/clean wadrobe.webp"
+            src="/about1.webp"
             alt="Residential Cleaning"
             fill
             className="object-cover"

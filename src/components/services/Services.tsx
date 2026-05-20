@@ -51,7 +51,7 @@ export default function Services() {
       <div className="container-custom">
         {/* Top */}
         <div className="mx-auto mb-14 max-w-4xl text-center">
-          <span className="mb-5 inline-flex rounded-full bg-[#02C0E6] px-5 py-2 text-sm font-semibold text-white">
+          <span className="mb-5 inline-flex rounded-full bg-[#02C0E6] px-5 py-1 text-sm font-semibold text-white">
             Our services
           </span>
 
@@ -71,10 +71,10 @@ export default function Services() {
           {services.map((service, index) => (
             <div
               key={index}
-              className={`p-8 border border-[#0B4E9B] rounded-md shadow-lg flex flex-col h-full max-h-[400px] transition-all duration-300 ${
+              className={`p-8 rounded-md shadow-lg flex flex-col h-full min-w-[300px] max-h-[400px] transition-all duration-300 border  ${
                 service.dark
-                  ? "bg-[#0B4E9B] text-white border-transparent"
-                  : "bg-white text-[#0B4E9B] border border-gray-100"
+                  ? "bg-[#0B4E9B] text-white border-[#0B4E9B]"
+                  : "bg-white text-[#0B4E9B] border-[#0B4E9B]"
               }`}
             >
               {/* Icon */}

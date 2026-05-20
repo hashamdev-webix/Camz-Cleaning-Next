@@ -18,7 +18,7 @@ const Vehicle = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           {/* LEFT IMAGE */}
           <div className="relative order-2 lg:order-1">
-            <div className="overflow-hidden rounded-2xl h-[350px] md:h-[600px]">
+            <div className="overflow-hidden rounded-2xl h-[350px] md:h-[500px]">
               <Image
                 src="/p3.webp"
                 alt="Vehicle Cleaning"
