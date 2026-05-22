@@ -12,7 +12,7 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { Calendar, User, MessageCircle, Search } from "lucide-react";
+import { Calendar, User, MessageCircle, Search, Loader2 } from "lucide-react";
 
 type FAQ = {
   question: string;
@@ -49,12 +49,80 @@ export default function BlogDetailsPage() {
   const [recentPosts, setRecentPosts] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Comment form state
+  const [commentName, setCommentName] = useState("");
+  const [commentEmail, setCommentEmail] = useState("");
+  const [commentText, setCommentText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [commentSuccess, setCommentSuccess] = useState<string | null>(null);
+  const [commentError, setCommentError] = useState<string | null>(null);
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
+  };
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!commentName.trim() || !commentEmail.trim() || !commentText.trim()) {
+      setCommentError("Please fill in all fields");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(commentEmail)) {
+      setCommentError("Please enter a valid email address");
+      return;
+    }
+
+    setSubmitting(true);
+    setCommentError(null);
+    setCommentSuccess(null);
+
+    try {
+      const supabase = createClient();
+
+      const { error: insertErr } = await supabase.from("blog_comments").insert({
+        blog_id: id,
+        name: commentName.trim(),
+        email: commentEmail.trim(),
+        comment: commentText.trim(),
+        status: "pending",
+      });
+
+      if (insertErr) {
+        console.error("Insert error:", insertErr);
+
+        // Check if table doesn't exist
+        if (
+          insertErr.message.includes("does not exist") ||
+          insertErr.message.includes("schema cache")
+        ) {
+          throw new Error(
+            "Comments feature is not yet set up. Please contact the administrator.",
+          );
+        }
+
+        throw insertErr;
+      }
+
+      setCommentSuccess("Comment submitted! It will appear after approval.");
+      setCommentName("");
+      setCommentEmail("");
+      setCommentText("");
+    } catch (err: any) {
+      console.error("Comment submission error:", err);
+      setCommentError(
+        err.message || "Failed to submit comment. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -249,12 +317,27 @@ export default function BlogDetailsPage() {
                 Your email address will not be published.
               </p>
 
-              <form className="mt-8 space-y-6">
+              {commentError && (
+                <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 text-sm">
+                  {commentError}
+                </div>
+              )}
+
+              {commentSuccess && (
+                <div className="mt-4 p-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-600 text-sm">
+                  {commentSuccess}
+                </div>
+              )}
+
+              <form onSubmit={handleCommentSubmit} className="mt-8 space-y-6">
                 <div>
                   <label className="mb-2 block font-medium">Comment</label>
                   <textarea
                     rows={8}
-                    className="w-full rounded-xl border border-gray-300 p-4 outline-none focus:border-[#0B4E9B]"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    disabled={submitting}
+                    className="w-full rounded-xl border border-gray-300 p-4 outline-none focus:border-[#0B4E9B] disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
 
@@ -262,7 +345,10 @@ export default function BlogDetailsPage() {
                   <label className="mb-2 block font-medium">Name</label>
                   <input
                     type="text"
-                    className="w-full rounded-xl border border-gray-300 p-4 outline-none focus:border-[#0B4E9B]"
+                    value={commentName}
+                    onChange={(e) => setCommentName(e.target.value)}
+                    disabled={submitting}
+                    className="w-full rounded-xl border border-gray-300 p-4 outline-none focus:border-[#0B4E9B] disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
 
@@ -270,15 +356,26 @@ export default function BlogDetailsPage() {
                   <label className="mb-2 block font-medium">Email</label>
                   <input
                     type="email"
-                    className="w-full rounded-xl border border-gray-300 p-4 outline-none focus:border-[#0B4E9B]"
+                    value={commentEmail}
+                    onChange={(e) => setCommentEmail(e.target.value)}
+                    disabled={submitting}
+                    className="w-full rounded-xl border border-gray-300 p-4 outline-none focus:border-[#0B4E9B] disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="rounded-xl bg-[#0B4E9B] px-8 py-4 font-semibold text-white transition hover:bg-[#00B7EB]"
+                  disabled={submitting}
+                  className="rounded-xl bg-[#0B4E9B] px-8 py-4 font-semibold text-white transition hover:bg-[#00B7EB] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Post Comment
+                  {submitting ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Post Comment"
+                  )}
                 </button>
               </form>
             </div>
