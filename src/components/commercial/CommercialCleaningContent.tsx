@@ -50,10 +50,12 @@ const CommercialCleaningContent = () => {
           creating a positive impression on clients and supporting employee
           productivity. Dusty corners, stained carpets, and unclean surfaces can
           quickly make any office look unprofessional and uncomfortable. At{" "}
-          <span className="text-[#0B4E9B] font-bold">Camz Cleaning</span>, we
-          offer dependable Commercial Cleaning Services in Calgary, Airdrie,
-          Cochrane, and Chestermere to keep your workspace spotless, sanitized,
-          and welcoming.
+          <Link href="/">
+            <span className="text-[#0B4E9B] font-bold">Camz Cleaning</span>
+          </Link>
+          , we offer dependable Commercial Cleaning Services in Calgary,
+          Airdrie, Cochrane, and Chestermere to keep your workspace spotless,
+          sanitized, and welcoming.
         </p>
       </section>
 
@@ -97,6 +99,26 @@ const CommercialCleaningContent = () => {
               id: 4,
               title: "Commercial Office Cleaning",
               desc: "We cover dusting, vacuuming, and sanitizing. Our Commercial Office Cleaning ensures your workspace stays organized and welcoming.",
+            },
+            {
+              id: 5,
+              title: "Office Cleaning",
+              desc: "From desks to shared spaces, our office cleaning keeps your workplace clutter-free and productive.",
+            },
+            {
+              id: 6,
+              title: "Window Cleaning",
+              desc: "Our window cleaning ensures streak-free panes, letting natural light brighten your office and improving the overall appearance.",
+            },
+            {
+              id: 7,
+              title: "Post-Construction Cleaning Service",
+              desc: "After renovations, our post-construction cleaning service removes dust and debris, making spaces ready for immediate use.",
+            },
+            {
+              id: 8,
+              title: "Professional Office Cleaning",
+              desc: "Our professional office cleaning combines routine maintenance with deep cleaning to ensure a hygienic, presentable office.",
             },
           ].map((item) => (
             <div key={item.id} className="space-y-1">

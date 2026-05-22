@@ -155,7 +155,7 @@ export default function Header() {
               ONLINE BOOKING
             </Link>
             <Link
-              href="/contact"
+              href="/contact-us"
               className="hover:text-[#00B7EB] transition-colors"
             >
               CONTACT US
@@ -289,7 +289,7 @@ export default function Header() {
 
               {/* CONTACT */}
               <Link
-                href="/contact"
+                href="/contact-us"
                 onClick={() => setIsOpen(false)}
                 className="px-6 py-5 border-b"
               >

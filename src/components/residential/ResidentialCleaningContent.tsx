@@ -147,8 +147,10 @@ const ResidentialCleaningContent = () => {
           especially with a busy schedule. Over time, dust, grease, allergens,
           and bacteria can build up in kitchens, bathrooms, carpets, and other
           living spaces, affecting both comfort and cleanliness. At{" "}
-          <span className="text-[#0B4E9B] font-bold">Camz Cleaning</span>, our
-          Residential Cleaning Services in Calgary, Airdrie, Cochrane, and
+          <Link href="/">
+            <span className="text-[#0B4E9B] font-bold">Camz Cleaning</span>
+          </Link>
+          , our Residential Cleaning Services in Calgary, Airdrie, Cochrane, and
           Chestermere are designed to give homeowners a spotless, sanitized, and
           well-maintained home without the stress. We deliver reliable,
           professional house cleaning services that help create a cleaner,

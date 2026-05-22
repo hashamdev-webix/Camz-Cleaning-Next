@@ -5,12 +5,12 @@ const CallToAction = () => {
   return (
     <section className="relative py-10 px-6 overflow-hidden">
       {/* Background Image with Overlay */}
-      <div 
+      <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('/wp-admin/uploads/about2.webp')", 
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundImage: "url('/wp-admin/uploads/about2.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         {/* Deep Blue Gradient Overlay matching the design */}
@@ -19,7 +19,6 @@ const CallToAction = () => {
 
       {/* Content Container */}
       <div className="relative z-10 max-w-4xl mx-auto text-center text-white space-y-6">
-        
         {/* Top Badge */}
         <div className="flex justify-center">
           <span className="bg-[#00CFE8] text-white text-[10px] md:text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest border border-white/20">
@@ -34,20 +33,19 @@ const CallToAction = () => {
 
         {/* Subtext */}
         <p className="text-blue-50/90 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
-          Transform your space today with Camz Cleaning's trusted experts providing thorough, 
-          professional cleaning you can count on.
+          Transform your space today with Camz Cleaning's trusted experts
+          providing thorough, professional cleaning you can count on.
         </p>
 
         {/* Action Button */}
         <div className="pt-4">
-          <Link 
-            href="/contact" 
+          <Link
+            href="/contact-us"
             className="inline-block px-8 py-3.5 border-2 border-white/60 rounded-xl font-bold text-sm md:text-base hover:bg-white hover:text-[#16497D] transition-all duration-300 backdrop-blur-sm"
           >
             Book Your Cleaning Today
           </Link>
         </div>
-        
       </div>
     </section>
   );

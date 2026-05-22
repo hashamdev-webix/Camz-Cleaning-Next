@@ -71,7 +71,7 @@ const CalgaryCleaningServices = () => {
           {/* Call to Action Button */}
           <div className="pt-2">
             <Link
-              href="/contact"
+              href="/contact-us"
               className="inline-block bg-gradient-to-r from-[#0091C1] to-[#004A8C] text-white px-10 py-4 rounded-xl font-bold hover:shadow-lg transition-shadow duration-300 active:scale-95"
             >
               Contact Us

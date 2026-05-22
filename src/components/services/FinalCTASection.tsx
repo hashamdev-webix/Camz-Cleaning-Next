@@ -1,8 +1,10 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const FinalCTASection = () => {
+  const router = useRouter();
   return (
     <section className="relative overflow-hidden bg-[#134D91] py-20">
       {/* Background Image */}
@@ -47,6 +49,7 @@ const FinalCTASection = () => {
 
           {/* Button */}
           <motion.button
+            onClick={() => router.push("/contact-us")}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="mt-10 rounded-xl border-2 border-white px-10 py-4 text-lg font-bold text-white transition-all duration-300 hover:bg-white hover:text-[#004A8C]"

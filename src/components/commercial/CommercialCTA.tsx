@@ -41,7 +41,7 @@ const CommercialCTA = () => {
         {/* Action Button */}
         <div className="pt-4">
           <Link
-            href="/contact"
+            href="/contact-us"
             className="inline-block border-2 border-white/60 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-[#0B4E9B] transition-all duration-300 shadow-xl"
           >
             Get Free Quote
