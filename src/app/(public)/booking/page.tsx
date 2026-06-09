@@ -63,34 +63,47 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 3;
+
     const fetchData = async () => {
       try {
         const supabase = createClient();
 
-        // Fetch categories
-        const { data: catData, error: catError } = await supabase
-          .from("categories")
-          .select("*")
-          .order("created_at", { ascending: true });
+        const [catResult, svcResult] = await Promise.all([
+          supabase
+            .from("categories")
+            .select("*")
+            .order("created_at", { ascending: true }),
+          supabase
+            .from("services")
+            .select("*")
+            .eq("is_active", true)
+            .order("created_at", { ascending: true }),
+        ]);
 
-        if (catError) throw catError;
-        console.log("Categories:", catData);
-        setCategories(catData || []);
+        if (catResult.error) throw catResult.error;
+        if (svcResult.error) throw svcResult.error;
 
-        // Fetch active services
-        const { data: svcData, error: svcError } = await supabase
-          .from("services")
-          .select("*")
-          .eq("is_active", true)
-          .order("created_at", { ascending: true });
-
-        if (svcError) throw svcError;
-        console.log("Services:", svcData);
-        setServices(svcData || []);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
+        setCategories(catResult.data || []);
+        setServices(svcResult.data || []);
         setLoading(false);
+      } catch (err) {
+        console.error(
+          "Error fetching data (attempt " + (retryCount + 1) + "):",
+          err,
+        );
+        retryCount++;
+
+        if (retryCount < maxRetries) {
+          // Retry after short delay
+          setTimeout(fetchData, 1000 * retryCount);
+        } else {
+          console.error(
+            "Failed to load services after " + maxRetries + " attempts",
+          );
+          setLoading(false);
+        }
       }
     };
 
