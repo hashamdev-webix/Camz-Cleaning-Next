@@ -477,7 +477,7 @@ const BookingPage = () => {
                     <button
                       onClick={() => {
                         setShowLoginPrompt(false);
-                        router.push("/signup");
+                        router.push("/register");
                       }}
                       className="text-blue-600 font-bold hover:underline"
                     >

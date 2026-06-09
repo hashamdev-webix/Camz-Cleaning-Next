@@ -318,15 +318,12 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
       }
     }
 
-    if (
-      pricingType === "Hourly" &&
-      service.service_type !== "commercial" &&
-      service.hourly_rate
-    ) {
-      const hourlyTotal = hours * Number(service.hourly_rate);
+    if (pricingType === "Hourly" && service.service_type !== "commercial") {
+      const rate = Number(service.hourly_rate) || 35;
+      const hourlyTotal = hours * rate;
       lineItems.length = 0;
       lineItems.push({
-        label: `${hours} hrs × $${service.hourly_rate}/hr`,
+        label: `${hours} hrs × $${rate.toFixed(0)}/hr`,
         amount: hourlyTotal,
       });
       subtotal = hourlyTotal;
