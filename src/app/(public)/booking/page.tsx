@@ -55,6 +55,7 @@ const BookingPage = () => {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGuestBooking, setIsGuestBooking] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [selectedServiceTitle, setSelectedServiceTitle] = useState("");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -63,34 +64,47 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 3;
+
     const fetchData = async () => {
       try {
         const supabase = createClient();
 
-        // Fetch categories
-        const { data: catData, error: catError } = await supabase
-          .from("categories")
-          .select("*")
-          .order("created_at", { ascending: true });
+        const [catResult, svcResult] = await Promise.all([
+          supabase
+            .from("categories")
+            .select("*")
+            .order("created_at", { ascending: true }),
+          supabase
+            .from("services")
+            .select("*")
+            .eq("is_active", true)
+            .order("created_at", { ascending: true }),
+        ]);
 
-        if (catError) throw catError;
-        console.log("Categories:", catData);
-        setCategories(catData || []);
+        if (catResult.error) throw catResult.error;
+        if (svcResult.error) throw svcResult.error;
 
-        // Fetch active services
-        const { data: svcData, error: svcError } = await supabase
-          .from("services")
-          .select("*")
-          .eq("is_active", true)
-          .order("created_at", { ascending: true });
-
-        if (svcError) throw svcError;
-        console.log("Services:", svcData);
-        setServices(svcData || []);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
+        setCategories(catResult.data || []);
+        setServices(svcResult.data || []);
         setLoading(false);
+      } catch (err) {
+        console.error(
+          "Error fetching data (attempt " + (retryCount + 1) + "):",
+          err,
+        );
+        retryCount++;
+
+        if (retryCount < maxRetries) {
+          // Retry after short delay
+          setTimeout(fetchData, 1000 * retryCount);
+        } else {
+          console.error(
+            "Failed to load services after " + maxRetries + " attempts",
+          );
+          setLoading(false);
+        }
       }
     };
 
@@ -109,9 +123,10 @@ const BookingPage = () => {
       return;
     }
 
-    // User is logged in - open the booking modal
+    // User is logged in - open the booking modal (not guest)
     setSelectedService(service);
     setSelectedServiceTitle(service.title);
+    setIsGuestBooking(false);
     setIsModalOpen(true);
   };
 
@@ -400,8 +415,12 @@ const BookingPage = () => {
         </div>
         <BookingModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            setIsGuestBooking(false);
+          }}
           service={selectedService}
+          isGuest={isGuestBooking}
         />
 
         {/* Login Required Modal */}
@@ -462,6 +481,17 @@ const BookingPage = () => {
                       className="w-full py-3.5 rounded-xl bg-blue-600 text-white text-sm font-black hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
                     >
                       Continue to Login
+                      <ArrowRight size={16} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowLoginPrompt(false);
+                        setIsGuestBooking(true);
+                        setIsModalOpen(true);
+                      }}
+                      className="w-full py-3.5 rounded-xl bg-slate-800 text-white text-sm font-black hover:bg-slate-900 transition-all flex items-center justify-center gap-2"
+                    >
+                      Continue as Guest
                       <ArrowRight size={16} />
                     </button>
                     <button

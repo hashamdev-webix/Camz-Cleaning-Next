@@ -62,9 +62,15 @@ interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   service: Service | null;
+  isGuest?: boolean;
 }
 
-const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
+const BookingModal = ({
+  isOpen,
+  onClose,
+  service,
+  isGuest = false,
+}: BookingModalProps) => {
   const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [config, setConfig] = useState<ServiceConfig>({});
@@ -86,9 +92,27 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
   const [time, setTime] = useState<Dayjs | null>(null);
   const [location, setLocation] = useState("");
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
+  const [guestEmailConfirm, setGuestEmailConfirm] = useState("");
 
   const totalSteps = 4;
   const nextStep = () => {
+    if (step === 1 && isGuest) {
+      if (guestName.trim().length < 2) {
+        alert("Please enter your name");
+        return;
+      }
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail);
+      if (!emailValid) {
+        alert("Please enter a valid email");
+        return;
+      }
+      if (guestEmail !== guestEmailConfirm) {
+        alert("Emails do not match");
+        return;
+      }
+    }
     if (step === 2) {
       if (!date) {
         alert("Please select a date");
@@ -107,6 +131,14 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
   };
 
   const isStepValid = () => {
+    if (step === 1 && isGuest) {
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail);
+      return (
+        guestName.trim().length >= 2 &&
+        emailValid &&
+        guestEmail === guestEmailConfirm
+      );
+    }
     if (step === 2) {
       return !!date && !!time && !!location && location.trim().length >= 3;
     }
@@ -116,7 +148,7 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleConfirm = async () => {
-    if (!user) {
+    if (!isGuest && !user) {
       setSubmitError("Please log in to book a service");
       return;
     }
@@ -140,9 +172,10 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         .second(0)
         .toISOString();
 
-      // Build the job record
+      // Build the job record (guest vs logged-in user)
       const jobRecord: Record<string, any> = {
-        customer_id: user.id,
+        customer_id: isGuest ? null : user?.id,
+        is_guest: isGuest,
         service_id: service.id,
         service_name: service.title,
         service_type: service.service_type,
@@ -155,6 +188,12 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         status: "pending",
         service_data: formData,
       };
+
+      // Add guest contact info
+      if (isGuest) {
+        jobRecord.guest_name = guestName.trim();
+        jobRecord.guest_email = guestEmail.trim();
+      }
 
       // Add coordinates if available
       if (coordinates) {
@@ -416,12 +455,15 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
       setSubmitError(null);
       setBookingId(null);
       setCoordinates(null);
+      setGuestName("");
+      setGuestEmail("");
+      setGuestEmailConfirm("");
     }
   }, [isOpen]);
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation not supported");
+      setSubmitError("Geolocation not supported. Please type your address.");
       return;
     }
     setLoadingLocation(true);
@@ -434,15 +476,21 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
           );
           const data = await res.json();
-          setLocation(data.display_name || "Location found");
+          setLocation(data.display_name || `${latitude}, ${longitude}`);
         } catch {
           setLocation(`${latitude}, ${longitude}`);
         }
         setLoadingLocation(false);
       },
-      () => {
-        alert("Permission denied");
+      (error) => {
+        console.warn("Geolocation error:", error.message);
         setLoadingLocation(false);
+        // Don't block — let user type address manually
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
       },
     );
   };
@@ -769,21 +817,32 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
           )}
 
           <div className="flex flex-col gap-3">
-            <button
-              onClick={() => {
-                onClose();
-                window.location.href = "/customer-dashboard/bookings";
-              }}
-              className="w-full py-3 rounded-xl bg-blue-600 text-white text-xs font-black hover:bg-blue-700 transition-all"
-            >
-              View My Bookings
-            </button>
-            <button
-              onClick={onClose}
-              className="w-full py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all"
-            >
-              Close
-            </button>
+            {isGuest ? (
+              <button
+                onClick={onClose}
+                className="w-full py-3 rounded-xl bg-blue-600 text-white text-xs font-black hover:bg-blue-700 transition-all"
+              >
+                Done
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => {
+                    onClose();
+                    window.location.href = "/customer-dashboard/bookings";
+                  }}
+                  className="w-full py-3 rounded-xl bg-blue-600 text-white text-xs font-black hover:bg-blue-700 transition-all"
+                >
+                  View My Bookings
+                </button>
+                <button
+                  onClick={onClose}
+                  className="w-full py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all"
+                >
+                  Close
+                </button>
+              </>
+            )}
           </div>
         </motion.div>
       </div>
@@ -825,6 +884,55 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
                 <h2 className="text-2xl font-black text-slate-800 mb-6">
                   {service.title} Details
                 </h2>
+                {isGuest && (
+                  <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-2xl space-y-4">
+                    <p className="text-[11px] font-black uppercase text-blue-600 tracking-widest">
+                      Your Contact Info
+                    </p>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-black uppercase text-slate-500 ml-1">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        value={guestName}
+                        onChange={(e) => setGuestName(e.target.value)}
+                        placeholder="John Doe"
+                        className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-black uppercase text-slate-500 ml-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        value={guestEmail}
+                        onChange={(e) => setGuestEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-black uppercase text-slate-500 ml-1">
+                        Confirm Email
+                      </label>
+                      <input
+                        type="email"
+                        value={guestEmailConfirm}
+                        onChange={(e) => setGuestEmailConfirm(e.target.value)}
+                        placeholder="you@example.com"
+                        className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                      />
+                      {guestEmailConfirm.length > 0 &&
+                        guestEmail !== guestEmailConfirm && (
+                          <p className="text-[10px] text-red-500 ml-1 font-bold">
+                            Emails do not match
+                          </p>
+                        )}
+                    </div>
+                  </div>
+                )}
                 {loadingConfig ? (
                   <div className="flex justify-center py-12">
                     <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
