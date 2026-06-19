@@ -1,23 +1,25 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 const FinalCTASection = () => {
+  const router = useRouter();
   return (
     <section className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden bg-[#134D91]">
-    {/* Background Image */}
-  <div 
-    className="absolute inset-0 z-0"
-    style={{
-      backgroundImage: "url('wp-admin/uploads/clean lobby.webp')", // Ensure the extension (.jpg, .png, etc.) matches your file
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat'
-    }}
-  />
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: "url('wp-admin/uploads/clean lobby.webp')", // Ensure the extension (.jpg, .png, etc.) matches your file
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
 
-  {/* Overlay to ensure text readability */}
-  <div className="absolute inset-0 bg-[#134F95] opacity-92 z-10" />
+      {/* Overlay to ensure text readability */}
+      <div className="absolute inset-0 bg-[#134F95] opacity-92 z-10" />
 
       <div className="container-custom mx-auto relative z-10">
         <motion.div
@@ -39,12 +41,14 @@ const FinalCTASection = () => {
 
           {/* Description */}
           <p className="text-blue-100 text-lg md:text-xl max-w-3xl leading-relaxed">
-            Book your professional cleaning service today and experience a spotless, fresh, and hygienic 
-            environment delivered by our trusted, skilled, and dependable cleaning team.
+            Book your professional cleaning service today and experience a
+            spotless, fresh, and hygienic environment delivered by our trusted,
+            skilled, and dependable cleaning team.
           </p>
 
           {/* Button */}
           <motion.button
+            onClick={() => router.push("/contact-us")}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="mt-4 border-2 border-white text-white font-bold py-3 px-10 rounded-xl hover:bg-white hover:text-[#004A8C] transition-all duration-300 text-lg"

@@ -2,21 +2,24 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Phone, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const VideoCTASection = () => {
+  const router = useRouter();
   return (
-    <section  className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden text-white bg-cover bg-center"
-  style={{
-    backgroundImage: `
+    <section
+      className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden text-white bg-cover bg-center"
+      style={{
+        backgroundImage: `
       linear-gradient(to right, rgba(0,74,140,0.9), rgba(0,74,140,0.85)),
       url('/video-bg.webp')
     `,
-  }}>
+      }}
+    >
       {/* Background Texture/Overlay - subtle darken */}
       <div className="absolute inset-0  pointer-events-none"></div>
 
       <div className="container-custom mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        
         {/* Left Side: Content */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -43,24 +46,24 @@ const VideoCTASection = () => {
           <div className="pt-4 border-t border-white/20">
             <div className="flex flex-wrap items-center gap-6">
               {/* Avatar Group */}
-<div className="flex -space-x-3">
-  {[
-    "/wp-admin/uploads/call-back-1.webp",
-    "/wp-admin/uploads/call-back-2.webp",
-    "/wp-admin/uploads/call-back-3.webp",
-  ].map((src, index) => (
-    <div
-      key={index}
-      className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300"
-    >
-      <img
-        src={src}
-        alt={`client-${index + 1}`}
-        className="w-full h-full object-cover"
-      />
-    </div>
-  ))}
-</div>
+              <div className="flex -space-x-3">
+                {[
+                  "/wp-admin/uploads/call-back-1.webp",
+                  "/wp-admin/uploads/call-back-2.webp",
+                  "/wp-admin/uploads/call-back-3.webp",
+                ].map((src, index) => (
+                  <div
+                    key={index}
+                    className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300"
+                  >
+                    <img
+                      src={src}
+                      alt={`client-${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
 
               {/* Stars & Text */}
               <div>
@@ -69,13 +72,18 @@ const VideoCTASection = () => {
                     <Star key={i} size={18} fill="currentColor" />
                   ))}
                 </div>
-                <p className="font-bold text-lg">Rated 5 Out Of 5 By Our Clients</p>
+                <p className="font-bold text-lg">
+                  Rated 5 Out Of 5 By Our Clients
+                </p>
               </div>
             </div>
           </div>
 
           <div className="pt-6 border-t border-white/20 flex flex-wrap items-center gap-8">
-            <button className="border-2 border-white hover:bg-white hover:text-[#004A8C] text-white font-bold py-3 px-8 rounded-lg transition-all">
+            <button
+              onClick={() => router.push("/contact-us")}
+              className="border-2 border-white hover:bg-white hover:text-[#004A8C] text-white font-bold py-3 px-8 rounded-lg transition-all"
+            >
               Contact Us
             </button>
 
@@ -84,13 +92,15 @@ const VideoCTASection = () => {
                 <Phone size={20} className="text-white" />
               </div>
               <div>
-                <h6 className="text-lg uppercase tracking-wider text-white font-semibold">Call Us Anytime</h6>
-              <a
-  href="tel:+15878371977"
-  className="text-xl font-extrabold text-white hover:text-[#00B7EB] transition-colors"
->
-  +1 587-837-1977
-</a>
+                <h6 className="text-lg uppercase tracking-wider text-white font-semibold">
+                  Call Us Anytime
+                </h6>
+                <a
+                  href="tel:+15878371977"
+                  className="text-xl font-extrabold text-white hover:text-[#00B7EB] transition-colors"
+                >
+                  +1 587-837-1977
+                </a>
               </div>
             </div>
           </div>
@@ -114,7 +124,7 @@ const VideoCTASection = () => {
               allowFullScreen
             ></iframe>
           </div>
-          
+
           {/* Decorative glow behind video */}
           <div className="absolute -inset-4 bg-cyan-500/20 blur-3xl rounded-full -z-10 group-hover:bg-cyan-500/30 transition-all"></div>
         </motion.div>
