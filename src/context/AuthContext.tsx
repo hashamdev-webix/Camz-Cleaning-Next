@@ -35,7 +35,7 @@ type AuthContextType = {
   signIn: (
     email: string,
     password: string,
-  ) => Promise<{ error: string | null }>;
+  ) => Promise<{ error: string | null; redirectTo?: string }>;
   signOut: () => Promise<void>;
   getCurrentUser: () => Promise<UserData | null>;
 };
@@ -189,18 +189,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) return { error: error.message };
+      if (!authData.user) return { error: "Unable to load your account." };
 
-      // Use window.location for hard navigation after auth
-      // This ensures the auth state is properly picked up
-      window.location.href = "/customer-dashboard";
+      const { data: profile, error: profileError } = await supabase
+        .from("users")
+        .select("role, is_blocked")
+        .eq("id", authData.user.id)
+        .maybeSingle();
 
-      return { error: null };
+      if (profileError || !profile) {
+        await supabase.auth.signOut();
+        return { error: "Unable to load your user profile." };
+      }
+
+      if (profile.is_blocked) {
+        await supabase.auth.signOut();
+        return { error: "Your account has been blocked. Please contact support." };
+      }
+
+      return {
+        error: null,
+        redirectTo:
+          profile.role?.toLowerCase() === "admin"
+            ? "/admin-dashboard"
+            : "/customer-dashboard",
+      };
     } catch (error) {
       console.error("Sign in error:", error);
       return { error: "An unexpected error occurred" };

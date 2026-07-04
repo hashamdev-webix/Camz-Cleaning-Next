@@ -27,13 +27,10 @@ export default function LoginPage() {
       setError(result.error);
       setLoading(false); // Only reset loading on ERROR
     } else {
-      // Show success toast
       setShowSuccessToast(true);
-
-      // Redirect after 2 seconds
       setTimeout(() => {
-        window.location.href = "/";
-      }, 2000);
+        window.location.href = result.redirectTo || "/customer-dashboard";
+      }, 700);
     }
     // Don't setLoading(false) on success - page will redirect
   };
@@ -130,7 +127,7 @@ export default function LoginPage() {
       {/* Navigation to Signup */}
       <div className="mt-8 text-gray-500">
         <p>
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/register"
             className="text-blue-600 font-bold hover:underline"
