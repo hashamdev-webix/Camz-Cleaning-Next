@@ -6,7 +6,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 
 const consoleItems = [
-  { label: "Users", href: "/admin-dashboard/manage/users", icon: Users, color: "text-blue-400" },
+  { label: "Users", href: "/admin-dashboard/customers", icon: Users, color: "text-blue-400" },
   { label: "Verify", href: "/admin-dashboard/manage/verification", icon: UserCheck, color: "text-emerald-400" },
   { label: "Support", href: "/admin-dashboard/manage/support", icon: ClipboardCheck, color: "text-cyan-400" },
   { label: "Leave", href: "/admin-dashboard/manage/leave", icon: Umbrella, color: "text-blue-400" },

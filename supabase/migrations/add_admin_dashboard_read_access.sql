@@ -21,7 +21,7 @@ do $$
 declare
   table_name text;
   admin_tables text[] := array[
-    'users', 'jobs', 'payments', 'services', 'categories',
+    'users', 'addresses', 'jobs', 'payments', 'services', 'categories',
     'help_tickets', 'leave_requests', 'manual_invoices', 'gallery',
     'blogs', 'before_after_pairs', 'app_settings', 'cleaner_availability',
     'cleaner_tracking', 'custom_cleaning_requests', 'reviews', 'ratings',

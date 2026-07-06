@@ -18,7 +18,7 @@ const groups = [
       { label: "Overview", href: "/admin-dashboard", icon: LayoutDashboard },
       { label: "Custom Requests", href: "/admin-dashboard/custom-requests", icon: ClipboardList },
       { label: "Bookings", href: "/admin-dashboard/manage/bookings", icon: CalendarDays },
-      { label: "Customers", href: "/admin-dashboard/manage/customers", icon: Users },
+      { label: "Customers", href: "/admin-dashboard/customers", icon: Users },
       { label: "Cleaners", href: "/admin-dashboard/manage/cleaners", icon: UserCheck },
       { label: "Payments", href: "/admin-dashboard/manage/payments", icon: Banknote },
       { label: "Reports", href: "/admin-dashboard/manage/reports", icon: BarChart3 },
