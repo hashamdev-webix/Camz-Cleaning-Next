@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   Banknote, BookOpen, CalendarDays, ClipboardCheck, ClipboardList,
   GalleryHorizontal, Headphones, Images, LayoutDashboard, LogOut,
-  Menu, ReceiptText, Settings2, ShieldCheck, UserCheck, Users, Wrench, X,
+  BarChart3, Menu, ReceiptText, Settings2, ShieldCheck, UserCheck, Users, Wrench, X,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,7 +19,9 @@ const groups = [
       { label: "Custom Requests", href: "/admin-dashboard/custom-requests", icon: ClipboardList },
       { label: "Bookings", href: "/admin-dashboard/manage/bookings", icon: CalendarDays },
       { label: "Customers", href: "/admin-dashboard/manage/customers", icon: Users },
+      { label: "Cleaners", href: "/admin-dashboard/manage/cleaners", icon: UserCheck },
       { label: "Payments", href: "/admin-dashboard/manage/payments", icon: Banknote },
+      { label: "Reports", href: "/admin-dashboard/manage/reports", icon: BarChart3 },
     ],
   },
   {

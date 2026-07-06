@@ -8,7 +8,9 @@ type Config = { title: string; description: string; table: string; filter?: { co
 const sections: Record<string, Config> = {
   bookings: { title: "Bookings", description: "Review all scheduled and submitted cleaning jobs.", table: "jobs", preferred: ["id", "service_name", "status", "customer_id", "cleaner_id", "date", "address", "total_price"] },
   customers: { title: "Customers", description: "Customer accounts registered across the platform.", table: "users", filter: { column: "role", value: "customer" }, preferred: ["id", "name", "email", "phone_number", "approval_status", "is_blocked", "created_at"] },
+  cleaners: { title: "Cleaners", description: "Cleaner accounts, approval, and availability details.", table: "users", filter: { column: "role", value: "cleaner" }, preferred: ["id", "name", "email", "phone_number", "approval_status", "is_blocked", "created_at"] },
   payments: { title: "Payments", description: "Payment transactions and their current status.", table: "payments", preferred: ["id", "job_id", "customer_id", "amount", "currency", "status", "payment_method", "created_at"] },
+  reports: { title: "Booking Reports", description: "Operational booking data for reporting and analysis.", table: "jobs", preferred: ["id", "service_name", "status", "billing_type", "total_price", "customer_id", "cleaner_id", "created_at"] },
   services: { title: "Services", description: "Cleaning services available to customers.", table: "services", preferred: ["id", "title", "service_type", "price", "pricing_type", "is_active", "created_at"] },
   users: { title: "All Users", description: "Customers, cleaners, and administrators.", table: "users", preferred: ["id", "name", "email", "phone_number", "role", "approval_status", "is_blocked"] },
   verification: { title: "User Verification", description: "Review account approval and verification status.", table: "users", preferred: ["id", "name", "email", "role", "approval_status", "is_blocked", "created_at"] },
