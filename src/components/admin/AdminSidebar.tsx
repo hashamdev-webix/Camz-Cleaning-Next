@@ -17,7 +17,7 @@ const groups = [
     links: [
       { label: "Overview", href: "/admin-dashboard", icon: LayoutDashboard },
       { label: "Custom Requests", href: "/admin-dashboard/custom-requests", icon: ClipboardList },
-      { label: "Bookings", href: "/admin-dashboard/manage/bookings", icon: CalendarDays },
+      { label: "Bookings", href: "/admin-dashboard/bookings", icon: CalendarDays },
       { label: "Customers", href: "/admin-dashboard/customers", icon: Users },
       { label: "Cleaners", href: "/admin-dashboard/manage/cleaners", icon: UserCheck },
       { label: "Payments", href: "/admin-dashboard/manage/payments", icon: Banknote },
@@ -27,7 +27,7 @@ const groups = [
   {
     label: "Operations",
     links: [
-      { label: "Services", href: "/admin-dashboard/manage/services", icon: Wrench },
+      { label: "Services", href: "/admin-dashboard/services", icon: Wrench },
       { label: "All Users", href: "/admin-dashboard/manage/users", icon: UserCheck },
       { label: "Verification", href: "/admin-dashboard/manage/verification", icon: ShieldCheck },
       { label: "Support", href: "/admin-dashboard/manage/support", icon: Headphones },
@@ -40,7 +40,7 @@ const groups = [
     links: [
       { label: "Gallery", href: "/admin-dashboard/manage/gallery", icon: GalleryHorizontal },
       { label: "Blog", href: "/admin-dashboard/manage/blogs", icon: BookOpen },
-      { label: "Before / After", href: "/admin-dashboard/manage/before-after", icon: Images },
+      { label: "Before / After", href: "/admin-dashboard/before-after", icon: Images },
       { label: "App Settings", href: "/admin-dashboard/manage/settings", icon: Settings2 },
     ],
   },
