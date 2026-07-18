@@ -25,14 +25,20 @@ export default function SettingsPage() {
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
+      setLoading(false);
       router.push("/login?redirect=/customer-dashboard/settings");
     }
   }, [authLoading, user, router]);
 
   // Fetch booking counts
   useEffect(() => {
-    if (!user) return;
+    if (authLoading) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
+    let cancelled = false;
     const fetchBookingCounts = async () => {
       setLoading(true);
       try {
@@ -46,7 +52,7 @@ export default function SettingsPage() {
           .in("status", ["pending", "assigned", "in_progress", "accepted"]);
 
         if (activeError) throw activeError;
-        setActiveCount(activeCountData || 0);
+        if (!cancelled) setActiveCount(activeCountData || 0);
 
         // Fetch completed bookings count
         const { count: completedCountData, error: completedError } =
@@ -57,16 +63,19 @@ export default function SettingsPage() {
             .eq("status", "completed");
 
         if (completedError) throw completedError;
-        setCompletedCount(completedCountData || 0);
+        if (!cancelled) setCompletedCount(completedCountData || 0);
       } catch (err) {
         console.error("Error fetching booking counts:", err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchBookingCounts();
-  }, [user]);
+    return () => {
+      cancelled = true;
+    };
+  }, [authLoading, user]);
 
   // Get user's display name (from userData if available, else email)
   const displayName = userData?.name || user?.email?.split("@")[0] || "User";

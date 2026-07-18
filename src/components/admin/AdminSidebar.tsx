@@ -11,13 +11,26 @@ import {
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
-const groups = [
+type AdminLink = {
+  label: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+  roles?: string[];
+};
+
+type AdminGroup = {
+  label: string;
+  links: AdminLink[];
+};
+
+const groups: AdminGroup[] = [
   {
     label: "Workspace",
     links: [
       { label: "Overview", href: "/admin-dashboard", icon: LayoutDashboard },
       { label: "Custom Requests", href: "/admin-dashboard/custom-requests", icon: ClipboardList },
       { label: "Bookings", href: "/admin-dashboard/bookings", icon: CalendarDays },
+      { label: "Booking Records", href: "/admin-dashboard/booking-records", icon: ClipboardCheck, roles: ["admin", "data_entry", "cleaner"] },
       { label: "Customers", href: "/admin-dashboard/customers", icon: Users },
       { label: "Cleaners", href: "/admin-dashboard/manage/cleaners", icon: UserCheck },
       { label: "Payments", href: "/admin-dashboard/manage/payments", icon: Banknote },
@@ -28,7 +41,7 @@ const groups = [
     label: "Operations",
     links: [
       { label: "Services", href: "/admin-dashboard/services", icon: Wrench },
-      { label: "All Users", href: "/admin-dashboard/manage/users", icon: UserCheck },
+      { label: "All Users", href: "/admin-dashboard/users", icon: UserCheck },
       { label: "Verification", href: "/admin-dashboard/manage/verification", icon: ShieldCheck },
       { label: "Support", href: "/admin-dashboard/manage/support", icon: Headphones },
       { label: "Leave Requests", href: "/admin-dashboard/manage/leave", icon: ClipboardCheck },
@@ -40,29 +53,46 @@ const groups = [
     links: [
       { label: "Gallery", href: "/admin-dashboard/manage/gallery", icon: GalleryHorizontal },
       { label: "Blog", href: "/admin-dashboard/manage/blogs", icon: BookOpen },
-      { label: "Before / After", href: "/admin-dashboard/before-after", icon: Images },
+      { label: "Before / After", href: "/admin-dashboard/before-after", icon: Images, roles: ["admin", "data_entry", "cleaner"] },
       { label: "App Settings", href: "/admin-dashboard/manage/settings", icon: Settings2 },
     ],
   },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ role = "admin" }: { role?: string }) {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    setOpen(false);
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Logout failed:", error);
+      window.location.assign("/login");
+    }
+  };
 
   const navigation = <>
     <div className="flex-1 overflow-y-auto pr-1">
-      {groups.map((group) => <div key={group.label} className="mb-6">
+      {groups.map((group) => {
+        const visibleLinks = group.links.filter((item) => role === "admin" || item.roles?.includes(role));
+        if (!visibleLinks.length) return null;
+        return <div key={group.label} className="mb-6">
         <p className="mb-2 px-3 text-[11px] font-bold uppercase text-white/35">{group.label}</p>
-        <nav className="space-y-1">{group.links.map((item) => {
+        <nav className="space-y-1">{visibleLinks.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
           return <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={`flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition ${active ? "bg-[#4A86F7] text-white shadow-lg shadow-blue-500/20" : "text-white/65 hover:bg-white/5 hover:text-white"}`}><Icon size={18} /> {item.label}</Link>;
         })}</nav>
-      </div>)}
+      </div>;
+      })}
     </div>
-    <button type="button" onClick={() => signOut()} className="mt-3 flex min-h-12 items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-4 text-sm font-semibold text-red-400 hover:bg-red-500/20"><LogOut size={19} /> Log out</button>
+    <button type="button" onClick={handleLogout} disabled={loggingOut} className="mt-3 flex min-h-12 items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-4 text-sm font-semibold text-red-400 hover:bg-red-500/20 disabled:cursor-wait disabled:opacity-60"><LogOut size={19} /> {loggingOut ? "Logging out..." : "Log out"}</button>
   </>;
 
   return <>

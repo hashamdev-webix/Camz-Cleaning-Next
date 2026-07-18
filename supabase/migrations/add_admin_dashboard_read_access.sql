@@ -9,7 +9,7 @@ as $$
     select 1
     from public.users
     where id = auth.uid()
-      and lower(role) = 'admin'
+      and lower(role::text) = 'admin'
       and is_blocked = false
   );
 $$;

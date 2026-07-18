@@ -213,12 +213,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error: "Your account has been blocked. Please contact support." };
       }
 
+      const role = profile.role?.toLowerCase();
       return {
         error: null,
         redirectTo:
-          profile.role?.toLowerCase() === "admin"
+          role === "admin"
             ? "/admin-dashboard"
-            : "/customer-dashboard",
+            : ["data_entry", "cleaner"].includes(role || "")
+              ? "/admin-dashboard/booking-records"
+              : "/customer-dashboard",
       };
     } catch (error) {
       console.error("Sign in error:", error);
@@ -227,10 +230,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    setLoading(true);
+    setSession(null);
+    setUser(null);
     setUserData(null);
-    // Use window.location for hard navigation
-    window.location.href = "/login";
+
+    try {
+      await Promise.race([
+        supabase.auth.signOut({ scope: "global" }),
+        new Promise((resolve) => setTimeout(resolve, 1500)),
+      ]);
+    } catch (error) {
+      console.error("Sign out error:", error);
+    } finally {
+      try {
+        Object.keys(window.localStorage)
+          .filter((key) => key.startsWith("sb-") || key.includes("supabase"))
+          .forEach((key) => window.localStorage.removeItem(key));
+      } catch (error) {
+        console.error("Unable to clear local auth storage:", error);
+      }
+      window.location.assign("/login");
+    }
   };
 
   return (

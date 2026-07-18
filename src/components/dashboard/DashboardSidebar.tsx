@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { useState } from "react";
 
 const links = [
   {
@@ -35,13 +36,17 @@ const links = [
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const { signOut } = useAuth();
   const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
     try {
       await signOut();
     } catch (error) {
       console.error("Logout failed:", error);
+      window.location.assign("/login");
     }
   };
 
@@ -83,11 +88,12 @@ export default function DashboardSidebar() {
       {/* Logout */}
       <button
         onClick={handleLogout}
-        className="mt-6 flex items-center gap-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-4 text-red-400 transition hover:bg-red-500/20"
+        disabled={loggingOut}
+        className="mt-6 flex items-center gap-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-4 text-red-400 transition hover:bg-red-500/20 disabled:cursor-wait disabled:opacity-60"
       >
         <LogOut size={20} />
 
-        <span className="font-semibold">Logout</span>
+        <span className="font-semibold">{loggingOut ? "Logging out..." : "Logout"}</span>
       </button>
     </aside>
   );
