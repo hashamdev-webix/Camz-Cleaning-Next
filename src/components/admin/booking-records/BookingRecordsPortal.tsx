@@ -31,6 +31,9 @@ export type BookingRecord = {
   full_address: string;
   price: string | number;
   show_price_to_cleaner: boolean;
+  use_manpower_time: boolean;
+  manpower_min_hours: string | number | null;
+  manpower_max_hours: string | number | null;
   email: string;
   phone: string;
   added_by: string | null;
@@ -59,6 +62,7 @@ type FormState = Omit<BookingRecord, "id" | "created_at" | "updated_at" | "assig
 const areas = ["NE Calgary", "SE Calgary", "NW Calgary", "SW Calgary", "Downtown", "Other area in Calgary"];
 const emptyForm: FormState = {
   full_name: "", cleaning_type: "", area: "", focus_details: "", service_date: "", service_time: "", full_address: "", price: "", show_price_to_cleaner: false,
+  use_manpower_time: false, manpower_min_hours: "", manpower_max_hours: "",
   email: "", phone: "", added_by: "", scope_of_work: "", parking_instructions: "", status: "pending", start_date: "", start_time: "", end_date: "", end_time: "",
   completion_remarks: "", completed_by: null, worked_hours: 0, hours_approved: false, approved_hours: 0, assigned_cleaner_ids: [],
 };
@@ -140,11 +144,13 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
       const assigned_cleaners = cleaners.filter((cleaner) => form.assigned_cleaner_ids.includes(cleaner.id));
       setRecords((current) => [{ ...result.booking, assigned_cleaners, service_images: [] } as BookingRecord, ...current]);
       setQuickFilter("all");
+      setAreaFilter("all");
+      setQuery("");
     } else if (form.id) {
       const assigned_cleaners = cleaners.filter((cleaner) => form.assigned_cleaner_ids.includes(cleaner.id));
       setRecords((current) => current.map((booking) => booking.id === form.id ? { ...booking, ...form, assigned_cleaners } as BookingRecord : booking));
     }
-    setFormOpen(false); router.refresh();
+    setFormOpen(false);
   };
   const deleteBooking = async (booking: BookingRecord) => {
     if (!window.confirm(`Delete booking for ${booking.full_name}?`)) return;
@@ -182,7 +188,7 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
 
       <section className="mt-8 rounded-3xl bg-white shadow-sm">
         <div className="flex flex-col justify-between gap-4 p-6 lg:flex-row lg:items-center"><div><h2 className="text-2xl font-bold">{quickFilter === "my" ? "My Bookings" : isCleaner ? "All Bookings" : "Bookings"}</h2><p className="text-slate-500">{filtered.length} booking{filtered.length === 1 ? "" : "s"}</p></div><div className="flex flex-wrap gap-2">{quickFilters.map(([value, label]) => <button key={value} type="button" onClick={() => setQuickFilter(value)} className={`h-11 rounded-xl px-4 font-bold ${quickFilter === value ? `${theme.active} text-white` : "border border-slate-200 text-slate-600"}`}>{label}</button>)}</div></div>
-        <div className="divide-y divide-slate-100 lg:hidden">{filtered.map((booking) => <article key={booking.id} className="p-5"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="truncate text-lg font-bold text-slate-950">{booking.full_name}</h3><p className="mt-1 line-clamp-2 text-sm text-slate-500">{booking.cleaning_type}</p></div><StatusPill status={booking.status} /></div><div className="mt-4 grid grid-cols-2 gap-3 text-sm"><InfoChip icon={MapPin} label={booking.area} /><InfoChip icon={CalendarClock} label={formatDate(booking.service_date)} /><InfoChip icon={Clock3} label={formatTime(booking.service_time)} /><InfoChip icon={DollarSign} label={isCleaner && !booking.show_price_to_cleaner ? "Hidden" : `$${Number(booking.price).toFixed(2)}`} /></div>{!isCleaner && <p className="mt-4 text-sm text-slate-500">Assigned: <span className="font-semibold text-slate-800">{booking.assigned_cleaners.map((cleaner) => cleaner.name).join(", ") || "Unassigned"}</span></p>}<div className="mt-4 flex flex-wrap gap-2"><Action onClick={() => setDetails(booking)} label="View" className={theme.button} />{canAssign && <Action onClick={() => setAssigning(booking)} label="Assign" className="bg-purple-700" />}{canEdit && <Action onClick={() => openEdit(booking)} label="Edit" className="bg-amber-500" />}{canDelete && <Action onClick={() => deleteBooking(booking)} label="Delete" className="bg-red-600" />}</div></article>)}{!filtered.length && <p className="p-8 text-center text-sm font-semibold text-slate-400">No bookings match these filters.</p>}</div><div className="hidden overflow-x-auto lg:block"><table className="w-full min-w-[900px] text-left"><thead className="bg-slate-950 text-sm text-white"><tr>{["Name", "Cleaning", "Area", "Date", "Time (Calgary)", "Price", "Status", ...(!isCleaner ? ["Added By", "Assigned To"] : []), "Actions"].map((head) => <th key={head} className="px-5 py-4">{head}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{filtered.map((booking) => <tr key={booking.id} className="align-top"><td className="px-5 py-5 font-bold">{booking.full_name}</td><td className="max-w-52 px-5 py-5 text-slate-600">{booking.cleaning_type}</td><td className="px-5 py-5"><span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-bold text-blue-700">{booking.area}</span></td><td className="px-5 py-5">{formatDate(booking.service_date)}</td><td className="px-5 py-5">{formatTime(booking.service_time)}</td><td className="px-5 py-5">{isCleaner && !booking.show_price_to_cleaner ? <span className="text-slate-400">Hidden</span> : <span className="rounded-full bg-emerald-100 px-3 py-1 font-bold text-emerald-700">${Number(booking.price).toFixed(2)}</span>}</td><td className="px-5 py-5"><StatusPill status={booking.status} /></td>{!isCleaner && <td className="px-5 py-5 text-slate-600">{booking.added_by || "-"}</td>}{!isCleaner && <td className="px-5 py-5"><div className="flex flex-wrap gap-1">{booking.assigned_cleaners.map((cleaner) => <span key={cleaner.id} className="rounded-full bg-purple-100 px-2 py-1 text-xs font-bold text-purple-700">{cleaner.name}</span>)}</div></td>}<td className="px-5 py-5"><div className="flex flex-wrap gap-2"><Action onClick={() => setDetails(booking)} label="View" className={theme.button} />{canAssign && <Action onClick={() => setAssigning(booking)} label="Assign" className="bg-purple-700" />}{canEdit && <Action onClick={() => openEdit(booking)} label="Edit" className="bg-amber-500" />}{canDelete && <Action onClick={() => deleteBooking(booking)} label="Delete" className="bg-red-600" />}</div></td></tr>)}</tbody></table></div>
+        <div className="divide-y divide-slate-100 lg:hidden">{filtered.map((booking) => <article key={booking.id} className="p-5"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="truncate text-lg font-bold text-slate-950">{booking.full_name}</h3><p className="mt-1 line-clamp-2 text-sm text-slate-500">{booking.cleaning_type}</p></div><StatusPill status={booking.status} /></div><div className="mt-4 grid grid-cols-2 gap-3 text-sm"><InfoChip icon={MapPin} label={booking.area} /><InfoChip icon={CalendarClock} label={formatDate(booking.service_date)} /><InfoChip icon={Clock3} label={formatTime(booking.service_time)} /><InfoChip icon={DollarSign} label={isCleaner && !booking.show_price_to_cleaner ? "Hidden" : `$${Number(booking.price).toFixed(2)}`} />{booking.use_manpower_time && <InfoChip icon={UserRound} label={formatManpowerTime(booking)} />}</div>{!isCleaner && <p className="mt-4 text-sm text-slate-500">Assigned: <span className="font-semibold text-slate-800">{booking.assigned_cleaners.map((cleaner) => cleaner.name).join(", ") || "Unassigned"}</span></p>}<div className="mt-4 flex flex-wrap gap-2"><Action onClick={() => setDetails(booking)} label="View" className={theme.button} />{canAssign && <Action onClick={() => setAssigning(booking)} label="Assign" className="bg-purple-700" />}{canEdit && <Action onClick={() => openEdit(booking)} label="Edit" className="bg-amber-500" />}{canDelete && <Action onClick={() => deleteBooking(booking)} label="Delete" className="bg-red-600" />}</div></article>)}{!filtered.length && <p className="p-8 text-center text-sm font-semibold text-slate-400">No bookings match these filters.</p>}</div><div className="hidden overflow-x-auto lg:block"><table className="w-full min-w-[1020px] text-left"><thead className="bg-slate-950 text-sm text-white"><tr>{["Name", "Cleaning", "Area", "Date", "Time (Calgary)", "Manpower", "Price", "Status", ...(!isCleaner ? ["Added By", "Assigned To"] : []), "Actions"].map((head) => <th key={head} className="px-5 py-4">{head}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{filtered.map((booking) => <tr key={booking.id} className="align-top"><td className="px-5 py-5 font-bold">{booking.full_name}</td><td className="max-w-52 px-5 py-5 text-slate-600">{booking.cleaning_type}</td><td className="px-5 py-5"><span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-bold text-blue-700">{booking.area}</span></td><td className="px-5 py-5">{formatDate(booking.service_date)}</td><td className="px-5 py-5">{formatTime(booking.service_time)}</td><td className="px-5 py-5">{booking.use_manpower_time ? <span className="rounded-full bg-cyan-100 px-3 py-1 text-sm font-bold text-cyan-800">{formatManpowerTime(booking)}</span> : <span className="text-slate-400">-</span>}</td><td className="px-5 py-5">{isCleaner && !booking.show_price_to_cleaner ? <span className="text-slate-400">Hidden</span> : <span className="rounded-full bg-emerald-100 px-3 py-1 font-bold text-emerald-700">${Number(booking.price).toFixed(2)}</span>}</td><td className="px-5 py-5"><StatusPill status={booking.status} /></td>{!isCleaner && <td className="px-5 py-5 text-slate-600">{booking.added_by || "-"}</td>}{!isCleaner && <td className="px-5 py-5"><div className="flex flex-wrap gap-1">{booking.assigned_cleaners.map((cleaner) => <span key={cleaner.id} className="rounded-full bg-purple-100 px-2 py-1 text-xs font-bold text-purple-700">{cleaner.name}</span>)}</div></td>}<td className="px-5 py-5"><div className="flex flex-wrap gap-2"><Action onClick={() => setDetails(booking)} label="View" className={theme.button} />{canAssign && <Action onClick={() => setAssigning(booking)} label="Assign" className="bg-purple-700" />}{canEdit && <Action onClick={() => openEdit(booking)} label="Edit" className="bg-amber-500" />}{canDelete && <Action onClick={() => deleteBooking(booking)} label="Delete" className="bg-red-600" />}</div></td></tr>)}</tbody></table></div>
       </section>
 
       <section className="mt-8 grid gap-6 xl:grid-cols-[2fr_1fr]"><BookingCalendar bookings={scopedBookings} month={calendarMonth} setMonth={setCalendarMonth} selectedDate={selectedDate} setSelectedDate={setSelectedDate} activeClass={theme.active} /><div className="rounded-3xl bg-white p-6 shadow-sm"><h2 className="text-xl font-bold">{formatDate(selectedDate)}</h2><p className="text-slate-500">{selectedDayBookings.length} booking{selectedDayBookings.length === 1 ? "" : "s"}</p><div className="mt-5 space-y-4">{selectedDayBookings.map((booking) => <div key={booking.id} className="rounded-2xl border border-slate-100 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{booking.full_name}</p><p className="text-sm text-slate-500">{formatTime(booking.service_time)} - {booking.cleaning_type} - {booking.area}</p></div><StatusPill status={booking.status} /></div><button type="button" onClick={() => setDetails(booking)} className={`mt-3 h-9 w-full rounded-lg ${theme.button} text-sm font-bold text-white`}>View Details</button></div>)}</div></div></section>
@@ -210,7 +216,82 @@ function BookingCalendar({ bookings, month, setMonth, selectedDate, setSelectedD
 
 function BookingFormModal({ form, setForm, cleaners, saving, error, onClose, onSubmit, currentUser }: { form: FormState; setForm: (form: FormState) => void; cleaners: CleanerUser[]; saving: boolean; error: string; onClose: () => void; onSubmit: (event: FormEvent) => void; currentUser: CurrentUser }) {
   const update = (key: keyof FormState, value: string | boolean | string[] | number | null) => setForm({ ...form, [key]: value });
-  return <Modal title={form.id ? "Edit Booking" : "Add Booking"} subtitle={form.id ? form.full_name : "Create a clean, complete booking record"} onClose={onClose} wide><form onSubmit={onSubmit} className="space-y-6">{error && <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p>}<FormSection title="Customer Details" icon={UserRound}><div className="grid gap-4 md:grid-cols-3"><Field label="Full Name" value={form.full_name} onChange={(v) => update("full_name", v)} required /><Field label="Email Address" value={form.email} onChange={(v) => update("email", v)} type="email" required /><Field label="Phone Number" value={form.phone} onChange={(v) => update("phone", v)} required /></div><Field label="Full Address" value={form.full_address} onChange={(v) => update("full_address", v)} required /></FormSection><FormSection title="Booking Details" icon={CalendarClock}><div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"><Field label="Cleaning Type" value={form.cleaning_type} onChange={(v) => update("cleaning_type", v)} required /><label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">Calgary Area</span><select required value={form.area} onChange={(e) => update("area", e.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"><option value="">Select Calgary Area</option>{areas.map((area) => <option key={area}>{area}</option>)}</select></label><Field label="Service Date" value={form.service_date} onChange={(v) => update("service_date", v)} type="date" required /><Field label="Service Time" value={form.service_time} onChange={(v) => update("service_time", v)} type="time" required /><Field label="Price (CAD)" value={String(form.price)} onChange={(v) => update("price", v)} type="number" required /><Field label="Added By" value={form.added_by || currentUser?.name || ""} onChange={(v) => update("added_by", v)} /></div></FormSection><FormSection title="Instructions" icon={ClipboardList}><div className="grid gap-4 lg:grid-cols-3"><TextArea label="Scope Of Work" value={form.scope_of_work || ""} onChange={(v) => update("scope_of_work", v)} /><TextArea label="Focus Details" value={form.focus_details || ""} onChange={(v) => update("focus_details", v)} /><TextArea label="Parking Instructions" value={form.parking_instructions || ""} onChange={(v) => update("parking_instructions", v)} /></div></FormSection><FormSection title="Assignment & Visibility" icon={UserRound}><label className="mb-5 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"><span><b className="text-slate-900">Show price to cleaner</b><span className="block text-sm text-slate-500">Turn on when cleaner should see booking price.</span></span><span className={`relative h-8 w-14 rounded-full transition ${form.show_price_to_cleaner ? "bg-blue-700" : "bg-slate-300"}`}><input type="checkbox" checked={form.show_price_to_cleaner} onChange={(e) => update("show_price_to_cleaner", e.target.checked)} className="peer sr-only" /><span className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition ${form.show_price_to_cleaner ? "left-7" : "left-1"}`} /></span></label><CleanerPicker cleaners={cleaners} selected={form.assigned_cleaner_ids} onChange={(ids) => update("assigned_cleaner_ids", ids)} /></FormSection><div className="sticky bottom-0 -mx-6 -mb-6 flex flex-col gap-3 border-t border-slate-100 bg-white/95 p-5 backdrop-blur sm:flex-row sm:justify-end"><button type="button" onClick={onClose} className="h-12 rounded-2xl border border-slate-200 px-7 font-bold text-slate-700 transition hover:bg-slate-50">Cancel</button><button disabled={saving} className="h-12 rounded-2xl bg-blue-700 px-9 font-bold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 disabled:opacity-60">{saving ? "Saving..." : "Save Booking"}</button></div></form></Modal>;
+  const toggleManpower = (enabled: boolean) => setForm({
+    ...form,
+    use_manpower_time: enabled,
+    manpower_min_hours: enabled ? form.manpower_min_hours : "",
+    manpower_max_hours: enabled ? form.manpower_max_hours : "",
+  });
+
+  return <Modal title={form.id ? "Edit Booking" : "Add Booking"} subtitle={form.id ? form.full_name : "Create a clean, complete booking record"} onClose={onClose} wide>
+    <form onSubmit={onSubmit} className="space-y-6">
+      {error && <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p>}
+
+      <FormSection title="Customer Details" icon={UserRound}>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Field label="Full Name" value={form.full_name} onChange={(v) => update("full_name", v)} required />
+          <Field label="Email Address" value={form.email} onChange={(v) => update("email", v)} type="email" required />
+          <Field label="Phone Number" value={form.phone} onChange={(v) => update("phone", v)} required />
+        </div>
+        <Field label="Full Address" value={form.full_address} onChange={(v) => update("full_address", v)} required />
+      </FormSection>
+
+      <FormSection title="Booking Details" icon={CalendarClock}>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Field label="Cleaning Type" value={form.cleaning_type} onChange={(v) => update("cleaning_type", v)} placeholder="Deep cleaning" required />
+          <label className="block">
+            <span className="mb-2 block text-sm font-bold text-slate-700">Calgary Area</span>
+            <select required value={form.area} onChange={(e) => update("area", e.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+              <option value="">Select Calgary Area</option>
+              {areas.map((area) => <option key={area}>{area}</option>)}
+            </select>
+          </label>
+          <Field label="Service Date" value={form.service_date} onChange={(v) => update("service_date", v)} type="date" required />
+          <Field label="Service Time" value={form.service_time} onChange={(v) => update("service_time", v)} type="time" required />
+          <Field label="Price (CAD)" value={String(form.price)} onChange={(v) => update("price", v)} type="number" required />
+          <Field label="Added By" value={form.added_by || currentUser?.name || ""} onChange={(v) => update("added_by", v)} />
+        </div>
+        <label className="flex flex-col gap-4 rounded-2xl border border-cyan-100 bg-cyan-50/70 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            <b className="text-slate-950">Apply manpower time</b>
+            <span className="block text-sm text-slate-500">Use this when a booking needs a min/max service window, for example 4 to 5 hours.</span>
+          </span>
+          <span className={`relative h-8 w-14 shrink-0 rounded-full transition ${form.use_manpower_time ? "bg-cyan-700" : "bg-slate-300"}`}>
+            <input type="checkbox" checked={form.use_manpower_time} onChange={(e) => toggleManpower(e.target.checked)} className="peer sr-only" />
+            <span className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition ${form.use_manpower_time ? "left-7" : "left-1"}`} />
+          </span>
+        </label>
+        {form.use_manpower_time && <div className="grid gap-4 md:grid-cols-2">
+          <Field label="Minimum Hours" value={String(form.manpower_min_hours || "")} onChange={(v) => update("manpower_min_hours", v)} type="number" placeholder="4" required />
+          <Field label="Maximum Hours" value={String(form.manpower_max_hours || "")} onChange={(v) => update("manpower_max_hours", v)} type="number" placeholder="5" required />
+        </div>}
+      </FormSection>
+
+      <FormSection title="Instructions" icon={ClipboardList}>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <TextArea label="Scope Of Work" value={form.scope_of_work || ""} onChange={(v) => update("scope_of_work", v)} />
+          <TextArea label="Focus Details" value={form.focus_details || ""} onChange={(v) => update("focus_details", v)} />
+          <TextArea label="Parking Instructions" value={form.parking_instructions || ""} onChange={(v) => update("parking_instructions", v)} />
+        </div>
+      </FormSection>
+
+      <FormSection title="Assignment & Visibility" icon={UserRound}>
+        <label className="mb-5 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <span><b className="text-slate-900">Show price to cleaner</b><span className="block text-sm text-slate-500">Turn on when cleaner should see booking price.</span></span>
+          <span className={`relative h-8 w-14 rounded-full transition ${form.show_price_to_cleaner ? "bg-blue-700" : "bg-slate-300"}`}>
+            <input type="checkbox" checked={form.show_price_to_cleaner} onChange={(e) => update("show_price_to_cleaner", e.target.checked)} className="peer sr-only" />
+            <span className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition ${form.show_price_to_cleaner ? "left-7" : "left-1"}`} />
+          </span>
+        </label>
+        <CleanerPicker cleaners={cleaners} selected={form.assigned_cleaner_ids} onChange={(ids) => update("assigned_cleaner_ids", ids)} />
+      </FormSection>
+
+      <div className="sticky bottom-0 -mx-6 -mb-6 flex flex-col gap-3 border-t border-slate-100 bg-white/95 p-5 backdrop-blur sm:flex-row sm:justify-end">
+        <button type="button" onClick={onClose} className="h-12 rounded-2xl border border-slate-200 px-7 font-bold text-slate-700 transition hover:bg-slate-50">Cancel</button>
+        <button disabled={saving} className="h-12 rounded-2xl bg-blue-700 px-9 font-bold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 disabled:opacity-60">{saving ? "Saving..." : "Save Booking"}</button>
+      </div>
+    </form>
+  </Modal>;
 }
 
 function AssignModal({ booking, cleaners, onClose, onSaved }: { booking: BookingRecord; cleaners: CleanerUser[]; onClose: () => void; onSaved: () => void }) { const [selected, setSelected] = useState(booking.assigned_cleaners.map((cleaner) => cleaner.id)); const [saving, setSaving] = useState(false); const save = async () => { setSaving(true); await fetch("/api/admin/booking-records", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: booking.id, assigned_cleaner_ids: selected }) }); setSaving(false); onSaved(); }; return <Modal title="Assign Cleaner" subtitle={booking.full_name} onClose={onClose}><CleanerPicker cleaners={cleaners} selected={selected} onChange={setSelected} /><div className="mt-6 flex gap-3"><button onClick={save} disabled={saving} className="h-12 flex-1 rounded-xl bg-purple-700 font-bold text-white">{saving ? "Saving..." : "Confirm"}</button><button onClick={onClose} className="h-12 rounded-xl border px-8 font-bold">Cancel</button></div></Modal>; }
@@ -255,6 +336,7 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
       <Detail label="Service Time (Calgary)" value={formatTime(booking.service_time)} />
       <Detail label="Price" value={`$${Number(booking.price || 0).toFixed(2)}`} />
       <Detail label="Show Price To Cleaner" value={booking.show_price_to_cleaner ? "Yes" : "No"} />
+      <Detail label="Manpower Time" value={booking.use_manpower_time ? formatManpowerTime(booking) : "Not applied"} />
       <Detail label="Added By" value={booking.added_by || "Portal User"} />
       <Detail label="Assigned To" value={assignedNames} />
       <Detail label="Worked Hours" value={String(booking.worked_hours || 0)} />
@@ -283,7 +365,7 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
 
 function Modal({ title, subtitle, wide, children, onClose }: { title: string; subtitle?: string; wide?: boolean; children: React.ReactNode; onClose: () => void }) { return <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 p-3 backdrop-blur-sm sm:p-4"><div className={`max-h-[94vh] overflow-y-auto rounded-[1.75rem] bg-white shadow-2xl ${wide ? "w-full max-w-5xl" : "w-full max-w-xl"}`}><div className="sticky top-0 z-10 flex items-center justify-between bg-gradient-to-r from-blue-800 via-blue-700 to-cyan-500 p-6 text-white"><div><p className="text-xs font-bold uppercase tracking-[0.25em]">{title}</p>{subtitle && <h2 className="mt-1 text-2xl font-bold">{subtitle}</h2>}</div><button type="button" onClick={onClose} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 transition hover:bg-white/30"><X size={20} /></button></div><div className="p-6">{children}</div></div></div>; }
 function FormSection({ title, icon: Icon, children }: { title: string; icon: typeof UserRound; children: React.ReactNode }) { return <section className="rounded-[1.4rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"><div className="mb-4 flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><Icon size={18} /></span><h3 className="text-lg font-bold text-slate-950">{title}</h3></div><div className="space-y-4">{children}</div></section>; }
-function Field({ label, value, onChange, type = "text", required = false }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean }) { return <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">{label}</span><input required={required} value={value} type={type} onChange={(e) => onChange(e.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" /></label>; }
+function Field({ label, value, onChange, type = "text", required = false, placeholder = "" }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean; placeholder?: string }) { return <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">{label}</span><input required={required} value={value} type={type} step={type === "number" ? "0.25" : undefined} min={type === "number" ? "0" : undefined} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" /></label>; }
 function TextArea({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) { return <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">{label}</span><textarea value={value} onChange={(e) => onChange(e.target.value)} rows={5} className="min-h-32 w-full resize-y rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" /></label>; }
 function CleanerPicker({ cleaners, selected, onChange }: { cleaners: CleanerUser[]; selected: string[]; onChange: (ids: string[]) => void }) { return <div><p className="mb-3 font-bold">Select Cleaners <span className="text-sm font-normal text-slate-400">(one or more)</span></p><div className="flex flex-wrap gap-2">{cleaners.map((cleaner) => { const active = selected.includes(cleaner.id); return <button type="button" key={cleaner.id} onClick={() => onChange(active ? selected.filter((id) => id !== cleaner.id) : [...selected, cleaner.id])} className={`h-11 rounded-2xl px-4 font-bold ${active ? "bg-purple-700 text-white" : "border border-slate-200 text-slate-600"}`}>{active && <Check className="mr-1 inline" size={16} />}{cleaner.name}</button>; })}</div>{!!selected.length && <button type="button" onClick={() => onChange([])} className="mt-3 text-sm font-bold text-red-500">Clear all</button>}</div>; }
 function Detail({ label, value }: { label: string; value: string | null }) { return <div className="rounded-2xl bg-slate-50 p-4"><p className="text-xs font-bold uppercase text-slate-400">{label}</p><p className="mt-2 font-semibold text-slate-800">{value || "-"}</p></div>; }
@@ -298,6 +380,13 @@ function formatTime(time: string) {
   return `${hour12}:${String(minute).padStart(2, "0")} ${period}`;
 }
 function formatDateTime(value: string) { return new Date(value).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Edmonton" }); }
+function formatManpowerTime(booking: Pick<BookingRecord, "manpower_min_hours" | "manpower_max_hours">) {
+  const min = Number(booking.manpower_min_hours || 0);
+  const max = Number(booking.manpower_max_hours || 0);
+  if (!min && !max) return "-";
+  const clean = (value: number) => Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/\.?0+$/, "");
+  return `${clean(min)}-${clean(max)} hrs`;
+}
 function toDateInput(date: Date) { return date.toISOString().slice(0, 10); }
 function isDateInCurrentWeek(value: string) { const date = new Date(`${value}T00:00:00`); const now = new Date(); const start = new Date(now); start.setDate(now.getDate() - now.getDay()); start.setHours(0, 0, 0, 0); const end = new Date(start); end.setDate(start.getDate() + 7); return date >= start && date < end; }
 function isDateInCurrentMonth(value: string) { const date = new Date(`${value}T00:00:00`); const now = new Date(); return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear(); }

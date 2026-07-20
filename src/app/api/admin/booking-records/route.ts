@@ -34,6 +34,7 @@ async function getPortalUser() {
 }
 
 function cleanBookingPayload(body: BookingPayload) {
+  const useManpowerTime = Boolean(body.use_manpower_time);
   return {
     full_name: String(body.full_name || "").trim(),
     cleaning_type: String(body.cleaning_type || "").trim(),
@@ -44,6 +45,9 @@ function cleanBookingPayload(body: BookingPayload) {
     full_address: String(body.full_address || "").trim(),
     price: Number(body.price || 0),
     show_price_to_cleaner: Boolean(body.show_price_to_cleaner),
+    use_manpower_time: useManpowerTime,
+    manpower_min_hours: useManpowerTime ? Number(body.manpower_min_hours || 0) : null,
+    manpower_max_hours: useManpowerTime ? Number(body.manpower_max_hours || 0) : null,
     email: String(body.email || "").trim(),
     phone: String(body.phone || "").trim(),
     added_by: String(body.added_by || "").trim() || null,
@@ -59,6 +63,13 @@ function cleanBookingPayload(body: BookingPayload) {
     hours_approved: Boolean(body.hours_approved),
     approved_hours: Number(body.approved_hours || 0),
   };
+}
+
+function validateManpowerTime(payload: ReturnType<typeof cleanBookingPayload>) {
+  if (!payload.use_manpower_time) return null;
+  if (!payload.manpower_min_hours || !payload.manpower_max_hours) return "Please enter both minimum and maximum manpower hours.";
+  if (payload.manpower_max_hours < payload.manpower_min_hours) return "Maximum manpower hours must be greater than or equal to minimum hours.";
+  return null;
 }
 
 async function syncAssignments(supabase: Awaited<ReturnType<typeof createClient>>, bookingId: string, cleanerIds: string[], assignedBy: string) {
@@ -86,6 +97,8 @@ export async function POST(request: NextRequest) {
   if (!payload.full_name || !payload.cleaning_type || !payload.area || !payload.service_date || !payload.service_time || !payload.full_address || !payload.email || !payload.phone) {
     return NextResponse.json({ error: "Please fill all required booking fields." }, { status: 400 });
   }
+  const manpowerError = validateManpowerTime(payload);
+  if (manpowerError) return NextResponse.json({ error: manpowerError }, { status: 400 });
 
   const { data, error } = await supabase.from("booking_records").insert({ ...payload, added_by_user: user.id, added_by: payload.added_by || profile?.name || "Portal User" }).select("*").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
@@ -116,6 +129,8 @@ export async function PATCH(request: NextRequest) {
   }
 
   const payload = cleanBookingPayload(body);
+  const manpowerError = validateManpowerTime(payload);
+  if (manpowerError) return NextResponse.json({ error: manpowerError }, { status: 400 });
   const { error } = await supabase.from("booking_records").update(payload).eq("id", body.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   if (Array.isArray(body.assigned_cleaner_ids)) {

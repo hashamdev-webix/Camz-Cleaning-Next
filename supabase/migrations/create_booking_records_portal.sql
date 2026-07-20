@@ -28,6 +28,9 @@ create table if not exists public.booking_records (
   full_address text not null,
   price numeric(12,2) not null check (price >= 0),
   show_price_to_cleaner boolean not null default false,
+  use_manpower_time boolean not null default false,
+  manpower_min_hours numeric(8,2),
+  manpower_max_hours numeric(8,2),
   email text not null,
   phone text not null,
   added_by text,
@@ -45,8 +48,36 @@ create table if not exists public.booking_records (
   hours_approved boolean not null default false,
   approved_hours numeric(8,2) not null default 0 check (approved_hours >= 0),
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint booking_records_manpower_time_check check (
+    use_manpower_time = false
+    or (
+      manpower_min_hours is not null
+      and manpower_max_hours is not null
+      and manpower_min_hours >= 0
+      and manpower_max_hours >= manpower_min_hours
+    )
+  )
 );
+
+alter table public.booking_records
+  add column if not exists use_manpower_time boolean not null default false,
+  add column if not exists manpower_min_hours numeric(8,2),
+  add column if not exists manpower_max_hours numeric(8,2);
+
+alter table public.booking_records
+  drop constraint if exists booking_records_manpower_time_check;
+
+alter table public.booking_records
+  add constraint booking_records_manpower_time_check check (
+    use_manpower_time = false
+    or (
+      manpower_min_hours is not null
+      and manpower_max_hours is not null
+      and manpower_min_hours >= 0
+      and manpower_max_hours >= manpower_min_hours
+    )
+  );
 
 create table if not exists public.booking_record_assignments (
   booking_id uuid not null references public.booking_records(id) on delete cascade,
