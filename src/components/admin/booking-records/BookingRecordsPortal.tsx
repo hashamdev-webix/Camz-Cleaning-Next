@@ -211,7 +211,39 @@ function BookingCalendar({ bookings, month, setMonth, selectedDate, setSelectedD
   const days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
   const cells: Array<Date | null> = [...Array.from({ length: first.getDay() }, () => null), ...Array.from({ length: days }, (_, index) => new Date(month.getFullYear(), month.getMonth(), index + 1))];
   const counts = bookings.reduce<Record<string, number>>((acc, booking) => { acc[booking.service_date] = (acc[booking.service_date] || 0) + 1; return acc; }, {});
-  return <div className="rounded-3xl bg-white p-6 shadow-sm"><div className="flex items-center justify-between"><div><h2 className="text-xl font-bold">Bookings Calendar</h2><p className="text-slate-500">{month.toLocaleDateString("en-CA", { month: "long", year: "numeric" })}</p></div><div className="flex gap-2"><button onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))} className="h-10 rounded-xl border px-4 font-bold">Prev</button><button onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))} className="h-10 rounded-xl border px-4 font-bold">Next</button></div></div><div className="mt-6 grid grid-cols-7 gap-1 text-center text-xs font-bold text-slate-400">{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => <p key={day}>{day}</p>)}</div><div className="mt-4 grid grid-cols-7 gap-1 sm:gap-2">{cells.map((date, index) => { const key = date ? toDateInput(date) : ""; const active = key === selectedDate; const count = counts[key] || 0; return <button key={date?.toISOString() || `blank-${index}`} disabled={!date} onClick={() => date && setSelectedDate(key)} className={`min-h-16 rounded-xl font-bold ${active ? `${activeClass} text-white` : count ? "bg-emerald-50 text-slate-700" : "text-slate-500"}`}>{date && <><span>{date.getDate()}</span>{count > 0 && <span className="mt-1 block text-xs text-blue-500">•<br />{count}</span>}</>}</button>; })}</div></div>;
+  return <div className="rounded-3xl bg-white p-3 shadow-sm sm:p-5 lg:p-6">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 className="text-lg font-bold sm:text-xl">Bookings Calendar</h2>
+        <p className="text-sm text-slate-500 sm:text-base">{month.toLocaleDateString("en-CA", { month: "long", year: "numeric" })}</p>
+      </div>
+      <div className="grid grid-cols-2 gap-2 sm:flex">
+        <button type="button" onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))} className="h-10 rounded-xl border px-3 text-sm font-bold sm:px-4">Prev</button>
+        <button type="button" onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))} className="h-10 rounded-xl border px-3 text-sm font-bold sm:px-4">Next</button>
+      </div>
+    </div>
+    <div className="mt-5 grid grid-cols-7 gap-1 text-center text-[10px] font-bold uppercase text-slate-400 sm:text-xs">
+      {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => <p key={`${day}-${index}`} className="min-w-0">{day}</p>)}
+    </div>
+    <div className="mt-2 grid grid-cols-7 gap-1 sm:mt-4 sm:gap-2">
+      {cells.map((date, index) => {
+        const key = date ? toDateInput(date) : "";
+        const active = key === selectedDate;
+        const count = counts[key] || 0;
+        return <button
+          key={date?.toISOString() || `blank-${index}`}
+          disabled={!date}
+          onClick={() => date && setSelectedDate(key)}
+          className={`aspect-square min-h-0 rounded-lg text-xs font-bold transition sm:rounded-xl sm:text-sm ${active ? `${activeClass} text-white shadow-lg` : count ? "bg-emerald-50 text-slate-700" : "text-slate-500"} ${date ? "hover:ring-2 hover:ring-blue-200" : "cursor-default"}`}
+        >
+          {date && <span className="flex h-full flex-col items-center justify-center leading-none">
+            <span>{date.getDate()}</span>
+            {count > 0 && <span className={`mt-1 rounded-full px-1.5 py-0.5 text-[10px] leading-none ${active ? "bg-white/20 text-white" : "bg-blue-100 text-blue-600"}`}>{count}</span>}
+          </span>}
+        </button>;
+      })}
+    </div>
+  </div>;
 }
 
 function BookingFormModal({ form, setForm, cleaners, saving, error, onClose, onSubmit, currentUser }: { form: FormState; setForm: (form: FormState) => void; cleaners: CleanerUser[]; saving: boolean; error: string; onClose: () => void; onSubmit: (event: FormEvent) => void; currentUser: CurrentUser }) {
