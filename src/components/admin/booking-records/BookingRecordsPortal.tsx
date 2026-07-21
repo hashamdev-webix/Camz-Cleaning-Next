@@ -77,7 +77,7 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
   const isCleaner = role === "cleaner";
   const isDataEntry = role === "data_entry";
   const canCreate = role === "admin" || isDataEntry;
-  const canEdit = role === "admin" || isDataEntry;
+  const canEdit = role === "admin";
   const canAssign = role === "admin";
   const canDelete = role === "admin";
   const ownBookings = useMemo(() => {

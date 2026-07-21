@@ -128,6 +128,10 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  if (role !== "admin") {
+    return NextResponse.json({ error: "Only admin can edit booking records." }, { status: 403 });
+  }
+
   const payload = cleanBookingPayload(body);
   const manpowerError = validateManpowerTime(payload);
   if (manpowerError) return NextResponse.json({ error: manpowerError }, { status: 400 });
