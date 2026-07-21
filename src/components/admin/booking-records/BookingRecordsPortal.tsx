@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarClock, Check, Clock3, ClipboardList, DollarSign, Download, MapPin, Plus, Search, Sparkles, UserRound, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { optimizeImageForUpload, uploadImageToBucket } from "@/lib/images/upload";
 
 export type CleanerUser = { id: string; name: string; email: string };
 export type BookingImage = {
@@ -60,6 +61,7 @@ type CurrentUser = { id: string; name: string; role: string } | null;
 type FormState = Omit<BookingRecord, "id" | "created_at" | "updated_at" | "assigned_cleaners" | "service_images" | "added_by_user"> & { id?: string; assigned_cleaner_ids: string[] };
 
 const areas = ["NE Calgary", "SE Calgary", "NW Calgary", "SW Calgary", "Downtown", "Other area in Calgary"];
+const cleaningTypeOptions = ["Standard Cleaning", "Deep Cleaning", "Move Out / Move In"];
 const emptyForm: FormState = {
   full_name: "", cleaning_type: "", area: "", focus_details: "", service_date: "", service_time: "", full_address: "", price: "", show_price_to_cleaner: false,
   use_manpower_time: false, manpower_min_hours: "", manpower_max_hours: "",
@@ -248,6 +250,7 @@ function BookingCalendar({ bookings, month, setMonth, selectedDate, setSelectedD
 
 function BookingFormModal({ form, setForm, cleaners, saving, error, onClose, onSubmit, currentUser }: { form: FormState; setForm: (form: FormState) => void; cleaners: CleanerUser[]; saving: boolean; error: string; onClose: () => void; onSubmit: (event: FormEvent) => void; currentUser: CurrentUser }) {
   const update = (key: keyof FormState, value: string | boolean | string[] | number | null) => setForm({ ...form, [key]: value });
+  const [cleaningTypeMode, setCleaningTypeMode] = useState(() => cleaningTypeOptions.includes(form.cleaning_type) ? form.cleaning_type : form.cleaning_type ? "Other" : "");
   const toggleManpower = (enabled: boolean) => setForm({
     ...form,
     use_manpower_time: enabled,
@@ -270,7 +273,15 @@ function BookingFormModal({ form, setForm, cleaners, saving, error, onClose, onS
 
       <FormSection title="Booking Details" icon={CalendarClock}>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Field label="Cleaning Type" value={form.cleaning_type} onChange={(v) => update("cleaning_type", v)} placeholder="Deep cleaning" required />
+          <label className="block">
+            <span className="mb-2 block text-sm font-bold text-slate-700">Cleaning Type</span>
+            <select required value={cleaningTypeMode} onChange={(e) => { setCleaningTypeMode(e.target.value); update("cleaning_type", e.target.value === "Other" ? "" : e.target.value); }} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
+              <option value="">Select cleaning type</option>
+              {cleaningTypeOptions.map((type) => <option key={type} value={type}>{type}</option>)}
+              <option value="Other">Other</option>
+            </select>
+          </label>
+          {cleaningTypeMode === "Other" && <Field label="Other Cleaning Name" value={form.cleaning_type} onChange={(v) => update("cleaning_type", v)} placeholder="Deep cleaning" required />}
           <label className="block">
             <span className="mb-2 block text-sm font-bold text-slate-700">Calgary Area</span>
             <select required value={form.area} onChange={(e) => update("area", e.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
@@ -332,6 +343,7 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
   const router = useRouter();
   const [status, setStatus] = useState(booking.status);
   const [uploading, setUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
   const beforeInput = useRef<HTMLInputElement>(null);
   const afterInput = useRef<HTMLInputElement>(null);
   const before = booking.service_images.filter((image) => image.image_type === "before");
@@ -340,16 +352,24 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
 
   const uploadImage = async (file: File, type: "before" | "after") => {
     setUploading(true);
-    const supabase = createClient();
-    const ext = file.name.split(".").pop() || "jpg";
-    const path = `booking_records/${booking.id}/${type}_${Date.now()}_${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("job-images").upload(path, file, { contentType: file.type, upsert: false });
-    if (!error) {
-      const url = supabase.storage.from("job-images").getPublicUrl(path).data.publicUrl;
-      await fetch("/api/admin/booking-records", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: { booking_id: booking.id, image_type: type, url, storage_path: path, name: file.name, format: ext } }) });
+    setUploadMessage(`Uploading ${type} image...`);
+    try {
+      const supabase = createClient();
+      const optimized = await optimizeImageForUpload(file);
+      const ext = optimized.name.split(".").pop() || "jpg";
+      const path = `booking_records/${booking.id}/${type}_${Date.now()}_${crypto.randomUUID()}.${ext}`;
+      const url = await uploadImageToBucket(supabase, "job-images", path, optimized);
+      setUploadMessage("Saving image record...");
+      const response = await fetch("/api/admin/booking-records", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: { booking_id: booking.id, image_type: type, url, storage_path: path, name: file.name, format: ext } }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to save image.");
       router.refresh();
-    } else window.alert(error.message);
-    setUploading(false);
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : "Unable to upload image.");
+    } finally {
+      setUploading(false);
+      setUploadMessage("");
+    }
   };
   const saveStatus = async () => {
     await fetch("/api/admin/booking-records", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: booking.id, status }) });
@@ -389,7 +409,7 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
     <Detail label="Parking Instructions" value={booking.parking_instructions} />
     <Detail label="Focus Details" value={booking.focus_details} />
     <Detail label="Completion Remarks" value={booking.completion_remarks} />
-    <section className="rounded-2xl border p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-bold">Service Images</h3><p className="text-sm text-slate-500">Upload before and after images for this booking.</p></div><div className="flex flex-wrap gap-2"><button onClick={() => beforeInput.current?.click()} className="h-10 rounded-xl bg-blue-700 px-4 text-sm font-bold text-white">+ Before Image</button><button onClick={() => afterInput.current?.click()} className="h-10 rounded-xl bg-cyan-600 px-4 text-sm font-bold text-white">+ After Image</button></div></div><input ref={beforeInput} type="file" multiple accept="image/*" onChange={(e) => Array.from(e.target.files || []).forEach((file) => uploadImage(file, "before"))} className="hidden" /><input ref={afterInput} type="file" multiple accept="image/*" onChange={(e) => Array.from(e.target.files || []).forEach((file) => uploadImage(file, "after"))} className="hidden" />{uploading && <p className="mt-3 text-sm text-blue-700">Uploading...</p>}<div className="mt-4 grid gap-4 md:grid-cols-2"><ImageGroup title="Before" images={before} /><ImageGroup title="After" images={after} /></div></section>
+    <section className="rounded-2xl border p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-bold">Service Images</h3><p className="text-sm text-slate-500">Upload before and after images for this booking.</p></div><div className="flex flex-wrap gap-2"><button onClick={() => beforeInput.current?.click()} disabled={uploading} className="h-10 rounded-xl bg-blue-700 px-4 text-sm font-bold text-white disabled:opacity-60">+ Before Image</button><button onClick={() => afterInput.current?.click()} disabled={uploading} className="h-10 rounded-xl bg-cyan-600 px-4 text-sm font-bold text-white disabled:opacity-60">+ After Image</button></div></div><input ref={beforeInput} type="file" multiple accept="image/*" onChange={(e) => Array.from(e.target.files || []).forEach((file) => uploadImage(file, "before"))} className="hidden" /><input ref={afterInput} type="file" multiple accept="image/*" onChange={(e) => Array.from(e.target.files || []).forEach((file) => uploadImage(file, "after"))} className="hidden" />{uploading && <p className="mt-3 rounded-xl bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700">{uploadMessage || "Uploading..."}</p>}<div className="mt-4 grid gap-4 md:grid-cols-2"><ImageGroup title="Before" images={before} /><ImageGroup title="After" images={after} /></div></section>
     <section className="rounded-2xl border p-4"><h3 className="font-bold">Change Status</h3><div className="mt-3 flex flex-wrap gap-2">{["pending", "ongoing", "completed"].map((item) => <button key={item} onClick={() => setStatus(item as BookingRecord["status"])} className={`h-10 rounded-xl px-4 text-sm font-bold capitalize ${status === item ? "bg-blue-700 text-white" : "border"}`}>{item}</button>)}</div><button onClick={saveStatus} className="mt-3 h-11 rounded-xl bg-blue-700 px-6 font-bold text-white">Save Status</button></section>
     <div className="grid gap-3 sm:grid-cols-3">{canEdit && <button onClick={onEdit} className="h-12 rounded-xl bg-amber-500 font-bold text-white">Edit</button>}{canDelete && <button onClick={async () => { if (window.confirm("Delete this booking?")) { await fetch(`/api/admin/booking-records?id=${booking.id}`, { method: "DELETE" }); onDeleted(); } }} className="h-12 rounded-xl bg-red-600 font-bold text-white">Delete</button>}<button onClick={onClose} className="h-12 rounded-xl border font-bold">Close</button></div>
   </div></Modal>;

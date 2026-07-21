@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, useRef, useState } from "react";
 import { Download, ImagePlus, Trash2, Upload, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { optimizeImageForUpload, uploadImageToBucket } from "@/lib/images/upload";
 
 export type BeforeAfterPair = {
   id: string;
@@ -40,6 +41,7 @@ export default function BeforeAfterManagement({ pairs }: { pairs: BeforeAfterPai
   const [saving, setSaving] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState("");
+  const [savingMessage, setSavingMessage] = useState("");
 
   const pickImage = (side: "before" | "after") => (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -72,14 +74,10 @@ export default function BeforeAfterManagement({ pairs }: { pairs: BeforeAfterPai
 
   const uploadImage = async (file: File, side: "before" | "after") => {
     const supabase = createClient();
-    const extension = file.name.split(".").pop() || "jpg";
+    const optimized = await optimizeImageForUpload(file);
+    const extension = optimized.name.split(".").pop() || "jpg";
     const path = `before_after_gallery/${side}_${Date.now()}_${crypto.randomUUID()}.${extension}`;
-    const { error: uploadError } = await supabase.storage.from("job-images").upload(path, file, {
-      contentType: file.type,
-      upsert: false,
-    });
-    if (uploadError) throw new Error(uploadError.message);
-    return supabase.storage.from("job-images").getPublicUrl(path).data.publicUrl;
+    return uploadImageToBucket(supabase, "job-images", path, optimized);
   };
 
   const saveImages = async () => {
@@ -93,12 +91,21 @@ export default function BeforeAfterManagement({ pairs }: { pairs: BeforeAfterPai
     }
     setSaving(true);
     setError("");
+    setSavingMessage("Preparing images...");
     try {
-      const uploadedPairs = await Promise.all(beforeFiles.map(async (beforeImage, index) => ({
-        before_image_url: await uploadImage(beforeImage.file, "before"),
-        after_image_url: afterFiles[index] ? await uploadImage(afterFiles[index].file, "after") : null,
-      })));
-      await Promise.all(uploadedPairs.map(async (pair) => {
+      const uploadedPairs = [];
+      for (const [index, beforeImage] of beforeFiles.entries()) {
+        setSavingMessage(`Uploading before image ${index + 1} of ${beforeFiles.length}...`);
+        const beforeUrl = await uploadImage(beforeImage.file, "before");
+        let afterUrl = null;
+        if (afterFiles[index]) {
+          setSavingMessage(`Uploading after image ${index + 1} of ${afterFiles.length}...`);
+          afterUrl = await uploadImage(afterFiles[index].file, "after");
+        }
+        uploadedPairs.push({ before_image_url: beforeUrl, after_image_url: afterUrl });
+      }
+      for (const [index, pair] of uploadedPairs.entries()) {
+        setSavingMessage(`Saving record ${index + 1} of ${uploadedPairs.length}...`);
         const response = await fetch("/api/admin/before-after", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -106,13 +113,14 @@ export default function BeforeAfterManagement({ pairs }: { pairs: BeforeAfterPai
         });
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || "Unable to save pair.");
-      }));
+      }
       clearDraft();
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to save pair.");
     } finally {
       setSaving(false);
+      setSavingMessage("");
     }
   };
 
@@ -122,6 +130,7 @@ export default function BeforeAfterManagement({ pairs }: { pairs: BeforeAfterPai
     if (!file || !attachingPairId) return;
     setSaving(true);
     setError("");
+    setSavingMessage("Uploading after image...");
     try {
       const afterUrl = await uploadImage(file, "after");
       const response = await fetch("/api/admin/before-after", {
@@ -137,6 +146,7 @@ export default function BeforeAfterManagement({ pairs }: { pairs: BeforeAfterPai
       setError(err instanceof Error ? err.message : "Unable to attach after image.");
     } finally {
       setSaving(false);
+      setSavingMessage("");
     }
   };
 
@@ -217,7 +227,7 @@ export default function BeforeAfterManagement({ pairs }: { pairs: BeforeAfterPai
               <ImagePlus size={18} /> Add After ({afterFiles.length})
             </button>
             <button type="button" onClick={saveImages} disabled={saving || !beforeFiles.length || (afterFiles.length > 0 && beforeFiles.length !== afterFiles.length)} className="flex min-h-12 items-center gap-2 rounded-xl bg-emerald-600 px-5 font-bold text-white hover:bg-emerald-700 disabled:opacity-50">
-              <Upload size={18} /> {saving ? "Saving..." : afterFiles.length ? `Save ${beforeFiles.length} Pair${beforeFiles.length === 1 ? "" : "s"}` : `Save ${beforeFiles.length} Before${beforeFiles.length === 1 ? "" : "s"}`}
+              <Upload size={18} /> {saving ? "Uploading..." : afterFiles.length ? `Save ${beforeFiles.length} Pair${beforeFiles.length === 1 ? "" : "s"}` : `Save ${beforeFiles.length} Before${beforeFiles.length === 1 ? "" : "s"}`}
             </button>
             {(beforeFiles.length > 0 || afterFiles.length > 0) && (
               <button type="button" onClick={clearDraft} className="flex min-h-12 items-center gap-2 rounded-xl bg-white/10 px-4 font-bold text-slate-300 hover:text-white">
@@ -229,6 +239,7 @@ export default function BeforeAfterManagement({ pairs }: { pairs: BeforeAfterPai
           <input ref={beforeInput} type="file" multiple accept="image/*" onChange={pickImage("before")} className="hidden" />
           <input ref={afterInput} type="file" multiple accept="image/*" onChange={pickImage("after")} className="hidden" />
           <input ref={attachAfterInput} type="file" accept="image/*" onChange={pickAfterForSavedPair} className="hidden" />
+          {savingMessage && <p className="mt-4 rounded-xl bg-white/5 px-4 py-3 text-sm font-semibold text-cyan-200">{savingMessage}</p>}
           <div className="mt-6 grid gap-5 lg:grid-cols-2">
             <ImageDrop label="Before" images={beforeFiles} emptyText="Add before images" onClick={() => beforeInput.current?.click()} onRemove={(index) => removeDraft("before", index)} />
             <ImageDrop label="After" images={afterFiles} emptyText={beforeFiles.length ? "Add after images" : "Add before images first"} onClick={() => beforeFiles.length && afterInput.current?.click()} onRemove={(index) => removeDraft("after", index)} />
