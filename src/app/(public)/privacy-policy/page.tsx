@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
 import CommonHeroSection from "@/components/common/CommonHeroSection";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageSeo({
   title: "Privacy Policy | Camz Cleaning",
-  description:
-    "Read the Camz Cleaning privacy policy for website visitors, service requests, bookings, and customer information handling.",
-};
+  description: "Read the Camz Cleaning privacy policy for website visitors, service requests, bookings and customer information handling.",
+  path: "/privacy-policy/",
+});
 
 type PolicySection = {
   title: string;

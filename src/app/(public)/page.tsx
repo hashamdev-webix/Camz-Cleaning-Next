@@ -9,7 +9,13 @@ import RecentProjects from '@/components/home/RecentProjects'
 import Services from '@/components/home/Services'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
 import VideoCTASection from '@/components/home/VideoCTASection'
+import { pageSeo } from '@/lib/seo'
 
+export const metadata = pageSeo({
+  title: "Trusted Cleaning Services in Calgary & across Alberta",
+  description: "Trusted residential, commercial, vehicle and seasonal cleaning across Calgary, Airdrie, Cochrane and Chestermere. Book Camz Cleaning.",
+  path: "/",
+});
 
 export default function Home() {
 

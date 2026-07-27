@@ -10,6 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://camzcleaning.com"),
   title: "Professional Cleaning Services",
   description:
     "Camz Cleaning offers trusted residential and commercial cleaning services in Calgary. Book now for a spotless space!",
