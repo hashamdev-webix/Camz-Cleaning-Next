@@ -102,8 +102,8 @@ const CommercialCleaningContent = () => {
             },
             {
               id: 5,
-              title: "Office Cleaning",
-              desc: "From desks to shared spaces, our office cleaning keeps your workplace clutter-free and productive.",
+              title: "Commercial Office and Business Cleaning",
+              desc: "Our commercial cleaning service covers offices, shops, restaurants and other workplaces. Services can include workstation cleaning, restroom sanitization, floor care, waste removal and cleaning of shared or high-touch areas. ",
             },
             {
               id: 6,
@@ -114,11 +114,6 @@ const CommercialCleaningContent = () => {
               id: 7,
               title: "Post-Construction Cleaning Service",
               desc: "After renovations, our post-construction cleaning service removes dust and debris, making spaces ready for immediate use.",
-            },
-            {
-              id: 8,
-              title: "Professional Office Cleaning",
-              desc: "Our professional office cleaning combines routine maintenance with deep cleaning to ensure a hygienic, presentable office.",
             },
           ].map((item) => (
             <div key={item.id} className="space-y-1">
@@ -135,9 +130,9 @@ const CommercialCleaningContent = () => {
 
       {/* Carousel & Coverage Section */}
       <section className="space-y-6">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
+        <h1 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
           Our Commercial Cleaning Covers
-        </h2>
+        </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center overflow-hidden">
           {/* Checklist */}
@@ -173,9 +168,9 @@ const CommercialCleaningContent = () => {
 
       {/* Schedule Section */}
       <section className="space-y-6 pb-10">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
+        <h1 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
           Schedule Your Service
-        </h2>
+        </h1>
         <p>
           Contact Camz Cleaning today to schedule your commercial cleaning
           service and maintain a spotless, professional business environment.

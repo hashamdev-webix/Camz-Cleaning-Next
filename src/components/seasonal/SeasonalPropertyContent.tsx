@@ -21,7 +21,6 @@ const SeasonalPropertyContent = () => {
         "Residential snow removal services for homes and rental properties",
         "Driveway, sidewalk, and walkway snow clearing for safer access",
         "Seasonal snow removal support for property owners and managers",
-        "Residential snow removal services for homes and rental properties",
       ],
       footer:
         "With CamzCleaning, snow won't slow you down or put your family at risk.",

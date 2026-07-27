@@ -13,7 +13,7 @@ const ResidentialCleaningContent = () => {
   ];
 
   const whyChooseItems = [
-    "Trusted Vancouver deep cleaning services provider",
+    "Trusted Calgary and across Alberta deep cleaning services provider",
     "Flexible scheduling",
     "Experienced cleaning professionals",
     "Advanced equipment",

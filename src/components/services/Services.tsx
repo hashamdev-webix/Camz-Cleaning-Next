@@ -55,14 +55,15 @@ export default function Services() {
             Our services
           </span>
 
-          <h2 className="mb-6 text-4xl md:text-5xl font-extrabold leading-tight text-[#0B4E9B]">
-            Relax While We Handle Cleaning
-          </h2>
+          <h1 className="mb-6 text-4xl md:text-5xl font-extrabold leading-tight text-[#0B4E9B]">
+            Cleaning Services in Calgary
+          </h1>
 
           <p className="mx-auto max-w-3xl text-base md:text-lg leading-8 text-[#1A1A1A]">
-            Relax and let the experts do the work. Camz Cleaning delivers
-            meticulous cleaning, careful sanitization, and a sparkling space
-            you’ll love coming back to.
+            Camz Cleaning provides residential, commercial, vehicle and seasonal
+            property cleaning services across Calgary, Airdrie, Cochrane and
+            Chestermere. Explore our services and choose the cleaning solution
+            that fits your home, workplace, vehicle or property.
           </p>
         </div>
 

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import PageJsonLd from "@/components/seo/PageJsonLd";
 import { pageSeo } from "@/lib/seo";
 
 export const metadata = pageSeo({
@@ -8,5 +9,5 @@ export const metadata = pageSeo({
 });
 
 export default function ChestermereCleaningLayout({ children }: { children: ReactNode }) {
-  return children;
+  return <><PageJsonLd path="/chestermere-cleaning-services/" />{children}</>;
 }

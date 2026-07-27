@@ -81,10 +81,9 @@ const VehicleCleaningContent = () => {
       title: "Tire Cleaning and Shine",
       desc: "Tires and wheels collect road dust, brake dust, mud, and grime from daily driving and seasonal weather. Our tire cleaning and shine service helps restore a cleaner, sharper, and more polished exterior look.",
       bullets: [
-        "Car wheel deep clean",
-        "Complete deep cleaning car tires",
-        "Long-lasting car wash tire shine",
-        "Optional pressure check with car wash, tire air",
+        "Wheel and tire cleaning",
+        "Brake-dust and road-grime removal ",
+        "Tire shine application",
       ],
     },
   ];

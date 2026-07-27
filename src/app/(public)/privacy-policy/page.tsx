@@ -1,4 +1,5 @@
 import CommonHeroSection from "@/components/common/CommonHeroSection";
+import PageJsonLd from "@/components/seo/PageJsonLd";
 import { pageSeo } from "@/lib/seo";
 
 export const metadata = pageSeo({
@@ -189,6 +190,7 @@ const contactDetails = [
 export default function PrivacyPolicyPage() {
   return (
     <div className="bg-white">
+      <PageJsonLd path="/privacy-policy/" />
       <CommonHeroSection
         backgroundImage="/blog-bg.webp"
         title="Privacy Policy"

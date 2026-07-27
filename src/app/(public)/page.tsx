@@ -9,6 +9,7 @@ import RecentProjects from '@/components/home/RecentProjects'
 import Services from '@/components/home/Services'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
 import VideoCTASection from '@/components/home/VideoCTASection'
+import PageJsonLd from '@/components/seo/PageJsonLd'
 import { pageSeo } from '@/lib/seo'
 
 export const metadata = pageSeo({
@@ -48,6 +49,7 @@ export default function Home() {
 ];
   return (
     <div>
+      <PageJsonLd path="/" />
       <Hero />
       <Services/>
       <AboutSection/>
