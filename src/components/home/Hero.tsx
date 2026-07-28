@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Mic2 } from "lucide-react";
 import { TfiHeadphoneAlt } from "react-icons/tfi";
 
 export default function Hero() {
@@ -28,11 +27,11 @@ export default function Hero() {
           </span>
 
           {/* Heading */}
-          <h5 className="text-4xl md:text-[55px]  font-extrabold leading-tight mb-6">
+          <h1 className="text-4xl md:text-[55px]  font-extrabold leading-tight mb-6">
             Trusted Cleaning <br />
             Company Based in <br />
             Calgary
-          </h5>
+          </h1>
 
           {/* Description */}
           <p className="text-white mb-8 max-w-2xl w-full">

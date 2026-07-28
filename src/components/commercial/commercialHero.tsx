@@ -20,9 +20,9 @@ const CommercialHero = () => {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4">
-        <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-md">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-md">
           Commercial Cleaning Services for <br /> Businesses
-        </h2>
+        </h1>
       </div>
     </section>
   );
