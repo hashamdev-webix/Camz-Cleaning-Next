@@ -91,12 +91,12 @@ const AboutSection = () => {
             About Us
           </motion.span>
 
-          <motion.h1
+          <motion.h2
             variants={itemVariants}
             className="text-4xl md:text-5xl font-bold text-[#004A8C] leading-tight"
           >
             Affordable Cleaning for <br /> Homes & Offices
-          </motion.h1>
+          </motion.h2>
 
           <motion.p
             variants={itemVariants}
