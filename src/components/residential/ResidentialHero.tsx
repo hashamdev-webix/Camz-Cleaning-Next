@@ -1,18 +1,12 @@
 import React from "react";
+import Image from "next/image";
 
 const ResidentialHero = () => {
   return (
     <section className="relative h-[300px]  flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: "url('/wp-admin/uploads/residential-bg.webp')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
+      <div className="absolute inset-0 z-0">
+        <Image src="/wp-admin/uploads/residential-bg.webp" alt="" fill priority sizes="100vw" className="object-cover" />
         {/* Overlay to ensure text readability */}
         <div className="absolute inset-0 bg-[#265995] opacity-92"></div>
       </div>

@@ -39,7 +39,7 @@ const AboutSection = () => {
           {/* Main Large Image */}
           <div className="relative w-2/3 aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
             <Image
-              src="/wp-admin/uploads/kitchen cleaning.webp"
+              src="/wp-admin/uploads/kitchen-cleaning.webp"
               alt="Clean Kitchen"
               fill
               className="object-cover"
@@ -152,7 +152,7 @@ const AboutSection = () => {
                 <div className="w-28 h-28 rounded-full border-[3px] border-[#BFD3E1] flex items-center justify-center">
                   <div className="w-22 h-22 rounded-full bg-[#D8E2E8] flex items-center justify-center">
                     <Image
-                      src="/about-icon-2.webp"
+                      src="/work.webp"
                       alt="Office"
                       width={64}
                       height={64}

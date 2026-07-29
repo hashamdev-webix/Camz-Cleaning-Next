@@ -35,7 +35,7 @@ const FAQSection = () => {
         <div className="relative h-full min-h-[300px]">
           <div className="rounded-[2.5rem] overflow-hidden  shadow-lg">
             <img
-              src="/wp-admin/uploads/stairs cleaning.webp"
+              src="/wp-admin/uploads/stairs-cleaning.webp"
               alt=" stairs cleaning"
               className="w-full h-[600px] object-cover"
             />

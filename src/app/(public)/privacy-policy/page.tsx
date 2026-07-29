@@ -202,9 +202,9 @@ export default function PrivacyPolicyPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[#02A8D0]">
               Camz Cleaning
             </p>
-            <h1 className="mt-3 text-3xl font-extrabold text-[#16497D] md:text-4xl">
+            <h2 className="mt-3 text-3xl font-extrabold text-[#16497D] md:text-4xl">
               Privacy Policy
-            </h1>
+            </h2>
             <p className="mt-3 text-sm font-medium text-[#46627D]">
               Last Updated: 19 June, 2026
             </p>

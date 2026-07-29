@@ -7,14 +7,10 @@ import { TfiHeadphoneAlt } from "react-icons/tfi";
 export default function Hero() {
   return (
     <section
-      className="  relative overflow-hidden text-white bg-cover bg-center"
-      style={{
-        backgroundImage: `
-      linear-gradient(to right, rgba(31,95,155,0.9), rgba(2,192,230,0.9)),
-      url('/hero-bg.webp')
-    `,
-      }}
+      className="relative overflow-hidden text-white"
     >
+      <Image src="/hero-bg.webp" alt="" fill priority sizes="100vw" className="object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[rgba(31,95,155,0.9)] to-[rgba(2,192,230,0.9)]" />
       {/* Background overlay pattern (optional later) */}
       <div className="absolute inset-0 opacity-10 bg-[url('/pattern.png')] bg-cover bg-center " />
 

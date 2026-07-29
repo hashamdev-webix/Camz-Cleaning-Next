@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Mail, Phone, Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   FaFacebookF,
   FaTwitter,
@@ -86,9 +87,12 @@ export default function Header() {
         <div className="container-custom mx-auto px-4 py-2 flex items-center justify-between">
           {/* Logo */}
           <Link href="/">
-            <img
+            <Image
               src="/logo.webp"
               alt="Camz Cleaning"
+              width={608}
+              height={174}
+              priority
               className="h-12 md:h-16 w-auto"
             />
           </Link>

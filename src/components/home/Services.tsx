@@ -55,9 +55,9 @@ export default function Services() {
         </span>
 
         {/* Heading */}
-        <h1 className="text-3xl md:text-4xl font-extrabold text-[#0B4E9B] mb-4">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B4E9B] mb-4">
           Our Professional Cleaning Services
-        </h1>
+        </h2>
 
         {/* Description */}
         <p className="max-w-2xl mx-auto text-gray-600 mb-12 leading-relaxed">

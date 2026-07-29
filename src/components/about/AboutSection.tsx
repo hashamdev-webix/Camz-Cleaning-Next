@@ -38,7 +38,7 @@ const AboutSection = () => {
           {/* Main Large Image */}
           <div className="relative w-2/3 aspect-[4/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
             <Image
-              src="/wp-admin/uploads/clean wadrobe.webp"
+              src="/wp-admin/uploads/clean-wadrobe.webp"
               alt="Clean Kitchen"
               fill
               className="object-cover"
@@ -66,7 +66,7 @@ const AboutSection = () => {
             {/* Smaller Secondary Image */}
             <div className="relative aspect-[3/5] rounded-2xl overflow-hidden shadow-lg border-4 border-white">
               <Image
-                src="/wp-admin/uploads/cleaned kitchen.webp"
+                src="/wp-admin/uploads/cleaned-kitchen.webp"
                 alt="Cleaning detail"
                 fill
                 className="object-cover"
@@ -154,7 +154,7 @@ const AboutSection = () => {
                   {/* Inner Circle */}
                   <div className="w-22 h-22 rounded-full bg-[#D8E2E8] flex items-center justify-center">
                     <Image
-                      src="/about-icon-2.webp"
+                      src="/work.webp"
                       alt="Office"
                       width={64}
                       height={64}

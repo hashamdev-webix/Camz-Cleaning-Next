@@ -31,7 +31,7 @@ const AreasServed = () => {
         {/* Left Side: Image */}
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
           <Image
-            src="/wp-admin/uploads/Room cleaning.webp" // Ensure you have the cabinet image in your public folder
+            src="/wp-admin/uploads/room-cleaning.webp" // Ensure you have the cabinet image in your public folder
             alt="Room cleaning"
             fill
             className="object-cover"

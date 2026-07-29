@@ -11,7 +11,7 @@ const FinalCTASection = () => {
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('wp-admin/uploads/clean lobby.webp')", // Ensure the extension (.jpg, .png, etc.) matches your file
+          backgroundImage: "url('/wp-admin/uploads/clean-lobby.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

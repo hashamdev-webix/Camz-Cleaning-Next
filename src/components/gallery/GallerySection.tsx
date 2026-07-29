@@ -1,11 +1,11 @@
 // components/GallerySection.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 
-type GalleryItem = {
+export type GalleryItem = {
   id: string;
   image_url: string;
   created_at: string;
@@ -19,45 +19,36 @@ const getAltFromUrl = (url: string): string => {
   return nameOnly.replace(/-|_/g, " ");
 };
 
-export default function GallerySection() {
-  const [images, setImages] = useState<GalleryItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(IMAGES_PER_LOAD);
+export default function GallerySection({
+  initialImages,
+  initialHasMore,
+}: {
+  initialImages: GalleryItem[];
+  initialHasMore: boolean;
+}) {
+  const [images, setImages] = useState<GalleryItem[]>(initialImages);
+  const [hasMore, setHasMore] = useState(initialHasMore);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        console.log("Fetching gallery images...");
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from("gallery")
-          .select("*")
-          .order("created_at", { ascending: false });
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    const supabase = createClient();
+    const from = images.length;
+    const { data, error } = await supabase
+      .from("gallery")
+      .select("id, image_url, created_at")
+      .order("created_at", { ascending: false })
+      .range(from, from + IMAGES_PER_LOAD);
 
-        console.log("Gallery data:", data);
-        console.log("Gallery error:", error);
-
-        if (error) {
-          console.error("Supabase error:", error);
-          setImages([]);
-        } else {
-          setImages(data || []);
-        }
-      } catch (err) {
-        console.error("Fetch error:", err);
-        setImages([]);
-      } finally {
-        setLoading(false); // ALWAYS set loading false
-      }
-    };
-
-    fetchImages();
-  }, []);
-
-  const visibleImages = images.slice(0, visibleCount);
-
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + IMAGES_PER_LOAD);
+    if (!error) {
+      const nextImages = (data ?? []) as GalleryItem[];
+      setImages((current) => [
+        ...current,
+        ...nextImages.slice(0, IMAGES_PER_LOAD),
+      ]);
+      setHasMore(nextImages.length > IMAGES_PER_LOAD);
+    }
+    setLoadingMore(false);
   };
 
   return (
@@ -83,28 +74,18 @@ export default function GallerySection() {
           </p>
         </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex justify-center py-12">
-            <div className="text-center">
-              <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-cyan-500"></div>
-              <p className="mt-4 text-gray-600">Loading gallery...</p>
-            </div>
-          </div>
-        )}
-
         {/* Empty State */}
-        {!loading && images.length === 0 && (
+        {images.length === 0 && (
           <div className="flex justify-center py-12">
             <p className="text-lg text-gray-600">No images yet</p>
           </div>
         )}
 
         {/* Masonry Grid */}
-        {!loading && images.length > 0 && (
+        {images.length > 0 && (
           <>
             <div className="columns-1 gap-5 sm:columns-2 lg:columns-4">
-              {visibleImages.map((item) => (
+              {images.map((item) => (
                 <div
                   key={item.id}
                   className="group mb-5 break-inside-avoid overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-xl"
@@ -123,13 +104,14 @@ export default function GallerySection() {
             </div>
 
             {/* Load More Button */}
-            {visibleCount < images.length && (
+            {hasMore && (
               <div className="mt-14 flex justify-center">
                 <button
                   onClick={handleLoadMore}
+                  disabled={loadingMore}
                   className="rounded-full bg-[#0d4ea6] px-8 py-4 text-sm font-semibold text-white transition hover:bg-[#083b7e]"
                 >
-                  Load More
+                  {loadingMore ? "Loading..." : "Load More"}
                 </button>
               </div>
             )}

@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 
 const AboutContent = () => {
   const images = [
-    "/wp-admin/uploads/stairs cleaning.webp",
-    "/wp-admin/uploads/whole kitchen cleaning.webp",
+    "/wp-admin/uploads/stairs-cleaning.webp",
+    "/wp-admin/uploads/whole kitchen-cleaning.webp",
   ];
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -28,9 +28,9 @@ const AboutContent = () => {
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl md:text-5xl font-extrabold text-[#0B4E9B] leading-tight">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-[#0B4E9B] leading-tight">
             Professional Cleaning <br /> Services You Can Trust
-          </h1>
+          </h2>
 
           {/* Description */}
           <p className="text-gray-600 leading-relaxed text-lg">

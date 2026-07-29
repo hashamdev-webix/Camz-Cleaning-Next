@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   IoMailOutline,
   IoCallOutline,
@@ -39,9 +40,11 @@ const Footer = () => {
       <div className="container-custom mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
         {/* Column 1: Logo & Info */}
         <div className="space-y-6">
-          <img
+          <Image
             src="/wp-admin/uploads/footer-logo.webp"
             alt="Camz Cleaning"
+            width={304}
+            height={87}
             className="h-auto w-auto "
           />
           <p className="text-white text-sm leading-relaxed">

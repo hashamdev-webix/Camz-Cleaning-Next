@@ -11,7 +11,7 @@ const projects = [
     category: "Residential Cleaning",
     title: "Complete Home Care Solutions",
     description: "Experience spotless, hygienic homes with our complete cleaning solutions. From deep bathroom and kitchen cleaning to carpets, upholstery, and vents, we make every corner shine effortlessly.",
-    image: "/wp-admin/uploads/stairs cleaning.webp", 
+    image: "/wp-admin/uploads/stairs-cleaning.webp",
     url:"/gallery"
   },
   {

@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 // 1. Define the types for your props
 interface HeroProps {
@@ -11,15 +12,8 @@ const CommonHeroSection = ({ backgroundImage, title }: HeroProps) => {
   return (
     <section className="relative h-[300px] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `url('${backgroundImage}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
+      <div className="absolute inset-0 z-0">
+        <Image src={backgroundImage} alt="" fill priority sizes="100vw" className="object-cover" />
         {/* Overlay to ensure text readability */}
         <div className="absolute inset-0 bg-[#265995] opacity-80"></div>
       </div>

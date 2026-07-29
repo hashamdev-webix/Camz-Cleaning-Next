@@ -9,15 +9,15 @@ const AreasServed = () => {
   // Image data for the smooth transition
   const sliderImages = [
     {
-      src: "/wp-admin/uploads/clean wadrobe.webp",
+      src: "/wp-admin/uploads/clean-wadrobe.webp",
       alt: "clean wadrobe",
     },
     {
-      src: "/wp-admin/uploads/cleaned floor.webp",
+      src: "/wp-admin/uploads/cleaned-floor.webp",
       alt: "cleaned floor",
     },
     {
-      src: "/wp-admin/uploads/whole bathroom cleaning.webp",
+      src: "/wp-admin/uploads/whole-bathroom-cleaning.webp",
       alt: "whole bathroom cleaning",
     },
   ];

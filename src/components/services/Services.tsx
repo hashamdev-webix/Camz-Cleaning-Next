@@ -55,9 +55,9 @@ export default function Services() {
             Our services
           </span>
 
-          <h1 className="mb-6 text-4xl md:text-5xl font-extrabold leading-tight text-[#0B4E9B]">
+          <h2 className="mb-6 text-4xl md:text-5xl font-extrabold leading-tight text-[#0B4E9B]">
             Cleaning Services in Calgary
-          </h1>
+          </h2>
 
           <p className="mx-auto max-w-3xl text-base md:text-lg leading-8 text-[#1A1A1A]">
             Camz Cleaning provides residential, commercial, vehicle and seasonal

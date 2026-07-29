@@ -8,7 +8,7 @@ const AreasServed = () => {
         {/* Left Side: Image */}
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
           <Image
-            src="/wp-admin/uploads/sink cleaning.webp"
+            src="/wp-admin/uploads/sink-cleaning.webp"
             alt="Clean kitchen cabinets"
             fill
             className="object-cover"

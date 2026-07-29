@@ -3,7 +3,9 @@
 import {
   createContext,
   useContext,
+  useCallback,
   useEffect,
+  useMemo,
   useState,
   ReactNode,
 } from "react";
@@ -47,24 +49,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
-  // Fetch user data from 'users' table
-  const getCurrentUser = async (): Promise<UserData | null> => {
+  const fetchProfile = useCallback(async (userId: string): Promise<UserData | null> => {
     try {
-      // Check if user is logged in first
-      const {
-        data: { user: authUser },
-      } = await supabase.auth.getUser();
-
-      // Return null immediately if no user is logged in
-      if (!authUser) return null;
-
-      // Use maybeSingle() instead of single() to avoid crashes when no user exists
       const { data, error } = await supabase
         .from("users")
-        .select("*")
-        .eq("id", authUser.id)
+        .select(
+          "id, name, email, role, phone_number, approval_status, source, is_blocked",
+        )
+        .eq("id", userId)
         .maybeSingle();
 
       if (error) {
@@ -72,78 +66,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return null;
       }
 
-      // Return null if no data found
-      if (!data) return null;
-
-      return data as UserData;
+      return (data as UserData | null) ?? null;
     } catch (error) {
-      console.error("Error in getCurrentUser:", error);
+      console.error("Error fetching user data:", error);
       return null;
     }
+  }, [supabase]);
+
+  const getCurrentUser = async (): Promise<UserData | null> => {
+    if (userData) return userData;
+    if (!session?.user.id) return null;
+    return fetchProfile(session.user.id);
   };
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth
-      .getSession()
-      .then(async ({ data: { session }, error }) => {
-        // If session is invalid/expired, sign out cleanly
-        if (error) {
-          console.error("Session error:", error.message);
-          await supabase.auth.signOut();
-          setSession(null);
-          setUser(null);
-          setUserData(null);
-          setLoading(false);
-          return;
-        }
-
-        setSession(session);
-        setUser(session?.user ?? null);
-
-        if (session?.user) {
-          // Fetch user data but don't block anything if it fails
-          try {
-            const userData = await getCurrentUser();
-            setUserData(userData);
-          } catch (error) {
-            console.error("Failed to fetch user data on init:", error);
-            setUserData(null);
-          }
-        }
-
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Auth init failed:", err);
-        setLoading(false);
-      });
-
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange(async (event, nextSession) => {
+      setSession(nextSession);
+      setUser(nextSession?.user ?? null);
 
-      if (session?.user) {
-        // Fetch user data but don't block anything if it fails
+      if (!nextSession?.user) {
+        setUserData(null);
+      } else if (event !== "TOKEN_REFRESHED") {
         try {
-          const userData = await getCurrentUser();
-          setUserData(userData);
+          setUserData(await fetchProfile(nextSession.user.id));
         } catch (error) {
           console.error("Failed to fetch user data on auth change:", error);
           setUserData(null);
         }
-      } else {
-        setUserData(null);
       }
 
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [fetchProfile, supabase]);
 
   const signUp = async (
     email: string,

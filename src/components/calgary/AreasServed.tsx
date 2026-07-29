@@ -6,10 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const AreasServed = () => {
   const images = [
-    { src: "/wp-admin/uploads/clean wadrobe.webp", alt: "Clean wardrobe" },
-    { src: "/wp-admin/uploads/cleaned floor.webp", alt: "Cleaned floor" },
+    { src: "/wp-admin/uploads/clean-wadrobe.webp", alt: "Clean wardrobe" },
+    { src: "/wp-admin/uploads/cleaned-floor.webp", alt: "Cleaned floor" },
     {
-      src: "/wp-admin/uploads/whole bathroom cleaning.webp",
+      src: "/wp-admin/uploads/whole-bathroom-cleaning.webp",
       alt: "Whole bathroom cleaning",
     },
   ];

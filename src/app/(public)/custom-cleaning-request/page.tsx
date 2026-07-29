@@ -144,7 +144,7 @@ export default function CustomCleaningRequestPage() {
             <CheckCircle2 size={34} />
           </div>
           <p className="mb-3 text-sm font-bold uppercase text-[#4276B2]">Request received</p>
-          <h1 className="text-3xl font-bold text-[#0B4E9B] sm:text-4xl">Thank you. We will be in touch.</h1>
+          <h2 className="text-3xl font-bold text-[#0B4E9B] sm:text-4xl">Thank you. We will be in touch.</h2>
           <p className="mx-auto mt-4 max-w-md text-slate-600">Our team will review your checklist and contact you with a manual quote.</p>
           <button type="button" onClick={() => window.location.reload()} className="mt-8 rounded-md bg-[#0B4E9B] px-6 py-3 font-semibold text-white hover:bg-[#00A8D4]">Start another request</button>
         </div>

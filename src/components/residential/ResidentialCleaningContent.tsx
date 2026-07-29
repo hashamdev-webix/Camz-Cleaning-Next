@@ -124,7 +124,7 @@ const ResidentialCleaningContent = () => {
       alt: "Professional cleaning assistance background",
     },
     {
-      src: "/wp-admin/uploads/stairs cleaning.webp",
+      src: "/wp-admin/uploads/stairs-cleaning.webp",
       alt: "Detailed stairs and carpet cleaning",
     },
   ];

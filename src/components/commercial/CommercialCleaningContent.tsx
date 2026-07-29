@@ -14,11 +14,11 @@ const CommercialCleaningContent = () => {
 
   const carouselData = [
     {
-      src: "/wp-admin/uploads/stairs cleaning.webp",
+      src: "/wp-admin/uploads/stairs-cleaning.webp",
       alt: "Professional stairs cleaning service",
     },
     {
-      src: "/wp-admin/uploads/floor cleaning of home.webp",
+      src: "/wp-admin/uploads/floor-cleaning-of-home.webp",
       alt: "Deep floor cleaning of home",
     },
     {
@@ -130,9 +130,9 @@ const CommercialCleaningContent = () => {
 
       {/* Carousel & Coverage Section */}
       <section className="space-y-6">
-        <h1 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
+        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
           Our Commercial Cleaning Covers
-        </h1>
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center overflow-hidden">
           {/* Checklist */}
@@ -168,9 +168,9 @@ const CommercialCleaningContent = () => {
 
       {/* Schedule Section */}
       <section className="space-y-6 pb-10">
-        <h1 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
+        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
           Schedule Your Service
-        </h1>
+        </h2>
         <p>
           Contact Camz Cleaning today to schedule your commercial cleaning
           service and maintain a spotless, professional business environment.
