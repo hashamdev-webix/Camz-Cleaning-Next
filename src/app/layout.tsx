@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
+import {
+  SITE_URL,
+  SITE_NAME,
+  DEFAULT_DESCRIPTION,
+} from "@/lib/site-config";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -10,9 +15,22 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Professional Cleaning Services",
-  description:
-    "Camz Cleaning offers trusted residential and commercial cleaning services in Calgary. Book now for a spotless space!",
+  description: DEFAULT_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: "Professional Cleaning Services",
+    description: DEFAULT_DESCRIPTION,
+    url: `${SITE_URL}/`,
+    locale: "en_CA",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Professional Cleaning Services",
+    description: DEFAULT_DESCRIPTION,
+  },
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",
