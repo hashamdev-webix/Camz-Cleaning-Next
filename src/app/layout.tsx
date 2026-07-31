@@ -5,6 +5,9 @@ import {
   SITE_URL,
   SITE_NAME,
   DEFAULT_DESCRIPTION,
+  BUSINESS,
+  AREAS_SERVED,
+  SOCIAL_LINKS,
 } from "@/lib/site-config";
 import "./globals.css";
 
@@ -38,6 +41,26 @@ export const metadata: Metadata = {
   },
 };
 
+// No street address, opening days, or ratings are published in the codebase,
+// so those fields are intentionally omitted.
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: BUSINESS.name,
+  description: DEFAULT_DESCRIPTION,
+  url: `${SITE_URL}/`,
+  telephone: BUSINESS.phone,
+  email: BUSINESS.email,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: BUSINESS.city,
+    addressRegion: BUSINESS.region,
+    addressCountry: "CA",
+  },
+  areaServed: AREAS_SERVED.map((name) => ({ "@type": "City", name })),
+  sameAs: [...SOCIAL_LINKS],
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -46,6 +69,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessJsonLd),
+          }}
+        />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
