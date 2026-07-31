@@ -50,7 +50,7 @@ Residential & Commercial
      <AreasServed/>
      <CommonFAQ faqs={faqData}/>
     <TestimonialsSection/>
-    <AreaCTA/>
+    <AreaCTA city="Cochrane"/>
     </div>
   )
 }

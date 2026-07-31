@@ -50,7 +50,7 @@ const ProfessionalServicesGrid = () => {
 const services = [
     {
       title: "Residential Cleaning Service",
-      description: "Residential cleaning services in Chestermere keep homes spotless with deep bathroom cleaning, kitchen care, fireplace cleaning, and transparent Airdrie house cleaning prices.",
+      description: "Residential cleaning services in Chestermere keep homes spotless with deep bathroom cleaning, kitchen care, fireplace cleaning, and transparent Chestermere house cleaning prices.",
       href: "/residential-cleaning-services",
       isDark: false
     },

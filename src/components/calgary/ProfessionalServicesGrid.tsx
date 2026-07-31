@@ -62,7 +62,7 @@ const ProfessionalServicesGrid = () => {
     },
     {
       title: "Vehicle Cleaning Services at Home Calgary",
-      description: "Keep your vehicle spotless without leaving home in Cochrane. Camz Cleaning brings convenient, professional mobile car cleaning right to your doorstep today.",
+      description: "Keep your vehicle spotless without leaving home in Calgary. Camz Cleaning brings convenient, professional mobile car cleaning right to your doorstep today.",
       href: "/vehicle-cleaning-service",
       isDark: false
     },

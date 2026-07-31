@@ -10,7 +10,7 @@ const ChestermereCleaningServices = () => {
         <div className="space-y-8">
           {/* Badge */}
           <div className="inline-block bg-[#00CEE6] text-white px-5 py-1.5 rounded-full text-sm font-semibold tracking-wide">
-            Cochrane
+            Chestermere
           </div>
 
           {/* Main Title */}
@@ -68,7 +68,7 @@ const ChestermereCleaningServices = () => {
           <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-[10px] border-white z-10">
             <Image
               src="/p4.webp"
-              alt="Professional Cleaning in Cochrane"
+              alt="Professional Cleaning in Chestermere"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               priority
