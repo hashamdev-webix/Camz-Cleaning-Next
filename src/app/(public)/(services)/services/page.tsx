@@ -6,6 +6,15 @@ import Residential from "@/components/services/Residential";
 import Services from "@/components/services/Services";
 import Vehicle from "@/components/services/Vehicle";
 import React from "react";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Our Cleaning Services | Camz Cleaning",
+  description:
+    "Explore Camz Cleaning services: residential and commercial cleaning, vehicle detailing at home, and seasonal property care across the Calgary area.",
+  path: "/services/",
+});
 
 export default function page() {
   return (

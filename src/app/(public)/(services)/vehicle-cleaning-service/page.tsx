@@ -7,6 +7,15 @@ import CommonHeroSection from "@/components/common/CommonHeroSection";
 import VehicleCleaningContent from "@/components/vehicle/VehicleCleaningContent";
 import CommonFAQ from "@/components/common/CommonFAQ";
 import VehicleCTA from "@/components/vehicle/VehicleCTA";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Vehicle Cleaning Services at Home | Camz Cleaning",
+  description:
+    "Mobile car cleaning at your doorstep: interior vacuuming, seat and carpet care, dashboard detailing, exterior wash, and tire shine in the Calgary area.",
+  path: "/vehicle-cleaning-service/",
+});
 
 const page = () => {
   const vehicleFaqs = [

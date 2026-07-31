@@ -7,7 +7,15 @@ import TestimonialsSection from '@/components/home/TestimonialsSection'
 import AreasServed from '@/components/airdrie/AreaServed'
 
 import CommonFAQ from '@/components/common/CommonFAQ'
+import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 
+export const metadata: Metadata = buildPageMetadata({
+  title: "Cleaning Services in Airdrie | Camz Cleaning",
+  description:
+    "Trusted Airdrie cleaning services for homes and offices, including residential and commercial cleaning plus fireplace and furnace care at honest prices.",
+  path: "/airdrie-cleaning-services/",
+})
 
 export default function page() {
   const faqData = [

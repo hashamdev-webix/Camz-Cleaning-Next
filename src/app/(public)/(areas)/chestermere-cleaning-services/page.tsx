@@ -7,6 +7,16 @@ import ProfessionalServicesGrid from '@/components/chestermere/ProfessionalServi
 import AreasServed from '@/components/chestermere/AreasServed'
 
 import CommonFAQ from '@/components/common/CommonFAQ'
+import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Cleaning Services in Chestermere | Camz Cleaning",
+  description:
+    "Expert Chestermere cleaning services for homes and businesses: residential, commercial, vehicle detailing, steam carpet cleaning, and move-out cleans.",
+  path: "/chestermere-cleaning-services/",
+})
+
 export default function page() {
 
   const faqData = [

@@ -9,7 +9,15 @@ import RecentProjects from '@/components/home/RecentProjects'
 import Services from '@/components/home/Services'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
 import VideoCTASection from '@/components/home/VideoCTASection'
+import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 
+export const metadata: Metadata = buildPageMetadata({
+  title: "Professional Cleaning Company in Calgary | Camz Cleaning",
+  description:
+    "Camz Cleaning delivers professional residential, commercial, vehicle, and seasonal property cleaning across Calgary, Airdrie, Chestermere, and Cochrane.",
+  path: "/",
+})
 
 export default function Home() {
 

@@ -8,7 +8,15 @@ import ProfessionalServicesGrid from '@/components/cochrane/ProfessionalServices
 import AreasServed from '@/components/cochrane/AreasServed'
 
 import CommonFAQ from '@/components/common/CommonFAQ'
+import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 
+export const metadata: Metadata = buildPageMetadata({
+  title: "Cleaning Services in Cochrane | Camz Cleaning",
+  description:
+    "Professional Cochrane cleaning services for homes and offices, from deep kitchen and bathroom cleaning to floor polishing and surface sanitization.",
+  path: "/cochrane-cleaning-services/",
+})
 
 export default function page() {
   const faqData = [

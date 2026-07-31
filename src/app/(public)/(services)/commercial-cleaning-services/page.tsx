@@ -6,6 +6,15 @@ import AreasServed from '@/components/home/AreasServed';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import CommercialCTA from '@/components/commercial/CommercialCTA';
 import CommonFAQ from '@/components/common/CommonFAQ';
+import type { Metadata } from 'next';
+import { buildPageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Commercial Cleaning Services Calgary | Camz Cleaning",
+  description:
+    "Professional commercial cleaning for offices, shops, and restaurants in Calgary, Airdrie, Chestermere, and Cochrane, with plans tailored to your business.",
+  path: "/commercial-cleaning-services/",
+});
 
 const page = () => {
 

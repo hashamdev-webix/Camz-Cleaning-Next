@@ -6,7 +6,15 @@ import AreaCTA from '@/components/common/AreaCTA'
 import CommonFAQ from '@/components/common/CommonFAQ'
 import CommonHeroSection from '@/components/common/CommonHeroSection'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
+import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 
+export const metadata: Metadata = buildPageMetadata({
+  title: "Cleaning Services in Calgary | Home & Office Cleaners",
+  description:
+    "Reliable cleaning services in Calgary for homes and offices, including residential, commercial, vehicle, move-in/move-out, and furnace cleaning options.",
+  path: "/calgary-cleaning-services/",
+})
 
 export default function page() {
   const faqData = [

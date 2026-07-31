@@ -10,6 +10,15 @@ import SeasonalPropertyContent from '@/components/seasonal/SeasonalPropertyConte
 
 import SeasonalCTA from '@/components/seasonal/SeasonalTA';
 import CommonFAQ from '@/components/common/CommonFAQ';
+import type { Metadata } from 'next';
+import { buildPageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Seasonal Property Services | Camz Cleaning",
+  description:
+    "Year-round property care including snow removal, sidewalk clearing, lawn care, yard cleanup, and vacation rental cleaning for homes and businesses.",
+  path: "/seasonal-property-service/",
+});
 
 const page = () => {
      const seasonalFaqs = [

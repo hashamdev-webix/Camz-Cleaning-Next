@@ -6,6 +6,15 @@ import ResidentialCleaningContent from '@/components/residential/ResidentialClea
 import ResidentialHero from '@/components/residential/ResidentialHero';
 import CommonFAQ from '@/components/common/CommonFAQ';
 import ResidentialCTA from '@/components/residential/ResidentialCTA';
+import type { Metadata } from 'next';
+import { buildPageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Residential House Cleaning Services | Camz Cleaning",
+  description:
+    "House cleaning for bedrooms, bathrooms, kitchens, carpets, and upholstery, with weekly, bi-weekly, monthly, deep, and steam cleaning options in Calgary.",
+  path: "/residential-cleaning-services/",
+});
 
 const page = () => {
 
