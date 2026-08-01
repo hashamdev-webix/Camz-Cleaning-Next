@@ -29,7 +29,7 @@ const AirdrieCleaningServices = () => {
             <p>
               We proudly serve the entire Airdrie area with reliable and
               affordable services. Whether you are comparing Airdrie house
-              cleaning prices or checking general cleaning services For Calgary
+              cleaning prices or checking general cleaning services for Airdrie
               prices, we offer transparent quotes and consistent quality.
             </p>
           </div>
@@ -63,7 +63,7 @@ const AirdrieCleaningServices = () => {
           <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-[10px] border-white z-10">
             <Image
               src="/wp-admin/uploads/vehicle.webp"
-              alt="Professional Cleaning in Calgary"
+              alt="Professional Cleaning in Airdrie"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               priority

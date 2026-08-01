@@ -47,7 +47,7 @@ export default function page() {
      <AreasServed/>
    <CommonFAQ faqs={faqData}/>
     <TestimonialsSection/>
-    <AreaCTA/>
+    <AreaCTA city="Chestermere"/>
     </div>
   )
 }

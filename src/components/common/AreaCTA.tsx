@@ -1,7 +1,11 @@
 import React from "react";
 import Link from "next/link";
 
-const AreaCTA = () => {
+interface AreaCTAProps {
+  city: string;
+}
+
+const AreaCTA = ({ city }: AreaCTAProps) => {
   return (
     <section className="relative w-full py-16 px-6 overflow-hidden">
       {/* Background Image with Dark Blue Overlay */}
@@ -29,7 +33,7 @@ const AreaCTA = () => {
         {/* Subtext */}
         <p className="text-white text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
           <span className="text-white">
-            Schedule your cleaning with Camz Cleaning today in Cochrane and
+            Schedule your cleaning with Camz Cleaning today in {city} and
             enjoy professional, reliable, and thorough services for a spotless
             home or office.
           </span>
