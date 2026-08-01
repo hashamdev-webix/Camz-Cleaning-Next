@@ -192,7 +192,7 @@ export default function PrivacyPolicyPage() {
     <div className="bg-white">
       <PageJsonLd path="/privacy-policy/" />
       <CommonHeroSection
-        backgroundImage="/blog-bg.webp"
+        backgroundImage="/wp-admin/uploads/blog-bg.webp"
         title="Privacy Policy"
       />
 

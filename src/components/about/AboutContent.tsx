@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 const AboutContent = () => {
   const images = [
     "/wp-admin/uploads/stairs-cleaning.webp",
-    "/wp-admin/uploads/whole kitchen-cleaning.webp",
+    "/wp-admin/uploads/whole-kitchen-cleaning.webp",
   ];
   const [currentIndex, setCurrentIndex] = useState(0);
 

@@ -26,7 +26,7 @@ const CommercialCleaningContent = () => {
       alt: "Residential floor sanitization",
     },
     {
-      src: "/wp-admin/uploads/floor cleaning of home-3.webp",
+      src: "/wp-admin/uploads/floor-cleaning-of-home-3.webp",
       alt: "Professional home floor maintenance",
     },
   ];
