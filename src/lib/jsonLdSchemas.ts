@@ -1234,6 +1234,84 @@ export const jsonLdSchemas = {
       }
     ]
   },
+  "/custom-cleaning-request/": {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://camzcleaning.com/custom-cleaning-request/#webpage",
+        "url": "https://camzcleaning.com/custom-cleaning-request/",
+        "name": "Custom Cleaning Request | Camz Cleaning",
+        "description": "Build a room-by-room cleaning checklist and request a custom quote from Camz Cleaning.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "https://camzcleaning.com/#website",
+          "url": "https://camzcleaning.com/",
+          "name": "Camz Cleaning"
+        },
+        "about": {
+          "@type": "LocalBusiness",
+          "@id": "https://camzcleaning.com/#business",
+          "name": "Camz Cleaning",
+          "url": "https://camzcleaning.com/"
+        },
+        "inLanguage": "en-CA",
+        "mainEntity": {
+          "@id": "https://camzcleaning.com/custom-cleaning-request/#service"
+        }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://camzcleaning.com/custom-cleaning-request/#service",
+        "name": "Custom Cleaning Request",
+        "serviceType": "Custom cleaning services",
+        "description": "Build a room-by-room cleaning checklist and request a custom quote from Camz Cleaning.",
+        "url": "https://camzcleaning.com/custom-cleaning-request/",
+        "provider": {
+          "@type": "LocalBusiness",
+          "@id": "https://camzcleaning.com/#business",
+          "name": "Camz Cleaning",
+          "url": "https://camzcleaning.com/",
+          "telephone": "+1-587-837-1977",
+          "email": "info@camzcleaning.com"
+        },
+        "areaServed": [
+          {
+            "@type": "City",
+            "name": "Calgary",
+            "containedInPlace": {
+              "@type": "AdministrativeArea",
+              "name": "Alberta"
+            }
+          },
+          {
+            "@type": "City",
+            "name": "Airdrie",
+            "containedInPlace": {
+              "@type": "AdministrativeArea",
+              "name": "Alberta"
+            }
+          },
+          {
+            "@type": "City",
+            "name": "Cochrane",
+            "containedInPlace": {
+              "@type": "AdministrativeArea",
+              "name": "Alberta"
+            }
+          },
+          {
+            "@type": "City",
+            "name": "Chestermere",
+            "containedInPlace": {
+              "@type": "AdministrativeArea",
+              "name": "Alberta"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "/contact-us/": {
     "@context": "https://schema.org",
     "@graph": [
