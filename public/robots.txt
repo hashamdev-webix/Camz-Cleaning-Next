@@ -3,5 +3,6 @@ Allow: /
 
 Disallow: /login/
 Disallow: /api/
+Disallow: /admin-dashboard/
 
 Sitemap: https://camzcleaning.com/sitemap.xml
