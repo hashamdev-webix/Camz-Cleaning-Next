@@ -3,7 +3,7 @@ import PageJsonLd from "@/components/seo/PageJsonLd";
 import { pageSeo } from "@/lib/seo";
 
 export const metadata = pageSeo({
-  title: "Cleaning Services in Calgary for Homes & Businesses",
+  title: "Cleaning Services in Calgary | Home & Office Cleaners",
   description: "Choose Camz Cleaning for residential and commercial cleaning in Calgary, with flexible scheduling and detailed service for homes and workplaces.",
   path: "/calgary-cleaning-services/",
 });

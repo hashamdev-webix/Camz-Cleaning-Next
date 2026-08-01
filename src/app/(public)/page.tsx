@@ -13,7 +13,7 @@ import PageJsonLd from '@/components/seo/PageJsonLd'
 import { pageSeo } from '@/lib/seo'
 
 export const metadata = pageSeo({
-  title: "Trusted Cleaning Services in Calgary & across Alberta",
+  title: "Professional Cleaning Company in Calgary | Camz Cleaning",
   description: "Trusted residential, commercial, vehicle and seasonal cleaning across Calgary, Airdrie, Cochrane and Chestermere. Book Camz Cleaning.",
   path: "/",
 });
