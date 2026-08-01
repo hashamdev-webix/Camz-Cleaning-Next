@@ -1305,4 +1305,58 @@ export const jsonLdSchemas = {
   }
 } as const;
 
+type BlogPostingJsonLdInput = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  publishedAt: string;
+};
+
+export function blogPostingJsonLd({
+  id,
+  title,
+  description,
+  image,
+  publishedAt,
+}: BlogPostingJsonLdInput) {
+  const url = `https://camzcleaning.com/blogs/${id}/`;
+  const imageUrl = image
+    ? /^https?:\/\//i.test(image)
+      ? image
+      : `https://camzcleaning.com${image.startsWith("/") ? "" : "/"}${image}`
+    : undefined;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${url}#blogposting`,
+    headline: title,
+    description,
+    ...(imageUrl ? { image: imageUrl } : {}),
+    datePublished: publishedAt,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${url}#webpage`,
+      url,
+    },
+    author: {
+      "@type": "Organization",
+      name: "Camz Cleaning",
+      url: "https://camzcleaning.com/",
+    },
+    publisher: {
+      "@type": "Organization",
+      "@id": "https://camzcleaning.com/#business",
+      name: "Camz Cleaning",
+      url: "https://camzcleaning.com/",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://camzcleaning.com/wp-admin/uploads/footer-logo.webp",
+      },
+    },
+    inLanguage: "en-CA",
+  };
+}
+
 export type JsonLdPath = keyof typeof jsonLdSchemas;
