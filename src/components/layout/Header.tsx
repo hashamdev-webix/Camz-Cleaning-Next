@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Mail, Phone, Menu, X, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,14 +11,23 @@ import {
   FaLinkedinIn,
   FaYoutube,
 } from "react-icons/fa";
-import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [areasOpen, setAreasOpen] = useState(false);
-  const { user } = useAuth();
+  const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    setIsAuthed(
+      document.cookie
+        .split(";")
+        .some(
+          (c) => c.trim().startsWith("sb-") && c.includes("auth-token"),
+        ),
+    );
+  }, []);
 
   // Dropdown Data
   const serviceLinks = [
@@ -168,7 +177,7 @@ export default function Header() {
 
           {/* Desktop Button */}
           <div className="hidden md:block">
-            {user ? (
+            {isAuthed ? (
               <Link href="/customer-dashboard">
                 <button className="bg-[#0B4E9B] text-white px-8 py-2.5 rounded-md font-bold hover:bg-[#00B7EB] transition-all">
                   Dashboard
@@ -302,7 +311,7 @@ export default function Header() {
 
               {/* LOGIN BUTTON */}
               <div className="p-6">
-                {user ? (
+                {isAuthed ? (
                   <Link
                     href="/customer-dashboard"
                     onClick={() => setIsOpen(false)}

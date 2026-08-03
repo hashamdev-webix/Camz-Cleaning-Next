@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/context/AuthContext";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
@@ -7,19 +8,21 @@ export default function CustomerDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#f7f7f7] flex">
-      
-      {/* Sidebar */}
-      <DashboardSidebar />
+    <AuthProvider>
+      <div className="min-h-screen bg-[#f7f7f7] flex">
 
-      {/* Main Area */}
-      <div className="flex-1 lg:ml-[280px]">
-        <DashboardHeader />
+        {/* Sidebar */}
+        <DashboardSidebar />
 
-        <main className="">
-          {children}
-        </main>
+        {/* Main Area */}
+        <div className="flex-1 lg:ml-[280px]">
+          <DashboardHeader />
+
+          <main className="">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </AuthProvider>
   );
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AuthProvider } from "@/context/AuthContext";
 import PageJsonLd from "@/components/seo/PageJsonLd";
 import { pageSeo } from "@/lib/seo";
 
@@ -9,5 +10,10 @@ export const metadata = pageSeo({
 });
 
 export default function BookingLayout({ children }: { children: ReactNode }) {
-  return <><PageJsonLd path="/booking/" />{children}</>;
+  return (
+    <AuthProvider>
+      <PageJsonLd path="/booking/" />
+      {children}
+    </AuthProvider>
+  );
 }

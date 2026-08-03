@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { AuthProvider } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import { ClipboardCheck, RefreshCw, ShieldCheck, UserCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -24,14 +25,16 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
       : { title: "Admin Dashboard", subtitle: "Manage customer requests and operations.", icon: ShieldCheck, iconClass: "bg-[#4A86F7] shadow-blue-500/30" };
   const ShellIcon = shell.icon;
 
-  return <div className="min-h-screen bg-[#020817]">
-    <AdminSidebar role={role || "admin"} />
-    <div className="lg:ml-[280px]">
-      <header className="sticky top-0 z-30 hidden min-h-24 items-center justify-between border-b border-white/10 bg-[#020817] px-8 lg:flex">
-        <div><h1 className="text-3xl font-bold text-white">{shell.title}</h1><p className="mt-1 text-sm text-gray-400">{shell.subtitle}</p></div>
-        <div className="flex items-center gap-4"><a href="/admin-dashboard/booking-records" aria-label="Refresh dashboard" className="text-gray-400 transition hover:text-white"><RefreshCw size={22} /></a><div className={`flex h-11 w-11 items-center justify-center rounded-full text-white shadow-lg ${shell.iconClass}`}><ShellIcon size={21} /></div></div>
-      </header>
-      <main>{children}</main>
+  return <AuthProvider>
+    <div className="min-h-screen bg-[#020817]">
+      <AdminSidebar role={role || "admin"} />
+      <div className="lg:ml-[280px]">
+        <header className="sticky top-0 z-30 hidden min-h-24 items-center justify-between border-b border-white/10 bg-[#020817] px-8 lg:flex">
+          <div><h1 className="text-3xl font-bold text-white">{shell.title}</h1><p className="mt-1 text-sm text-gray-400">{shell.subtitle}</p></div>
+          <div className="flex items-center gap-4"><a href="/admin-dashboard/booking-records" aria-label="Refresh dashboard" className="text-gray-400 transition hover:text-white"><RefreshCw size={22} /></a><div className={`flex h-11 w-11 items-center justify-center rounded-full text-white shadow-lg ${shell.iconClass}`}><ShellIcon size={21} /></div></div>
+        </header>
+        <main>{children}</main>
+      </div>
     </div>
-  </div>;
+  </AuthProvider>;
 }
