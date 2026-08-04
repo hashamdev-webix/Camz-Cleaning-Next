@@ -208,6 +208,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (error) {
         console.error("Unable to clear local auth storage:", error);
       }
+      try {
+        document.cookie.split(";").forEach((c) => {
+          const name = c.split("=")[0].trim();
+          if (name.startsWith("sb-")) {
+            document.cookie = `${name}=; Max-Age=0; path=/`;
+            document.cookie = `${name}=; Max-Age=0; path=/; domain=${window.location.hostname}`;
+          }
+        });
+      } catch (e) {
+        console.error("Unable to clear auth cookies:", e);
+      }
       window.location.assign("/login");
     }
   };

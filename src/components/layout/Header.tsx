@@ -11,9 +11,10 @@ import {
   FaLinkedinIn,
   FaYoutube,
 } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Header() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [areasOpen, setAreasOpen] = useState(false);
@@ -27,7 +28,7 @@ export default function Header() {
           (c) => c.trim().startsWith("sb-") && c.includes("auth-token"),
         ),
     );
-  }, []);
+  }, [pathname]);
 
   // Dropdown Data
   const serviceLinks = [
