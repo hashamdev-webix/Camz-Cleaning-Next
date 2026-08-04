@@ -82,26 +82,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, nextSession) => {
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
       setUser(nextSession?.user ?? null);
 
       if (!nextSession?.user) {
         setUserData(null);
-      } else if (event !== "TOKEN_REFRESHED") {
-        try {
-          setUserData(await fetchProfile(nextSession.user.id));
-        } catch (error) {
-          console.error("Failed to fetch user data on auth change:", error);
-          setUserData(null);
-        }
       }
 
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [fetchProfile, supabase]);
+  }, [supabase]);
+
+  const userId = user?.id;
+
+  useEffect(() => {
+    if (!userId) return;
+
+    let isCurrent = true;
+
+    void fetchProfile(userId).then((profile) => {
+      if (isCurrent) {
+        setUserData(profile);
+      }
+    });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [fetchProfile, userId]);
 
   const signUp = async (
     email: string,
