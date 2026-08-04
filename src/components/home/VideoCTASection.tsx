@@ -1,11 +1,12 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Phone, Star } from "lucide-react";
+import { Phone, Play, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const VideoCTASection = () => {
   const router = useRouter();
+  const [playing, setPlaying] = useState(false);
   return (
     <section
       className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden text-white bg-cover bg-center"
@@ -115,14 +116,41 @@ const VideoCTASection = () => {
           className="relative group"
         >
           <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl border-8 border-black/20">
-            <iframe
-              className="absolute inset-0 w-full h-full"
-              src="https://www.youtube.com/embed/OBluXZ-qpOM"
-              title="Camz Cleaning Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+            {playing ? (
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.youtube.com/embed/OBluXZ-qpOM?autoplay=1"
+                title="Camz Cleaning Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label="Play video"
+                onClick={() => setPlaying(true)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setPlaying(true);
+                  }
+                }}
+                className="absolute inset-0 w-full h-full cursor-pointer"
+              >
+                <img
+                  src="https://img.youtube.com/vi/OBluXZ-qpOM/hqdefault.jpg"
+                  alt="Camz Cleaning Video"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <span className="absolute inset-0 flex items-center justify-center bg-black/15">
+                  <span className="flex h-20 w-20 items-center justify-center rounded-full bg-red-600 text-white shadow-xl transition-transform hover:scale-105">
+                    <Play className="ml-1 h-10 w-10 fill-current" />
+                  </span>
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Decorative glow behind video */}
