@@ -219,19 +219,16 @@ const BookingModal = ({
 
       console.log("Submitting booking:", jobRecord);
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("jobs")
-        .insert(jobRecord)
-        .select()
-        .single();
+        .insert(jobRecord);
 
       if (error) {
         console.error("Booking insert error:", error);
         throw new Error(error.message || "Failed to create booking");
       }
 
-      console.log("Booking created successfully:", data);
-      setBookingId(data.id);
+      console.log("Booking created successfully");
       setSubmitSuccess(true);
     } catch (err: any) {
       console.error("Booking submission failed:", err);
