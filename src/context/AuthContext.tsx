@@ -209,11 +209,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error("Unable to clear local auth storage:", error);
       }
       try {
+        const hostname = window.location.hostname;
+        const domains = [
+          undefined,                       // no domain attribute
+          hostname,                        // camzcleaning.com
+          `.${hostname}`,                  // .camzcleaning.com
+          hostname.replace(/^www\./, ""),  // strip www if present
+          `.${hostname.replace(/^www\./, "")}`,
+        ];
         document.cookie.split(";").forEach((c) => {
           const name = c.split("=")[0].trim();
           if (name.startsWith("sb-")) {
-            document.cookie = `${name}=; Max-Age=0; path=/`;
-            document.cookie = `${name}=; Max-Age=0; path=/; domain=${window.location.hostname}`;
+            domains.forEach((d) => {
+              document.cookie =
+                `${name}=; Max-Age=0; path=/` + (d ? `; domain=${d}` : "");
+            });
           }
         });
       } catch (e) {
