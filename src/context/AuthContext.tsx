@@ -125,27 +125,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
+        options: { data: { name, phone_number } },
       });
 
       if (authError) return { error: authError.message };
       if (!authData.user) return { error: "Failed to create user" };
-
-      // Step 2: Insert into users table
-      const { error: insertError } = await supabase.from("users").insert({
-        id: authData.user.id,
-        name: name,
-        email: email,
-        role: "customer",
-        phone_number: phone_number,
-        approval_status: "approved",
-        source: "Web",
-        is_blocked: false,
-      });
-
-      if (insertError) {
-        console.error("Error inserting user data:", insertError);
-        return { error: "Failed to create user profile" };
-      }
 
       // Use window.location for hard navigation
       window.location.href = "/login";
