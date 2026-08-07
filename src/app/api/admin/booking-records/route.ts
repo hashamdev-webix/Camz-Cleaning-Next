@@ -20,6 +20,10 @@ function getRole(profile: { role?: unknown } | null) {
   return String(profile?.role || "").toLowerCase();
 }
 
+function todayInBusinessTz() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Edmonton", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+}
+
 function isStatusOnlyUpdate(body: BookingPayload) {
   return Object.keys(body).every((key) => ["id", "status"].includes(key)) && ["pending", "ongoing", "completed"].includes(String(body.status));
 }
@@ -97,10 +101,16 @@ export async function POST(request: NextRequest) {
   if (!payload.full_name || !payload.cleaning_type || !payload.area || !payload.service_date || !payload.service_time || !payload.full_address || !payload.email || !payload.phone) {
     return NextResponse.json({ error: "Please fill all required booking fields." }, { status: 400 });
   }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(payload.service_date)) {
+    return NextResponse.json({ error: "Invalid service date." }, { status: 400 });
+  }
+  if (payload.service_date < todayInBusinessTz()) {
+    return NextResponse.json({ error: "Service date cannot be in the past." }, { status: 400 });
+  }
   const manpowerError = validateManpowerTime(payload);
   if (manpowerError) return NextResponse.json({ error: manpowerError }, { status: 400 });
 
-  const { data, error } = await supabase.from("booking_records").insert({ ...payload, added_by_user: user.id, added_by: payload.added_by || profile?.name || "Portal User" }).select("*").single();
+  const { data, error } = await supabase.from("booking_records").insert({ ...payload, added_by_user: user.id, added_by: profile?.name || user.email || "Portal User" }).select("*").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   await syncAssignments(supabase, data.id, body.assigned_cleaner_ids || [], user.id);
   return NextResponse.json({ booking: data });
@@ -135,7 +145,9 @@ export async function PATCH(request: NextRequest) {
   const payload = cleanBookingPayload(body);
   const manpowerError = validateManpowerTime(payload);
   if (manpowerError) return NextResponse.json({ error: manpowerError }, { status: 400 });
-  const { error } = await supabase.from("booking_records").update(payload).eq("id", body.id);
+  const { added_by: _ignoredAddedBy, ...updatePayload } = payload;
+  void _ignoredAddedBy;
+  const { error } = await supabase.from("booking_records").update(updatePayload).eq("id", body.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   if (Array.isArray(body.assigned_cleaner_ids)) {
     if (role !== "admin") return NextResponse.json({ error: "Only admin can assign cleaners." }, { status: 403 });

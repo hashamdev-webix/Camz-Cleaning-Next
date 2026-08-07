@@ -137,6 +137,10 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
   const openEdit = (booking: BookingRecord) => { setForm({ ...booking, assigned_cleaner_ids: booking.assigned_cleaners.map((cleaner) => cleaner.id) }); setError(""); setFormOpen(true); };
   const saveBooking = async (event: FormEvent) => {
     event.preventDefault();
+    if (!form.id && form.service_date && form.service_date < todayInBusinessTz()) {
+      setError("Service date cannot be in the past.");
+      return;
+    }
     setSaving(true);
     const response = await fetch("/api/admin/booking-records", { method: form.id ? "PATCH" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
     const result = await response.json();
@@ -289,10 +293,10 @@ function BookingFormModal({ form, setForm, cleaners, saving, error, onClose, onS
               {areas.map((area) => <option key={area}>{area}</option>)}
             </select>
           </label>
-          <Field label="Service Date" value={form.service_date} onChange={(v) => update("service_date", v)} type="date" required />
+          <Field label="Service Date" value={form.service_date} onChange={(v) => update("service_date", v)} type="date" required min={form.id ? undefined : todayInBusinessTz()} />
           <Field label="Service Time" value={form.service_time} onChange={(v) => update("service_time", v)} type="time" required />
           <Field label="Price (CAD)" value={String(form.price)} onChange={(v) => update("price", v)} type="number" required />
-          <Field label="Added By" value={form.added_by || currentUser?.name || ""} onChange={(v) => update("added_by", v)} />
+          <Field label="Added By" value={form.added_by || currentUser?.name || ""} onChange={() => {}} readOnly />
         </div>
         <label className="flex flex-col gap-4 rounded-2xl border border-cyan-100 bg-cyan-50/70 p-4 sm:flex-row sm:items-center sm:justify-between">
           <span>
@@ -417,7 +421,7 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
 
 function Modal({ title, subtitle, wide, children, onClose }: { title: string; subtitle?: string; wide?: boolean; children: React.ReactNode; onClose: () => void }) { return <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 p-3 backdrop-blur-sm sm:p-4"><div className={`max-h-[94vh] overflow-y-auto rounded-[1.75rem] bg-white shadow-2xl ${wide ? "w-full max-w-5xl" : "w-full max-w-xl"}`}><div className="sticky top-0 z-10 flex items-center justify-between bg-gradient-to-r from-blue-800 via-blue-700 to-cyan-500 p-6 text-white"><div><p className="text-xs font-bold uppercase tracking-[0.25em]">{title}</p>{subtitle && <h2 className="mt-1 text-2xl font-bold">{subtitle}</h2>}</div><button type="button" onClick={onClose} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 transition hover:bg-white/30"><X size={20} /></button></div><div className="p-6">{children}</div></div></div>; }
 function FormSection({ title, icon: Icon, children }: { title: string; icon: typeof UserRound; children: React.ReactNode }) { return <section className="rounded-[1.4rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"><div className="mb-4 flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><Icon size={18} /></span><h3 className="text-lg font-bold text-slate-950">{title}</h3></div><div className="space-y-4">{children}</div></section>; }
-function Field({ label, value, onChange, type = "text", required = false, placeholder = "" }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean; placeholder?: string }) { return <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">{label}</span><input required={required} value={value} type={type} step={type === "number" ? "0.25" : undefined} min={type === "number" ? "0" : undefined} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" /></label>; }
+function Field({ label, value, onChange, type = "text", required = false, placeholder = "", readOnly = false, min }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean; placeholder?: string; readOnly?: boolean; min?: string }) { return <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">{label}</span><input required={required} value={value} type={type} step={type === "number" ? "0.25" : undefined} min={type === "number" ? "0" : min} readOnly={readOnly} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className={`h-12 w-full rounded-2xl border border-slate-200 px-4 text-sm font-semibold outline-none transition placeholder:text-slate-400 ${readOnly ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"}`} /></label>; }
 function TextArea({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) { return <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">{label}</span><textarea value={value} onChange={(e) => onChange(e.target.value)} rows={5} className="min-h-32 w-full resize-y rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" /></label>; }
 function CleanerPicker({ cleaners, selected, onChange }: { cleaners: CleanerUser[]; selected: string[]; onChange: (ids: string[]) => void }) { return <div><p className="mb-3 font-bold">Select Cleaners <span className="text-sm font-normal text-slate-400">(one or more)</span></p><div className="flex flex-wrap gap-2">{cleaners.map((cleaner) => { const active = selected.includes(cleaner.id); return <button type="button" key={cleaner.id} onClick={() => onChange(active ? selected.filter((id) => id !== cleaner.id) : [...selected, cleaner.id])} className={`h-11 rounded-2xl px-4 font-bold ${active ? "bg-purple-700 text-white" : "border border-slate-200 text-slate-600"}`}>{active && <Check className="mr-1 inline" size={16} />}{cleaner.name}</button>; })}</div>{!!selected.length && <button type="button" onClick={() => onChange([])} className="mt-3 text-sm font-bold text-red-500">Clear all</button>}</div>; }
 function Detail({ label, value }: { label: string; value: string | null }) { return <div className="rounded-2xl bg-slate-50 p-4"><p className="text-xs font-bold uppercase text-slate-400">{label}</p><p className="mt-2 font-semibold text-slate-800">{value || "-"}</p></div>; }
@@ -438,6 +442,9 @@ function formatManpowerTime(booking: Pick<BookingRecord, "manpower_min_hours" | 
   if (!min && !max) return "-";
   const clean = (value: number) => Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/\.?0+$/, "");
   return `${clean(min)}-${clean(max)} hrs`;
+}
+function todayInBusinessTz() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Edmonton", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 }
 function toDateInput(date: Date) { return date.toISOString().slice(0, 10); }
 function isDateInCurrentWeek(value: string) { const date = new Date(`${value}T00:00:00`); const now = new Date(); const start = new Date(now); start.setDate(now.getDate() - now.getDay()); start.setHours(0, 0, 0, 0); const end = new Date(start); end.setDate(start.getDate() + 7); return date >= start && date < end; }
