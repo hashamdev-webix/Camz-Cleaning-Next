@@ -4,9 +4,10 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, Check, Clock3, ClipboardList, DollarSign, Download, MapPin, Plus, Search, Sparkles, UserRound, X } from "lucide-react";
+import { CalendarClock, Check, Clock3, ClipboardList, DollarSign, Download, MapPin, Plus, Search, Sparkles, UserPlus, UserRound, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { optimizeImageForUpload, uploadImageToBucket } from "@/lib/images/upload";
+import CreateUserModal from "@/components/admin/users/CreateUserModal";
 
 export type CleanerUser = { id: string; name: string; email: string };
 export type BookingImage = {
@@ -82,6 +83,7 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
   const canEdit = role === "admin";
   const canAssign = role === "admin";
   const canDelete = role === "admin";
+  const canCreateUser = role === "admin" || isDataEntry;
   const ownBookings = useMemo(() => {
     if (isCleaner) return records.filter((booking) => booking.assigned_cleaners.some((cleaner) => cleaner.id === currentUser?.id));
     if (isDataEntry) return records.filter((booking) => booking.added_by_user === currentUser?.id);
@@ -100,6 +102,8 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
   const [form, setForm] = useState<FormState>({ ...emptyForm, added_by: currentUser?.name || "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [userModalOpen, setUserModalOpen] = useState(false);
+  const [userSuccess, setUserSuccess] = useState("");
 
   const filtered = useMemo(() => scopedBookings.filter((booking) => {
     const today = toDateInput(new Date());
@@ -172,9 +176,14 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
         <div className="absolute -bottom-16 right-20 hidden h-44 w-44 rounded-full border border-white/10 bg-white/5 lg:block" />
         <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div className="max-w-2xl"><p className="inline-flex rounded-full bg-white/15 px-4 py-2 text-xs font-bold tracking-[0.28em]">{isCleaner ? "CLEANER DASHBOARD" : isDataEntry ? "DATA ENTRY DASHBOARD" : "ADMIN DASHBOARD"}</p><h1 className="mt-5 text-4xl font-bold leading-tight sm:text-5xl">{isCleaner ? "My Bookings" : "Booking Records"}</h1><p className="mt-3 text-base font-medium text-white/85 sm:text-lg">{isCleaner ? "Track assigned work, review schedules, update progress, and keep service images organized." : isDataEntry ? `Logged in as ${currentUser?.name || "Data Entry User"}. Add records quickly and keep booking details ready for operations.` : "Full access - manage, assign, approve, and track all bookings."}</p><div className="mt-5 flex flex-wrap gap-2 text-sm font-bold"><span className="rounded-full bg-white/15 px-4 py-2">{stats.allTotal} visible</span><span className="rounded-full bg-white/15 px-4 py-2">{stats.pending} pending</span><span className="rounded-full bg-white/15 px-4 py-2">{stats.upcoming} upcoming</span></div></div>
-          {canCreate && <button type="button" onClick={openAdd} className={`flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-white px-7 font-bold ${theme.accent} shadow-xl transition hover:-translate-y-0.5 hover:shadow-2xl`}><Plus size={18} /> Add Booking</button>}
+          <div className="flex flex-wrap gap-3">
+            {canCreateUser && <button type="button" onClick={() => setUserModalOpen(true)} className="flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-white/50 bg-white/10 px-7 font-bold text-white shadow-xl transition hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-2xl"><UserPlus size={18} /> Create User</button>}
+            {canCreate && <button type="button" onClick={openAdd} className={`flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-white px-7 font-bold ${theme.accent} shadow-xl transition hover:-translate-y-0.5 hover:shadow-2xl`}><Plus size={18} /> Add Booking</button>}
+          </div>
         </div>
       </section>
+
+      {userSuccess && <p className="mt-5 rounded-2xl border border-emerald-300 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800">{userSuccess}</p>}
 
       <section className={`mt-8 grid gap-4 ${isCleaner ? "md:grid-cols-4" : "md:grid-cols-4"}`}>
         {isCleaner ? <>
@@ -201,6 +210,7 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
     </div>
 
     {formOpen && canCreate && <BookingFormModal form={form} setForm={setForm} cleaners={cleaners} saving={saving} error={error} onClose={() => setFormOpen(false)} onSubmit={saveBooking} currentUser={currentUser} />}
+    {canCreateUser && <CreateUserModal open={userModalOpen} onClose={() => setUserModalOpen(false)} allowedRoles={["cleaner", "customer", "data_entry"]} onCreated={(message) => { setUserSuccess(message); router.refresh(); }} />}
     {assigning && canAssign && <AssignModal booking={assigning} cleaners={cleaners} onClose={() => setAssigning(null)} onSaved={() => { setAssigning(null); router.refresh(); }} />}
     {details && <DetailsModal booking={details} canDelete={canDelete} canEdit={canEdit} onClose={() => setDetails(null)} onEdit={() => { openEdit(details); setDetails(null); }} onDeleted={() => { setDetails(null); router.refresh(); }} />}
   </div>;

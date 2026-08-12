@@ -16,16 +16,21 @@ type UserPayload = {
   hourly_rate?: string;
 };
 
-const allowedRoles = new Set(["admin", "customer", "cleaner", "data_entry"]);
+const CREATABLE_ROLES_BY_ACTOR: Record<string, Set<string>> = {
+  admin: new Set(["admin", "customer", "cleaner", "data_entry"]),
+  data_entry: new Set(["customer", "cleaner", "data_entry"]),
+};
+const APPROVAL_STATUSES = new Set(["approved", "pending", "rejected"]);
 
-async function authorizeAdmin() {
+async function getActor(): Promise<{ role: string } | null> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return false;
+  if (!user) return null;
   const { data: profile } = await supabase.from("users").select("role, is_blocked").eq("id", user.id).maybeSingle();
-  return profile?.role?.toLowerCase() === "admin" && profile.is_blocked === false;
+  if (!profile || profile.is_blocked !== false) return null;
+  return { role: String(profile.role || "").toLowerCase() };
 }
 
 function getServiceClient() {
@@ -37,7 +42,10 @@ function getServiceClient() {
 }
 
 export async function POST(request: NextRequest) {
-  if (!(await authorizeAdmin())) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+  const actor = await getActor();
+  if (!actor) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  const creatable = CREATABLE_ROLES_BY_ACTOR[actor.role];
+  if (!creatable) return NextResponse.json({ error: "You do not have permission to create users." }, { status: 403 });
   const admin = getServiceClient();
   if (!admin) return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY is not configured on the server." }, { status: 503 });
 
@@ -47,10 +55,14 @@ export async function POST(request: NextRequest) {
   const password = body.password || "";
   const phone = body.phone_number?.trim();
   const role = body.role?.trim().toLowerCase() || "cleaner";
+  const requestedApprovalStatus = body.approval_status || "approved";
 
   if (!name || !email || !phone || !password) return NextResponse.json({ error: "Name, email, phone, and password are required." }, { status: 400 });
   if (password.length < 6) return NextResponse.json({ error: "Password must be at least 6 characters." }, { status: 400 });
-  if (!allowedRoles.has(role)) return NextResponse.json({ error: "Selected role is not allowed." }, { status: 400 });
+  if (!creatable.has(role)) return NextResponse.json({ error: "You are not allowed to create a user with this role." }, { status: 403 });
+  if (actor.role === "admin" && !APPROVAL_STATUSES.has(requestedApprovalStatus)) {
+    return NextResponse.json({ error: "Selected approval status is not allowed." }, { status: 400 });
+  }
 
   const { data: authData, error: authError } = await admin.auth.admin.createUser({
     email,
@@ -66,9 +78,9 @@ export async function POST(request: NextRequest) {
     email,
     role,
     phone_number: phone,
-    approval_status: body.approval_status || "approved",
+    approval_status: actor.role === "admin" ? requestedApprovalStatus : "approved",
     is_blocked: false,
-    source: body.source || "Web",
+    source: actor.role === "admin" ? body.source || "Web" : "Web",
     verified: role === "cleaner" ? false : true,
     is_available: role === "cleaner" ? Boolean(body.is_available) : false,
     is_online: false,
@@ -91,7 +103,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  if (!(await authorizeAdmin())) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+  const actor = await getActor();
+  if (actor?.role !== "admin") return NextResponse.json({ error: "Admin access required." }, { status: 403 });
   const admin = getServiceClient();
   if (!admin) return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY is not configured on the server." }, { status: 503 });
 
