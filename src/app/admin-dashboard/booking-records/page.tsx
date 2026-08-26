@@ -130,7 +130,7 @@ export default async function BookingRecordsPage() {
       email: assignedUser.email || "",
       role: assignedUser.role,
       role_key: assignedUser.booking_role_key || assignedUser.role,
-      role_label: assignedUser.role_label,
+      role_label: assignedUser.role_label ?? undefined,
     });
     assignmentsByBooking.set(assignment.booking_id, list);
   }
@@ -165,7 +165,7 @@ export default async function BookingRecordsPage() {
         email: user.email || "",
         role: user.role,
         role_key: user.booking_role_key || user.role,
-        role_label: user.role_label,
+        role_label: user.role_label ?? undefined,
       }))}
       assignedUsers={operationalUsers}
       roleDefinitions={roleDefinitions}

@@ -294,6 +294,7 @@ export default function BookingRecordsPortal({ bookings, cleaners, assignedUsers
             currentUser={currentUser}
             onClose={() => setManageUsersOpen(false)}
             onChanged={() => router.refresh()}
+            onUsersChange={(updater) => setUsers((current) => updater(current))}
           />
         </div>
       </div>
@@ -1770,12 +1771,14 @@ function ManageUsersPanel({
   currentUser,
   onClose,
   onChanged,
+  onUsersChange,
 }: {
   users: PortalUser[];
   roleDefinitions: BookingRoleDefinition[];
   currentUser: CurrentUser;
   onClose: () => void;
   onChanged: () => void;
+  onUsersChange: (updater: (current: PortalUser[]) => PortalUser[]) => void;
 }) {
   const [screen, setScreen] = useState<"list" | "add" | "view" | "edit">("list");
   const [query, setQuery] = useState("");
@@ -1913,7 +1916,7 @@ function ManageUsersPanel({
     }
 
     // Remove immediately from the Booking Users list.
-    setUsers((current) => current.filter((item) => item.id !== user.id));
+    onUsersChange((current) => current.filter((item) => item.id !== user.id));
     setMessage(`${user.name} deleted successfully.`);
     setSelectedUser(null);
     setScreen("list");
@@ -2004,7 +2007,7 @@ function ManageUsersPanel({
           result.user.created_at || new Date().toISOString(),
       };
 
-      setUsers((current) => {
+      onUsersChange((current) => {
         if (current.some((user) => user.id === createdUser.id)) {
           return current.map((user) =>
             user.id === createdUser.id ? createdUser : user,

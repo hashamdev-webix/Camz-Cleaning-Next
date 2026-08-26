@@ -39,6 +39,8 @@ function getAdminClient() {
   });
 }
 
+type AdminClient = NonNullable<ReturnType<typeof getAdminClient>>;
+
 function missingAdminKey() {
   return NextResponse.json(
     {
@@ -58,7 +60,7 @@ function slugifyRole(value: string) {
     .slice(0, 48);
 }
 
-async function listRoles(admin: ReturnType<typeof createAdminClient>) {
+async function listRoles(admin: AdminClient) {
   const { data, error } = await admin
     .from("booking_roles")
     .select("key, name, base_role, is_system, created_at")
