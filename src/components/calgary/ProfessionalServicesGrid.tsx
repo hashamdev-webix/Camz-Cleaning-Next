@@ -1,107 +1,79 @@
 "use client";
-import React from "react";
+
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ChevronRightCircle } from "lucide-react";
 
-interface ServiceCardProps {
-  title: string;
-  description: string;
-  href: string; // Added href prop
-  isDark?: boolean;
-}
-
-const ServiceCard = ({ title, description, href, isDark = false }: ServiceCardProps) => {
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className={`p-8 rounded-[1.5rem] shadow-lg flex flex-col h-full transition-all duration-300 ${
-        isDark 
-        ? "bg-[#0B4E9B] text-white border-transparent" 
-        : "bg-white text-[#0B4E9B] border border-gray-100"
-      }`}
-    >
-      <h3 className="text-2xl font-extrabold mb-4 leading-tight">
-        {title}
-      </h3>
-      <p className={`text-sm mb-8 leading-relaxed font-medium flex-grow ${
-        isDark ? "text-blue-50" : "text-gray-600"
-      }`}>
-        {description}
-      </p>
-      
-      <div>
-        <Link
-          href={href} // Using specific service URL
-          className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            isDark
-            ? "border-2 border-white text-white hover:bg-white hover:text-[#0B4E9B]"
-            : "bg-gradient-to-r from-[#0091C1] to-[#0B4E9B] text-white hover:shadow-md"
-          }`}
-        >
-          Read More <ChevronRightCircle size={18} />
-        </Link>
-      </div>
-    </motion.div>
-  );
-};
+const services = [
+  {
+    title: "Residential Cleaning in Calgary",
+    description:
+      "Regular, deep and move-in/move-out cleaning for homes and apartments.",
+    href: "/residential-cleaning-services/",
+    dark: false,
+  },
+  {
+    title: "Commercial Cleaning in Calgary",
+    description: "Cleaning plans for offices, shops and shared facilities.",
+    href: "/commercial-cleaning-services/",
+    dark: true,
+  },
+  {
+    title: "Mobile Vehicle Cleaning in Calgary",
+    description:
+      "Interior and exterior vehicle cleaning at a suitable agreed location.",
+    href: "/vehicle-cleaning-service/",
+    dark: false,
+  },
+  {
+    title: "Seasonal Property Services in Calgary",
+    description:
+      "Seasonal home, vacation-rental and weather-related property care.",
+    href: "/seasonal-property-service/",
+    dark: true,
+  },
+];
 
 const ProfessionalServicesGrid = () => {
-  const services = [
-    {
-      title: "Residential Clean Service Calgary",
-      description: "Expert residential cleaning in Calgary for homes, apartments, and condos. Trusted professionals delivering spotless results get your quote today",
-      href: "/residential-cleaning-services",
-      isDark: false
-    },
-    {
-      title: "Commercial Cleaning in Calgary",
-      description: "Trusted commercial and office cleaning in Calgary. Professional service for spotless workplaces. Schedule your office cleaning today.",
-      href: "/commercial-cleaning-services",
-      isDark: true
-    },
-    {
-      title: "Vehicle Cleaning Services at Home Calgary",
-      description: "Keep your vehicle spotless without leaving home in Calgary. Camz Cleaning brings convenient, professional mobile car cleaning right to your doorstep today.",
-      href: "/vehicle-cleaning-service",
-      isDark: false
-    },
-    {
-      title: "Seasonal Property Cleaning Services",
-      description: "Keep your property clean year-round with spring deep cleaning, winter sanitizing, fall dust removal, summer refresh, and snow removal services.",
-      href: "/seasonal-property-service",
-      isDark: true
-    },
-    {
-      title: "Move In Move Out Cleaning Calgary",
-      description: "Start fresh or leave spotless in Calgary with our move-in and move-out cleaning services, delivering thorough, reliable care and a stress-free home-cleaning experience.",
-      href: "/residential-cleaning-services", // Mapping to residential category
-      isDark: false
-    },
-    {
-      title: "Duct, Furnace & Fireplace Cleaning",
-      description: "CamzCleaning helps you breathe easier. Our duct, furnace, and fireplace cleaning boosts airflow, cuts dust, and ensures safe, transparent service today.",
-      href: "/commercial-cleaning-services", // Mapping to commercial/industrial category
-      isDark: true
-    }
-  ];
-
   return (
-    <section className="bg-[#EFFAFC] py-20 px-6 md:px-12 lg:px-24">
+    <section className="bg-[#EFFAFC] px-6 py-20 md:px-12 lg:px-24">
       <div className="container-custom mx-auto">
-        <h2 className="text-3xl md:text-5xl font-extrabold text-[#0B4E9B] text-center mb-16">
-          Our Professional Cleaning Services Calgary
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <ServiceCard
-              key={index}
-              title={service.title}
-              description={service.description}
-              href={service.href}
-              isDark={service.isDark}
-            />
+        <div className="mx-auto mb-14 max-w-4xl text-center">
+          <h2 className="text-3xl font-extrabold text-[#0B4E9B] md:text-5xl">
+            Cleaning Options for Calgary Homes, Businesses and Vehicles
+          </h2>
+          <p className="mx-auto mt-6 max-w-3xl leading-relaxed text-gray-700">
+            Camz Cleaning provides residential, commercial, vehicle and seasonal
+            property services across Calgary. Choose the service that fits your
+            space and book a preferred appointment online.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          {services.map((service) => (
+            <motion.article
+              key={service.title}
+              whileHover={{ y: -5 }}
+              className={`flex h-full flex-col rounded-3xl p-8 shadow-lg ${
+                service.dark
+                  ? "bg-[#0B4E9B] text-white"
+                  : "border border-gray-100 bg-white text-[#0B4E9B]"
+              }`}
+            >
+              <h3 className="text-2xl font-extrabold">{service.title}</h3>
+              <p className={`mt-4 flex-1 leading-relaxed ${service.dark ? "text-blue-50" : "text-gray-600"}`}>
+                {service.description}
+              </p>
+              <Link
+                href={service.href}
+                className={`mt-7 inline-block w-fit rounded-lg px-6 py-3 font-bold ${
+                  service.dark
+                    ? "border border-white text-white hover:bg-white hover:text-[#0B4E9B]"
+                    : "bg-[#0091C1] text-white hover:bg-[#0B4E9B]"
+                }`}
+              >
+                View Service
+              </Link>
+            </motion.article>
           ))}
         </div>
       </div>

@@ -1,129 +1,99 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Building2,
-  Home,
-  Car,
-  CalendarClock,
-  ArrowRight,
-  ChevronRightCircle,
-} from "lucide-react";
+import { Building2, CalendarClock, Car, Home } from "lucide-react";
 
 const services = [
   {
-    title: "Commercial Cleaning",
-    description:
-      "Professional commercial cleaning ensuring spotless, hygienic, and productive workspaces.",
-    icon: <Building2 size={48} strokeWidth={1.8} />,
-    dark: false,
-    href: "/commercial-cleaning-services",
-  },
-  {
     title: "Residential Cleaning",
     description:
-      "Reliable residential cleaning services delivering fresh, spotless, and comfortable living spaces for your home.",
-    icon: <Home size={48} strokeWidth={1.8} />,
-    dark: true,
-    href: "/residential-cleaning-services",
+      "Cleaning for living spaces, including regular, deep and move-in/move-out needs based on the requested scope.",
+    icon: Home,
+    dark: false,
+    href: "/residential-cleaning-services/",
+    linkLabel: "View Residential Cleaning",
   },
   {
-    title: "Vehicle Cleaning Service",
+    title: "Commercial Cleaning",
     description:
-      "Professional vehicle cleaning services restoring shine, freshness, comfort, and lasting protection.",
-    icon: <Car size={48} strokeWidth={1.8} />,
+      "Cleaning for workplaces and shared facilities, with the service scope planned around the property and schedule.",
+    icon: Building2,
+    dark: true,
+    href: "/commercial-cleaning-services/",
+    linkLabel: "View Commercial Cleaning",
+  },
+  {
+    title: "Vehicle Cleaning",
+    description:
+      "Mobile interior and exterior vehicle cleaning based on the selected package, vehicle condition and agreed location.",
+    icon: Car,
     dark: false,
-    href: "/vehicle-cleaning-service",
+    href: "/vehicle-cleaning-service/",
+    linkLabel: "View Vehicle Cleaning",
   },
   {
     title: "Seasonal Property Service",
     description:
-      "Professional seasonal property cleaning ensuring freshness, maintenance, and reliable protection.",
-    icon: <CalendarClock size={48} strokeWidth={1.8} />,
+      "Cleaning and property-care services for seasonal homes, vacation rentals and weather-related property needs.",
+    icon: CalendarClock,
     dark: true,
-    href: "/seasonal-property-service",
+    href: "/seasonal-property-service/",
+    linkLabel: "View Seasonal Property Service",
   },
 ];
 
-export default function Services() {
+const Services = () => {
   return (
-    <section className="bg-[#EEF5F7] py-20">
-      <div className="container-custom">
-        {/* Top */}
-        <div className="mx-auto mb-14 max-w-4xl text-center">
-          <span className="mb-5 inline-flex rounded-full bg-[#02C0E6] px-5 py-1 text-sm font-semibold text-white">
-            Our services
-          </span>
-
-          <h2 className="mb-6 text-4xl md:text-5xl font-extrabold leading-tight text-[#0B4E9B]">
-            Cleaning Services in Calgary
+    <section className="bg-white px-6 py-16 md:px-12 lg:px-24">
+      <div className="container-custom mx-auto">
+        <div className="mx-auto mb-12 max-w-3xl text-center">
+          <h2 className="text-3xl font-extrabold text-[#0B4E9B] md:text-5xl">
+            Choose Your Cleaning Service
           </h2>
-
-          <p className="mx-auto max-w-3xl text-base md:text-lg leading-8 text-[#1A1A1A]">
-            Camz Cleaning provides residential, commercial, vehicle and seasonal
-            property cleaning services across Calgary, Airdrie, Cochrane and
-            Chestermere. Explore our services and choose the cleaning solution
-            that fits your home, workplace, vehicle or property.
+          <p className="mt-5 leading-relaxed text-gray-600">
+            Review the four core service categories and open the page that best
+            matches your cleaning needs.
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className={`p-8 rounded-md shadow-lg flex flex-col h-full min-w-[300px] max-h-[400px] transition-all duration-300 border  ${
-                service.dark
-                  ? "bg-[#0B4E9B] text-white border-[#0B4E9B]"
-                  : "bg-white text-[#0B4E9B] border-[#0B4E9B]"
-              }`}
-            >
-              {/* Icon */}
-              <div
-                className={`mb-4 flex h-16 w-16 items-center justify-center rounded-2xl ${
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          {services.map((service) => {
+            const Icon = service.icon;
+            return (
+              <article
+                key={service.title}
+                className={`flex h-full flex-col rounded-3xl border p-8 shadow-sm ${
                   service.dark
-                    ? "bg-white/10 text-white"
-                    : "bg-[#EEF5F7] text-[#0B4E9B]"
+                    ? "border-[#0B4E9B] bg-[#0B4E9B] text-white"
+                    : "border-[#0B4E9B]/20 bg-white text-[#0B4E9B]"
                 }`}
               >
-                {service.icon}
-              </div>
-
-              {/* Content */}
-              <div className="flex flex-col flex-1 items-start text-left">
-                {/* Title */}
-                <h3 className="text-3xl font-extrabold mb-4 leading-tight">
-                  {service.title}
-                </h3>
-
-                {/* Description */}
+                <Icon size={46} strokeWidth={1.7} aria-hidden="true" />
+                <h3 className="mt-5 text-2xl font-extrabold">{service.title}</h3>
                 <p
-                  className={`text-base leading-8 font-medium ${
+                  className={`mt-4 flex-1 leading-relaxed ${
                     service.dark ? "text-blue-50" : "text-gray-600"
                   }`}
                 >
                   {service.description}
                 </p>
-
-                {/* Button */}
-                <div className="mt-auto pt-6">
-                  <Link
-                    href={service.href}
-                    className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all ${
-                      service.dark
-                        ? "border border-white text-white hover:bg-white hover:text-[#0B4E9B]"
-                        : "bg-gradient-to-r from-[#0091C1] to-[#0B4E9B] text-white hover:shadow-md"
-                    }`}
-                  >
-                    Read More
-                    <ChevronRightCircle size={18} />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
+                <Link
+                  href={service.href}
+                  className={`mt-7 inline-flex w-fit rounded-lg px-6 py-3 font-bold transition-colors ${
+                    service.dark
+                      ? "border border-white text-white hover:bg-white hover:text-[#0B4E9B]"
+                      : "bg-[#0091C1] text-white hover:bg-[#0B4E9B]"
+                  }`}
+                >
+                  {service.linkLabel}
+                </Link>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default Services;

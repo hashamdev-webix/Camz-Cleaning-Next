@@ -54,7 +54,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const path = `/blogs/${id}/`;
+  const path = `/blog/${id}/`;
   const blog = await getBlog(id);
 
   if (!blog) {

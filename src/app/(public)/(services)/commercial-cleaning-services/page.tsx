@@ -1,59 +1,64 @@
-import CommercialHero from '@/components/commercial/commercialHero';
-import ServiceSidebar from '@/components/common/ServiceSidebar';
-import CommercialCleaningContent from "@/components/commercial/CommercialCleaningContent"
-import AreasServed from '@/components/home/AreasServed';
+import CommercialHero from "@/components/commercial/commercialHero";
+import CommercialCTA from "@/components/commercial/CommercialCTA";
+import CommercialCleaningContent from "@/components/commercial/CommercialCleaningContent";
+import CommonFAQ from "@/components/common/CommonFAQ";
+import ServiceSidebar from "@/components/common/ServiceSidebar";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import { pageSeo } from "@/lib/seo";
 
-import TestimonialsSection from '@/components/home/TestimonialsSection';
-import CommercialCTA from '@/components/commercial/CommercialCTA';
-import CommonFAQ from '@/components/common/CommonFAQ';
+export const metadata = pageSeo({
+  title: "Commercial Cleaning & Janitorial Services in Calgary",
+  description:
+    "Commercial cleaning services for Calgary offices, shops, shared facilities and post-construction spaces. Request a tailored plan and book online.",
+  path: "/commercial-cleaning-services/",
+});
 
-const page = () => {
-
+const Page = () => {
   const commercialFaqs = [
-  {
-    id: 1,
-    question: "1. What does your commercial cleaning cover?",
-    answer: "We clean offices, shops, and restaurants, including floors, restrooms, trash, kitchens, and workspaces.",
-  },
-  {
-    id: 2,
-    question: "2. Are your business cleaning services reliable?",
-    answer: "Yes, our trained team delivers consistent, professional cleaning every time.",
-  },
-  {
-    id: 3,
-    question: "3. Can services be customized for my business?",
-    answer: "Absolutely! We tailor cleaning plans to your schedule and business needs.",
-  },
- 
-  {
-    id: 4,
-    question: "4. Which areas do you serve?",
-    answer: "We provide commercial cleaning in Chestermere, Calgary, Airdrie, and Cochrane.",
-  },
-];
+    {
+      id: 1,
+      question: "What is included in a commercial cleaning service?",
+      answer:
+        "A commercial visit may cover workstations, reception areas, meeting rooms, restrooms, staff kitchens, floors, waste removal and high-touch surfaces. Camz Cleaning confirms the exact checklist before service.",
+    },
+    {
+      id: 2,
+      question: "How often should a commercial property be cleaned?",
+      answer:
+        "The right frequency depends on the property size, foot traffic, working hours and hygiene needs. Busy offices and shared facilities may need several visits per week, while smaller spaces may need weekly service.",
+    },
+    {
+      id: 3,
+      question: "Can commercial cleaning be arranged around business hours?",
+      answer:
+        "Yes, preferred times can be requested during online booking. Before-hours, during-hours or after-hours service depends on team availability, safe access and the agreed scope.",
+    },
+    {
+      id: 4,
+      question: "How much does commercial cleaning cost in Calgary?",
+      answer:
+        "Pricing depends on the property size, layout, number of washrooms, flooring, service frequency, current condition and special tasks. Submit the details online for a tailored quote.",
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-white">
       <CommercialHero />
-      <section className="py-16 px-6 md:px-12 lg:px-24">
-        <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-          <aside className="lg:col-span-1 lg:sticky lg:top-24">
-            <ServiceSidebar  />
+      <section className="px-6 py-16 md:px-12 lg:px-24">
+        <div className="container-custom mx-auto grid grid-cols-1 items-start gap-12 lg:grid-cols-3">
+          <aside className="lg:sticky lg:top-24 lg:col-span-1">
+            <ServiceSidebar />
           </aside>
-
-          {/* Right Side: Scrollable Content */}
           <article className="lg:col-span-2">
             <CommercialCleaningContent />
           </article>
-          
         </div>
       </section>
-      <AreasServed/>
       <CommonFAQ faqs={commercialFaqs} />
-      <TestimonialsSection/>
-      <CommercialCTA/>
+      <TestimonialsSection />
+      <CommercialCTA />
     </main>
   );
 };
 
-export default page;
+export default Page;

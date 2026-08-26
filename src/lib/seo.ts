@@ -9,18 +9,30 @@ type SeoOptions = {
   noIndex?: boolean;
 };
 
-export function pageSeo({ title, description, path, noIndex = false }: SeoOptions): Metadata {
-  const canonical = path === "/" ? siteUrl : `${siteUrl}${path}`;
+function normalizePath(path: string) {
+  if (path === "/") return "/";
+  const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;
+  return withLeadingSlash.endsWith("/") ? withLeadingSlash : `${withLeadingSlash}/`;
+}
+
+export function pageSeo({
+  title,
+  description,
+  path,
+  noIndex = false,
+}: SeoOptions): Metadata {
+  const normalizedPath = normalizePath(path);
+  const canonical =
+    normalizedPath === "/" ? siteUrl : `${siteUrl}${normalizedPath}`;
+
   return {
     title,
     description,
-    alternates: {
-      canonical,
-    },
+    alternates: { canonical },
     robots: noIndex
       ? {
           index: false,
-          follow: false,
+          follow: true,
         }
       : undefined,
     openGraph: {

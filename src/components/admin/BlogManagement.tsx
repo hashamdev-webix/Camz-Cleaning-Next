@@ -565,7 +565,7 @@ export default function BlogManagement({
                           <td className="px-2 py-2.5">
                             <div className="flex flex-nowrap items-center gap-1">
                               <a
-                                href={`/blogs/${blog.id}`}
+                                href={`/blog/${blog.id}/`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="inline-flex h-7 items-center gap-1 rounded-md bg-[#4A86F7] px-2.5 text-[8px] font-bold text-white transition hover:bg-blue-600"
@@ -679,7 +679,7 @@ export default function BlogManagement({
 
                       <div className="mt-3 flex gap-1.5">
                         <a
-                          href={`/blogs/${blog.id}`}
+                          href={`/blog/${blog.id}/`}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-lg bg-[#4A86F7] text-[9px] font-bold text-white"

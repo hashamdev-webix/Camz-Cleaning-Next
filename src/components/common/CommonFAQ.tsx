@@ -1,6 +1,7 @@
 "use client";
+
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface FAQItem {
@@ -17,64 +18,71 @@ const CommonFAQ = ({ faqs }: CommonFAQProps) => {
   const [activeId, setActiveId] = useState<number | string | null>(
     faqs.length > 0 ? faqs[0].id : null,
   );
+
   const toggleAccordion = (id: number | string) => {
-    setActiveId(activeId === id ? null : id);
+    setActiveId((current) => (current === id ? null : id));
   };
+
   return (
-    <section className="bg-white py-20 px-6 md:px-12 lg:px-24">
-      <div className="max-w-5xl mx-auto">
-        {/* Header Section - Remains Static */}
-        <div className="text-center mb-12">
-          <span className="bg-[#00B7EB] text-white px-5 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block">
+    <section className="bg-white px-6 py-20 md:px-12 lg:px-24">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-12 text-center">
+          <span className="mb-4 inline-block rounded-full bg-[#00B7EB] px-5 py-1 text-xs font-bold uppercase text-white">
             FAQs
           </span>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-[#004A8C] mb-2">
+          <h2 className="mb-2 text-4xl font-extrabold text-[#004A8C] md:text-5xl">
             Frequently Asked Questions
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-base">
-            Find clear answers to common questions about our cleaning services,
-            booking process, pricing, and service areas to help you decide
-            confidently.
+          <p className="mx-auto max-w-2xl text-base text-gray-600">
+            Find clear answers about service scope, scheduling, pricing and
+            online booking.
           </p>
         </div>
 
-        {/* Accordion Container */}
         <div className="space-y-4">
           {faqs.map((faq) => {
             const isActive = activeId === faq.id;
+            const buttonId = `faq-button-${faq.id}`;
+            const panelId = `faq-panel-${faq.id}`;
 
             return (
               <div key={faq.id} className="overflow-hidden">
                 <button
+                  id={buttonId}
+                  type="button"
                   onClick={() => toggleAccordion(faq.id)}
-                  className={`w-full flex items-center justify-between p-3 md:px-8 md:py-3 text-left transition-all duration-300 rounded-xl ${
+                  aria-expanded={isActive}
+                  aria-controls={panelId}
+                  className={`flex w-full items-center justify-between rounded-xl p-3 text-left text-white transition-all duration-300 md:px-8 md:py-3 ${
                     isActive
-                      ? "bg-[#00B7EB] text-white shadow-lg"
-                      : "bg-[#004A8C] text-white hover:bg-[#003d75]"
+                      ? "bg-[#00B7EB] shadow-lg"
+                      : "bg-[#004A8C] hover:bg-[#003d75]"
                   }`}
                 >
                   <span className="text-lg font-semibold">{faq.question}</span>
                   {isActive ? (
-                    <ChevronUp className="w-6 h-6 flex-shrink-0" />
+                    <ChevronUp className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
                   ) : (
-                    <ChevronDown className="w-6 h-6 flex-shrink-0" />
+                    <ChevronDown className="h-6 w-6 flex-shrink-0" aria-hidden="true" />
                   )}
                 </button>
 
-                <AnimatePresence>
-                  {isActive && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                      <div className="p-4 md:px-8 text-gray-700 text-lg leading-relaxed border-x border-b border-gray-100 rounded-b-xl -mt-2 pt-8">
-                        {faq.answer}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <motion.div
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={buttonId}
+                  initial={false}
+                  animate={{
+                    height: isActive ? "auto" : 0,
+                    opacity: isActive ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="-mt-2 rounded-b-xl border-x border-b border-gray-100 p-4 pt-8 text-lg leading-relaxed text-gray-700 md:px-8">
+                    {faq.answer}
+                  </div>
+                </motion.div>
               </div>
             );
           })}

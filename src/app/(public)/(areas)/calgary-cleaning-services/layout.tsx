@@ -4,10 +4,16 @@ import { pageSeo } from "@/lib/seo";
 
 export const metadata = pageSeo({
   title: "Cleaning Services in Calgary | Home & Office Cleaners",
-  description: "Choose Camz Cleaning for residential and commercial cleaning in Calgary, with flexible scheduling and detailed service for homes and workplaces.",
+  description:
+    "Book professional cleaning services in Calgary for homes, offices, vehicles and seasonal properties. Choose your service and preferred appointment online.",
   path: "/calgary-cleaning-services/",
 });
 
 export default function CalgaryCleaningLayout({ children }: { children: ReactNode }) {
-  return <><PageJsonLd path="/calgary-cleaning-services/" />{children}</>;
+  return (
+    <>
+      <PageJsonLd path="/calgary-cleaning-services/" />
+      {children}
+    </>
+  );
 }

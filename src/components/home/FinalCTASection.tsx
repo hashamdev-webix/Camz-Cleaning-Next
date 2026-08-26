@@ -1,61 +1,35 @@
-"use client";
-import React from "react";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const FinalCTASection = () => {
-  const router = useRouter();
   return (
-    <section className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden bg-[#134D91]">
-      {/* Background Image */}
+    <section className="relative overflow-hidden bg-[#134D91] px-6 py-20 text-white md:px-12 lg:px-24">
       <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: "url('/wp-admin/uploads/clean-lobby.webp')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/wp-admin/uploads/clean-lobby.webp')" }}
+        aria-hidden="true"
       />
+      <div className="absolute inset-0 bg-[#134F95]/90" aria-hidden="true" />
 
-      {/* Overlay to ensure text readability */}
-      <div className="absolute inset-0 bg-[#134F95] opacity-92 z-10" />
-
-      <div className="container-custom mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-col items-start space-y-6"
-        >
-          {/* Badge */}
-          <span className="inline-block border border-cyan-400 text-cyan-400 px-5 py-1.5 rounded-full text-sm font-semibold">
-            Get In Touch
+      <div className="container-custom relative z-10 mx-auto">
+        <div className="max-w-3xl space-y-6">
+          <span className="inline-block rounded-full border border-cyan-300 px-5 py-1.5 text-sm font-semibold text-cyan-200">
+            Online Booking
           </span>
-
-          {/* Heading */}
-          <h2 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
-            Book Your Cleaning Service Today!
+          <h2 className="text-4xl font-extrabold leading-tight md:text-6xl">
+            Ready to Request a Cleaning Appointment?
           </h2>
-
-          {/* Description */}
-          <p className="text-blue-100 text-lg md:text-xl max-w-3xl leading-relaxed">
-            Book your professional cleaning service today and experience a
-            spotless, fresh, and hygienic environment delivered by our trusted,
-            skilled, and dependable cleaning team.
+          <p className="text-lg leading-relaxed text-blue-50 md:text-xl">
+            Choose your service, provide the relevant property or vehicle
+            details and request your preferred appointment online. Camz Cleaning
+            confirms availability, scope and price after review.
           </p>
-
-          {/* Button */}
-          <motion.button
-            onClick={() => router.push("/contact-us")}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-4 border-2 border-white text-white font-bold py-3 px-10 rounded-xl hover:bg-white hover:text-[#004A8C] transition-all duration-300 text-lg"
+          <Link
+            href="/booking/"
+            className="inline-block rounded-xl border-2 border-white px-10 py-3 text-lg font-bold text-white transition-colors hover:bg-white hover:text-[#004A8C]"
           >
-            Contact Us
-          </motion.button>
-        </motion.div>
+            Book Online
+          </Link>
+        </div>
       </div>
     </section>
   );

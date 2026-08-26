@@ -24,6 +24,7 @@ export default function MapSection() {
         {/* Map */}
         <div className="overflow-hidden rounded-3xl shadow-xl border border-gray-200">
           <iframe
+            title="Map showing Calgary, Alberta, Canada"
             src="https://www.google.com/maps?q=Calgary,AB,Canada&output=embed"
             width="100%"
             height="500"

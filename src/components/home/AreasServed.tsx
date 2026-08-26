@@ -1,76 +1,70 @@
-"use client";
-import React from "react";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const serviceAreas = [
   {
     city: "Calgary",
     description:
-      "Comprehensive residential and commercial cleaning services across Calgary, delivered by trusted professionals focused on quality, reliability, and outstanding results.",
-    bgColor: "bg-[#2964A8]", // Darker Blue
-    url: "/calgary-cleaning-services",
+      "Residential, commercial, mobile vehicle and seasonal property cleaning with online booking.",
+    href: "/calgary-cleaning-services/",
+    dark: true,
   },
   {
     city: "Airdrie",
     description:
-      "Affordable and reliable cleaning services for homes and businesses across Airdrie, tailored to meet your specific needs with consistent quality.",
-    bgColor: "bg-[#00B7EB]", // Bright Cyan
-    url: "/airdrie-cleaning-services",
+      "Cleaning options for homes, businesses, vehicles and seasonal properties, subject to service scope and availability.",
+    href: "/airdrie-cleaning-services/",
+    dark: false,
   },
   {
     city: "Cochrane",
     description:
-      "Professional home and office cleaning services in Cochrane, delivering spotless, hygienic, and carefully maintained spaces with reliable, consistent results.",
-    bgColor: "bg-[#00B7EB]", // Bright Cyan
-    url: "/cochrane-cleaning-services",
+      "Residential, commercial, mobile vehicle and seasonal property cleaning with scope and scheduling confirmed after review.",
+    href: "/cochrane-cleaning-services/",
+    dark: false,
   },
   {
     city: "Chestermere",
     description:
-      "High-quality residential and commercial cleaning services in Chestermere, providing flexible scheduling, detailed care, and consistently professional results.",
-    bgColor: "bg-[#2964A8]", // Darker Blue
-    url: "/chestermere-cleaning-services",
+      "Cleaning services for homes, businesses, vehicles and seasonal properties based on the requested scope and appointment availability.",
+    href: "/chestermere-cleaning-services/",
+    dark: true,
   },
 ];
 
 const AreasServed = () => {
-  const router = useRouter();
   return (
-    <section className="bg-[#EFFAFC] py-12 px-6 md:px-12 lg:px-24">
+    <section className="bg-[#EFFAFC] px-6 py-12 md:px-12 lg:px-24">
       <div className="container-custom mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-6">
-          <span className="bg-[#00B7EB] text-white px-5 py-1.5 rounded-full text-sm font-semibold mb-6 inline-block">
+        <div className="mb-8 text-center">
+          <span className="mb-4 inline-block rounded-full bg-[#00B7EB] px-5 py-1.5 text-sm font-semibold text-white">
             Service Areas
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-[#004A8C] mb-2">
-            Areas Served By Camz Cleaning
+          <h2 className="text-4xl font-bold text-[#004A8C] md:text-5xl">
+            Areas Served by Camz Cleaning
           </h2>
-          <p className="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
-            We deliver reliable residential, commercial, vehicle, and seasonal
-            cleaning services across Calgary, providing consistent quality and
-            dependable solutions.
+          <p className="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-gray-600">
+            Review local cleaning service information for Calgary, Airdrie,
+            Cochrane and Chestermere.
           </p>
         </div>
 
-        {/* Areas Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {serviceAreas.map((area, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              className={`${area.bgColor} p-8 rounded-xl text-white flex flex-col justify-start min-h-[180px] cursor-pointer transition-transform duration-300 hover:scale-[1.02] shadow-lg`}
-              onClick={() => router.push(area.url)}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {serviceAreas.map((area) => (
+            <article
+              key={area.city}
+              className={`flex min-h-[190px] flex-col rounded-xl p-8 shadow-lg ${
+                area.dark ? "bg-[#2964A8] text-white" : "bg-[#00A9CE] text-white"
+              }`}
             >
-              <h3 className="text-3xl font-bold mb-4">{area.city}</h3>
-              <p className="text-white leading-relaxed text-base md:text-lg">
-                <span className="text-white"> {area.description}</span>
-              </p>
-            </motion.div>
+              <h3 className="text-3xl font-bold">{area.city}</h3>
+              <p className="mt-4 flex-1 leading-relaxed">{area.description}</p>
+              <Link
+                href={area.href}
+                className="mt-6 inline-block w-fit font-bold underline decoration-white/60 underline-offset-4 hover:decoration-white"
+              >
+                View cleaning services in {area.city}
+              </Link>
+            </article>
           ))}
         </div>
       </div>

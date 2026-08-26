@@ -14,6 +14,15 @@ type BookingPayload = Record<string, unknown> & {
     height?: number;
     format?: string;
   };
+  image_update?: {
+    id: string;
+    url: string;
+    storage_path?: string;
+    name?: string;
+    width?: number;
+    height?: number;
+    format?: string;
+  };
 };
 
 function getRole(profile: { role?: unknown } | null) {
@@ -88,9 +97,18 @@ export async function POST(request: NextRequest) {
   const body = (await request.json()) as BookingPayload;
 
   if (body.image) {
-    const { error } = await supabase.from("booking_record_images").insert({ ...body.image, uploaded_by: user.id });
+    if (!body.image.booking_id || !["before", "after"].includes(body.image.image_type) || !body.image.url) {
+      return NextResponse.json({ error: "Valid booking image details are required." }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
+      .from("booking_record_images")
+      .insert({ ...body.image, uploaded_by: user.id })
+      .select("id, booking_id, image_type, url, storage_path, name, width, height, format, uploaded_at")
+      .single();
+
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ image: data });
   }
 
   if (getRole(profile) === "cleaner") {
@@ -120,8 +138,43 @@ export async function PATCH(request: NextRequest) {
   const { allowed, supabase, user, profile } = await getPortalUser();
   if (!allowed || !user) return NextResponse.json({ error: "Portal access required." }, { status: 403 });
   const body = (await request.json()) as BookingPayload;
-  if (!body.id) return NextResponse.json({ error: "Booking id is required." }, { status: 400 });
   const role = getRole(profile);
+
+  if (body.image_update) {
+    const imageUpdate = body.image_update;
+    if (!imageUpdate.id || !imageUpdate.url) {
+      return NextResponse.json({ error: "Image id and URL are required." }, { status: 400 });
+    }
+
+    const { data: existingImage, error: existingError } = await supabase
+      .from("booking_record_images")
+      .select("id, storage_path")
+      .eq("id", imageUpdate.id)
+      .maybeSingle();
+
+    if (existingError) return NextResponse.json({ error: existingError.message }, { status: 400 });
+    if (!existingImage) return NextResponse.json({ error: "Booking image not found." }, { status: 404 });
+
+    const { id: _imageId, ...imageFields } = imageUpdate;
+    void _imageId;
+
+    const { data: updatedImage, error: updateError } = await supabase
+      .from("booking_record_images")
+      .update({ ...imageFields, uploaded_by: user.id })
+      .eq("id", imageUpdate.id)
+      .select("id, booking_id, image_type, url, storage_path, name, width, height, format, uploaded_at")
+      .single();
+
+    if (updateError) return NextResponse.json({ error: updateError.message }, { status: 400 });
+
+    if (existingImage.storage_path && existingImage.storage_path !== imageUpdate.storage_path) {
+      await supabase.storage.from("job-images").remove([existingImage.storage_path]);
+    }
+
+    return NextResponse.json({ image: updatedImage });
+  }
+
+  if (!body.id) return NextResponse.json({ error: "Booking id is required." }, { status: 400 });
 
   if (Array.isArray(body.assigned_cleaner_ids) && Object.keys(body).length <= 2) {
     if (role !== "admin") return NextResponse.json({ error: "Only admin can assign cleaners." }, { status: 403 });
@@ -162,8 +215,22 @@ export async function DELETE(request: NextRequest) {
   const params = new URL(request.url).searchParams;
   const imageId = params.get("imageId");
   if (imageId) {
+    const { data: image, error: imageLookupError } = await supabase
+      .from("booking_record_images")
+      .select("id, storage_path")
+      .eq("id", imageId)
+      .maybeSingle();
+
+    if (imageLookupError) return NextResponse.json({ error: imageLookupError.message }, { status: 400 });
+    if (!image) return NextResponse.json({ error: "Booking image not found." }, { status: 404 });
+
     const { error } = await supabase.from("booking_record_images").delete().eq("id", imageId);
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+
+    if (image.storage_path) {
+      await supabase.storage.from("job-images").remove([image.storage_path]);
+    }
+
     return NextResponse.json({ ok: true });
   }
   if (getRole(profile) !== "admin") return NextResponse.json({ error: "Only admin can delete booking records." }, { status: 403 });

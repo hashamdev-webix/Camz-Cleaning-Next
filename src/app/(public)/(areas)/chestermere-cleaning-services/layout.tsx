@@ -3,11 +3,17 @@ import PageJsonLd from "@/components/seo/PageJsonLd";
 import { pageSeo } from "@/lib/seo";
 
 export const metadata = pageSeo({
-  title: "Cleaning Services in Chestermere for Home & Businesses",
-  description: "Book professional home and commercial cleaning in Chestermere with flexible service options and a dependable local cleaning team.",
+  title: "Cleaning Services in Chestermere | Homes & Businesses",
+  description:
+    "Book residential, commercial, vehicle and seasonal property cleaning in Chestermere. Choose your service and preferred appointment online.",
   path: "/chestermere-cleaning-services/",
 });
 
 export default function ChestermereCleaningLayout({ children }: { children: ReactNode }) {
-  return <><PageJsonLd path="/chestermere-cleaning-services/" />{children}</>;
+  return (
+    <>
+      <PageJsonLd path="/chestermere-cleaning-services/" />
+      {children}
+    </>
+  );
 }

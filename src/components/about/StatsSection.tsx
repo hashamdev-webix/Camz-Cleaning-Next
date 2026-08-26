@@ -1,79 +1,69 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import { FaStar } from "react-icons/fa6";
-import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
 
-// --- Counter Sub-Component ---
-const Counter = ({ value }: { value: string }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.5 });
-  
-  // Extract the numeric part (e.g., "120" from "120+")
-  const numericValue = parseInt(value.replace(/\D/g, ""), 10);
-  const suffix = value.replace(/[0-9]/g, "");
-
-  const motionValue = useMotionValue(0);
-  const springValue = useSpring(motionValue, {
-    damping: 30,
-    stiffness: 100,
-  });
-
-  useEffect(() => {
-    if (isInView) {
-      motionValue.set(numericValue);
-    }
-  }, [isInView, motionValue, numericValue]);
-
-  useEffect(() => {
-    springValue.on("change", (latest) => {
-      if (ref.current) {
-        (ref.current as HTMLElement).textContent = Math.floor(latest).toString() + suffix;
-      }
-    });
-  }, [springValue, suffix]);
-
-  return <span ref={ref}>0{suffix}</span>;
-};
+import {
+  CalendarCheck,
+  ClipboardCheck,
+  MessagesSquare,
+  Sparkles,
+} from "lucide-react";
+import { motion } from "framer-motion";
 
 const StatsSection = () => {
-  const stats = [
-    { label: "Completed Projects", value: "120+" },
-    { label: "Years Experience", value: "6+" },
-    { label: "Team Members", value: "8+" },
-    { label: "Google Rating", value: "5", hasStar: true },
+  const items = [
+    {
+      title: "Clear Service Scope",
+      description: "Cleaning requirements reviewed before the appointment.",
+      icon: ClipboardCheck,
+    },
+    {
+      title: "Flexible Booking",
+      description: "Choose your preferred service and appointment online.",
+      icon: CalendarCheck,
+    },
+    {
+      title: "Service Communication",
+      description: "Important booking and access details can be confirmed clearly.",
+      icon: MessagesSquare,
+    },
+    {
+      title: "Careful Cleaning",
+      description: "Work focused on the agreed cleaning priorities and scope.",
+      icon: Sparkles,
+    },
   ];
 
   return (
-    <section className="bg-[#0B4E9B] py-12 px-6">
-      <div className="container-custom mx-auto flex flex-wrap justify-between items-center">
-        {stats.map((stat, index) => (
-          <React.Fragment key={index}>
-            {/* Stat Item */}
-            <div className="flex-1 min-w-[150px] text-center text-white py-3">
-              <div className="text-5xl md:text-6xl font-semibold mb-3 flex items-center justify-center gap-1">
-                <Counter value={stat.value} />
-                {stat.hasStar && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5, type: "spring" }}
-                    viewport={{ once: true }}
-                  >
-                    <FaStar className="text-white text-4xl md:text-5xl" />
-                  </motion.div>
-                )}
-              </div>
-              <p className="text-lg font-semibold opacity-95 tracking-wide">
-                {stat.label}
-              </p>
-            </div>
+    <section className="bg-[#0B4E9B] px-6 py-14">
+      <div className="container-custom mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {items.map((item, index) => {
+          const Icon = item.icon;
 
-            {/* Divider */}
-            {index !== stats.length - 1 && (
-              <div className="hidden lg:block w-[1px] h-24 bg-white/30 self-center" />
-            )}
-          </React.Fragment>
-        ))}
+          return (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.08,
+              }}
+              className="text-center text-white"
+            >
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
+                <Icon size={30} strokeWidth={1.8} />
+              </div>
+
+              <h3 className="mb-2 text-xl font-bold">
+                {item.title}
+              </h3>
+
+              <p className="text-sm leading-6 text-blue-100">
+                {item.description}
+              </p>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );

@@ -1,65 +1,64 @@
+import CommonFAQ from "@/components/common/CommonFAQ";
+import ResidentialCTA from "@/components/residential/ResidentialCTA";
+import ServiceSidebar from "@/components/common/ServiceSidebar";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import ResidentialCleaningContent from "@/components/residential/ResidentialCleaningContent";
+import ResidentialHero from "@/components/residential/ResidentialHero";
+import { pageSeo } from "@/lib/seo";
 
-import ServiceSidebar from '@/components/common/ServiceSidebar';
-import AreasServed from '@/components/home/AreasServed';
-import TestimonialsSection from '@/components/home/TestimonialsSection';
-import ResidentialCleaningContent from '@/components/residential/ResidentialCleaningContent';
-import ResidentialHero from '@/components/residential/ResidentialHero';
-import CommonFAQ from '@/components/common/CommonFAQ';
-import ResidentialCTA from '@/components/residential/ResidentialCTA';
+export const metadata = pageSeo({
+  title: "Residential & House Cleaning Services in Calgary",
+  description:
+    "Residential cleaning in Calgary for regular, deep and move-in/move-out needs. Choose your service, preferred schedule and book online.",
+  path: "/residential-cleaning-services/",
+});
 
-const page = () => {
+const Page = () => {
+  const residentialFaqs = [
+    {
+      id: 1,
+      question: "What is included in a residential cleaning service?",
+      answer:
+        "A residential visit may include kitchens, bathrooms, bedrooms and living areas, with dusting, surface cleaning, sanitizing, vacuuming and mopping. Extras are confirmed before the appointment.",
+    },
+    {
+      id: 2,
+      question: "What is the difference between regular and deep cleaning?",
+      answer:
+        "Regular cleaning focuses on routine upkeep. Deep cleaning is for heavier build-up and more detailed tasks, such as additional attention to cabinets, appliances, edges and less frequently cleaned surfaces.",
+    },
+    {
+      id: 3,
+      question: "How much does house cleaning cost in Calgary?",
+      answer:
+        "The cost depends on the home size, current condition, selected service, cleaning frequency and extra tasks. Enter the details in the online booking system so the scope and price can be confirmed.",
+    },
+    {
+      id: 4,
+      question: "How should I prepare my home for the cleaning appointment?",
+      answer:
+        "You do not need to clean first. Remove excess clutter where possible, secure valuables, provide access and parking details, and mention pets, sensitive surfaces or product preferences during booking.",
+    },
+  ];
 
-    const residentialFaqs = [
-  {
-    id: 1,
-    question: "1. What is included in Camz Cleaning’s Residential Cleaning Service?",
-    answer: "Our service covers bedrooms, bathrooms, kitchens, living areas, carpets, and upholstery, ensuring your home is spotless, fresh, and hygienic.",
-  },
-  {
-    id: 2,
-    question: "2. Can I schedule regular home cleaning in Chestermere?",
-    answer: "Yes! We offer weekly, bi-weekly, or monthly cleaning to keep your home consistently clean and stress-free.",
-  },
-  {
-    id: 3,
-    question: "3. Are the cleaners trained and trustworthy?",
-    answer: "Absolutely. Our certified and experienced cleaners use safe, eco-friendly products and follow strict standards to ensure quality service.",
-  },
- 
-  {
-    id: 4,
-    question: "4. Do you provide specialized cleaning like steam or deep cleaning?",
-    answer: "Yes, we offer professional steam cleaning, deep kitchen and bathroom cleaning, and carpet cleaning to handle even tough dirt and stains.",
-  },
-];
   return (
     <main className="min-h-screen bg-white">
-
-      <ResidentialHero/>
-
-      {/* Content Section */}
-      <section className="py-16 px-6 md:px-12 lg:px-24">
-   
-        <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-       
-          <aside className="lg:col-span-1 lg:sticky lg:top-24">
-            <ServiceSidebar  />
+      <ResidentialHero />
+      <section className="px-6 py-16 md:px-12 lg:px-24">
+        <div className="container-custom mx-auto grid grid-cols-1 items-start gap-12 lg:grid-cols-3">
+          <aside className="lg:sticky lg:top-24 lg:col-span-1">
+            <ServiceSidebar />
           </aside>
-
           <article className="lg:col-span-2">
             <ResidentialCleaningContent />
           </article>
-          
         </div>
       </section>
-
-      {/* Example of a Next Section to test the scroll-away effect */}
-      <AreasServed/>
       <CommonFAQ faqs={residentialFaqs} />
-      <TestimonialsSection/>
-      <ResidentialCTA/>
+      <TestimonialsSection />
+      <ResidentialCTA />
     </main>
   );
 };
 
-export default page;
+export default Page;

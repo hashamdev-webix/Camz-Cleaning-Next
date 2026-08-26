@@ -1,99 +1,54 @@
-import React from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
 const CalgaryCleaningServices = () => {
   const checklistItems = [
-    "Trusted best house cleaners Calgary",
-    "Affordable, cheap cleaning services Calgary",
-    "Reliable cleaners in Calgary",
+    "Trusted local house cleaners",
+    "Affordable cleaning with transparent pricing",
+    "Clear service scopes before the appointment",
+    "Online booking for service requests",
+    "Flexible scheduling subject to availability",
+    "A skilled local cleaning team",
   ];
 
   return (
-    <section className="bg-white py-20 px-6 md:px-12 lg:px-24">
-      <div className="container-custom mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        {/* Left Side: Content */}
+    <section className="bg-white px-6 py-20 md:px-12 lg:px-24">
+      <div className="container-custom mx-auto grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
         <div className="space-y-8">
-          {/* Badge */}
-          <div className="inline-block bg-[#00CEE6] text-white px-5 py-1.5 rounded-full text-sm font-semibold tracking-wide">
-            Calgary
-          </div>
-
-          {/* Main Title */}
-          <h2 className="text-4xl md:text-5xl font-extrabold text-[#004A8C] leading-[1.1]">
-            Top-Rated Home and Commercial Cleaning Services in Calgary
+          <span className="inline-block rounded-full bg-[#00CEE6] px-5 py-1.5 text-sm font-semibold text-white">
+            Calgary Cleaning Services
+          </span>
+          <h2 className="text-4xl font-extrabold leading-[1.1] text-[#004A8C] md:text-5xl">
+            Why Choose Camz Cleaning in Calgary?
           </h2>
-
-          {/* Description Paragraphs */}
-          <div className="space-y-3 text-gray-700 leading-relaxed font-medium">
-            <p>
-              Looking for top-rated home cleaning services in Calgary? Our
-              professional team delivers dependable, high-quality cleaning
-              tailored to your needs, with a strong commitment to consistency,
-              detail, and customer satisfaction.
-            </p>
-            <p>
-              We provide trusted residential and commercial cleaning services in
-              Calgary for homes, apartments, condos, offices, and commercial
-              spaces. From routine house cleaning and deep cleaning to
-              dependable office and commercial cleaning, we help keep your
-              property clean, healthy, and welcoming. Our services are
-              customized to your schedule and cleaning needs, delivering
-              reliable results with the quality and consistency you expect.
-            </p>
-          </div>
-
-          {/* Checklist */}
-          <ul className="space-y-1 pt-2">
-            {checklistItems.map((item, index) => (
-              <li
-                key={index}
-                className="flex items-center gap-3.5  text-gray-700 font-semibold"
-              >
-                {/* <IoCheckmarkCircleOutline size={22} className="text-[#004A8C] flex-shrink-0" /> */}
-                <span>{index + 1}</span>
+          <p className="leading-relaxed text-gray-700">
+            Camz Cleaning provides residential, commercial, mobile vehicle and
+            seasonal property cleaning in Calgary with clear service scopes and
+            a straightforward online booking process.
+          </p>
+          <p className="leading-relaxed text-gray-700">
+            Customers can choose the service they need, provide the relevant
+            property or vehicle details and request a preferred appointment.
+            Scheduling is confirmed after the request is reviewed for scope and
+            availability.
+          </p>
+          <ul className="space-y-3">
+            {checklistItems.map((item) => (
+              <li key={item} className="flex items-start gap-3 font-semibold text-gray-700">
+                <span className="mt-2 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#00CEE6]" aria-hidden="true" />
                 <span>{item}</span>
               </li>
             ))}
           </ul>
-
-          {/* Subtitle / Promise */}
-          <div className="inline-flex items-center gap-2 bg-[#004A8C] text-white px-5 py-2 rounded-full shadow-md mt-4">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-
-            <span className="text-sm md:text-base font-semibold tracking-wide">
-              100% Satisfaction Assured
-            </span>
-          </div>
-
-          {/* Call to Action Button */}
-          <div className="pt-2">
-            <Link
-              href="/contact-us"
-              className="inline-block bg-gradient-to-r from-[#0091C1] to-[#004A8C] text-white px-10 py-4 rounded-xl font-bold hover:shadow-lg transition-shadow duration-300 active:scale-95"
-            >
-              Contact Us
-            </Link>
-          </div>
         </div>
 
-        {/* Right Side: Image with premium styling */}
-        <div className="relative group">
-          {/* Decorative Background Element */}
-          <div className="absolute -inset-4 bg-gradient-to-r from-[#00CEE6]/10 to-[#004A8C]/10 rounded-3xl blur-2xl group-hover:blur-xl transition-all duration-500" />
-
-          {/* Image Container with Border and Radius */}
-          <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-[10px] border-white z-10">
-            <Image
-              src="/p4.webp"
-              alt="Professional Cleaning in Calgary"
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-              priority
-            />
-          </div>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border-[10px] border-white shadow-2xl">
+          <Image
+            src="/p4.webp"
+            alt="Cleaning service in Calgary"
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+          />
         </div>
       </div>
     </section>

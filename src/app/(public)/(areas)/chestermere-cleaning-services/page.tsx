@@ -1,53 +1,32 @@
+import ProfessionalServicesGrid from "@/components/chestermere/ProfessionalServicesGrid";
+import AreaCTA from "@/components/common/AreaCTA";
+import CommonFAQ from "@/components/common/CommonFAQ";
+import CommonHeroSection from "@/components/common/CommonHeroSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import { pageSeo } from "@/lib/seo";
 
-import AreaCTA from '@/components/common/AreaCTA'
-import CommonHeroSection from '@/components/common/CommonHeroSection'
-import TestimonialsSection from '@/components/home/TestimonialsSection'
-import ChestermereCleaningServices from '@/components/chestermere/ChestermereCleaningServices'
-import ProfessionalServicesGrid from '@/components/chestermere/ProfessionalServicesGrid'
-import AreasServed from '@/components/chestermere/AreasServed'
+export const metadata = pageSeo({
+  title: "Cleaning Services in Chestermere | Homes & Businesses",
+  description:
+    "Book residential, commercial, vehicle and seasonal property cleaning in Chestermere. Choose your service and preferred appointment online.",
+  path: "/chestermere-cleaning-services/",
+});
 
-import CommonFAQ from '@/components/common/CommonFAQ'
-export default function page() {
-
+export default function Page() {
   const faqData = [
-  {
-    id: 1,
-    question: "1. Which areas does Camz Cleaning serve?",
-    answer: "We proudly provide professional cleaning services in Cochrane, Calgary, Airdrie, and Chestermere, covering homes, offices, and vehicles with reliable and thorough solutions.",
-  },
-  {
-    id: 2,
-    question: "2. What types of cleaning services are available in each area?",
-    answer: "Our services include residential cleaning, commercial cleaning, deep kitchen and bathroom cleaning, steam carpet cleaning, and vehicle detailing, tailored to the unique needs of each community.",
-  },
-  {
-    id: 3,
-    question: "3. Can I book cleaning services for my home or office in Airdrie or Calgary?",
-    answer: "Absolutely! Clients in Airdrie and Calgary trust Camz Cleaning for professional house cleaning services, commercial office cleaning, and specialized steam cleaning services at convenient times.",
-  },
- 
-  {
-    id: 4,
-    question: "4. Are the cleaning services consistent across all areas?",
-    answer: "Yes, we provide flexible scheduling options, including weekly, bi-weekly, one-time, and after-hours cleaning services to suit your convenience.",
-  },
-];
+    { id: 1, question: "What cleaning services are available in Chestermere?", answer: "Camz Cleaning offers residential, commercial, mobile vehicle and seasonal property cleaning in Chestermere, depending on the requested scope and appointment availability." },
+    { id: 2, question: "Can I book Chestermere cleaning online?", answer: "Yes. Choose the service, enter the Chestermere address and property or vehicle details, select a preferred appointment, and submit the request for confirmation." },
+    { id: 3, question: "Is deep cleaning available for homes in Chestermere?", answer: "Deep cleaning can be requested through the residential cleaning service for heavier build-up or more detailed work. Include the home condition and priority areas in the online booking details." },
+    { id: 4, question: "How much does a cleaning service cost in Chestermere?", answer: "The price depends on the service, property or vehicle size, condition, frequency, access and extra tasks. Camz Cleaning reviews the online request before confirming the quote." },
+  ];
+
   return (
-    <div>
-          <CommonHeroSection 
-        backgroundImage="/p4.webp" 
-        title={
-          <>
-         Professional Chestermere Cleaning <br /> Services Near You
-          </>
-        }
-      />
-     <ChestermereCleaningServices/>
-      <ProfessionalServicesGrid/>
-     <AreasServed/>
-   <CommonFAQ faqs={faqData}/>
-    <TestimonialsSection/>
-    <AreaCTA city="Chestermere"/>
-    </div>
-  )
+    <main className="min-h-screen bg-white">
+      <CommonHeroSection backgroundImage="/p4.webp" title={<>Professional Cleaning Services in Chestermere</>} />
+      <ProfessionalServicesGrid />
+      <CommonFAQ faqs={faqData} />
+      <TestimonialsSection />
+      <AreaCTA city="Chestermere" />
+    </main>
+  );
 }

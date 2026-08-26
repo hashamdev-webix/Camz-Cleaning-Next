@@ -17,7 +17,7 @@ const staticPaths = [
   "/chestermere-cleaning-services/",
   "/booking/",
   "/gallery/",
-  "/blogs/",
+  "/blog/",
   "/contact-us/",
   "/privacy-policy/",
   "/custom-cleaning-request/",
@@ -33,19 +33,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const supabase = createPublicServerClient();
     const { data, error } = await supabase.from("blogs").select("id");
-
     if (error) throw error;
 
     const blogRoutes: MetadataRoute.Sitemap = (data ?? []).map(({ id }) => ({
-      url: `${siteUrl}/blogs/${id}/`,
+      url: `${siteUrl}/blog/${id}/`,
     }));
 
     return [...staticRoutes, ...blogRoutes];
   } catch (error) {
-    console.error(
-      "Unable to load blog URLs for sitemap; using static routes only.",
-      error,
-    );
+    console.error("Unable to load blog URLs for sitemap; using static routes only.", error);
     return staticRoutes;
   }
 }

@@ -1,138 +1,118 @@
 "use client";
-import { motion, Variants } from "framer-motion";
-import { ArrowRight, ChevronRightCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
 
-const services: {
-  title: string;
-  desc: string;
-  highlighted: boolean;
-  icon: string;
-  url: string;
-}[] = [
+import Link from "next/link";
+import { motion, type Variants } from "framer-motion";
+import { Building2, CarFront, House, Snowflake } from "lucide-react";
+
+const services = [
   {
-    title: "Commercial Cleaning",
-    desc: "Commercial Cleaning Services for offices, restaurants, and facilities, professional cleaning solutions designed to keep businesses spotless.",
+    title: "Residential Cleaning Services",
+    desc: "Regular, deep and move-in/move-out cleaning for homes, planned around your space, schedule and cleaning priorities.",
     highlighted: false,
-    icon: "/market.png",
-    url: "/commercial-cleaning-services",
+    icon: House,
+    url: "/residential-cleaning-services/",
+    linkLabel: "View Residential Cleaning",
   },
   {
-    title: "Residential Cleaning",
-    desc: "Trusted Residential Cleaning Services for healthier homes. We provide dusting, vacuuming, room cleaning, sanitizing, furnace, and duct cleaning for fresh air.",
+    title: "Commercial Cleaning Services",
+    desc: "Cleaning for offices, workplaces and shared commercial spaces, with service tailored to the property and requested schedule.",
     highlighted: true,
-    icon: "/house.png",
-    url: "/residential-cleaning-services",
+    icon: Building2,
+    url: "/commercial-cleaning-services/",
+    linkLabel: "View Commercial Cleaning",
   },
   {
-    title: "Vehicle Cleaning Service",
-    desc: "Complete vehicle cleaning service including interior vacuuming, car seat & carpet cleaning, dashboard care, and exterior detailing for a spotless, refreshed ride.",
+    title: "Vehicle Cleaning Services",
+    desc: "Interior and exterior vehicle cleaning at a suitable agreed location, based on the selected package and vehicle condition.",
     highlighted: false,
-    icon: "/clean.png",
-    url: "/vehicle-cleaning-service",
+    icon: CarFront,
+    url: "/vehicle-cleaning-service/",
+    linkLabel: "View Vehicle Cleaning",
+  },
+  {
+    title: "Seasonal Property Services",
+    desc: "Seasonal property and vacation rental cleaning based on the property, season, guest schedule and requested service scope.",
+    highlighted: false,
+    icon: Snowflake,
+    url: "/seasonal-property-service/",
+    linkLabel: "View Seasonal Property Service",
   },
 ];
 
 export default function Services() {
-  const router = useRouter();
   const cardVariants: Variants = {
-    hiddenLeft: { opacity: 0, x: -80 },
-    hiddenRight: { opacity: 0, x: 80 },
-    hiddenTop: { opacity: 0, y: -80 },
+    hidden: { opacity: 0, y: 24 },
     visible: {
       opacity: 1,
-      x: 0,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.5, ease: "easeOut" },
     },
   };
+
   return (
-    <section className="py-12 bg-gray-50">
+    <section className="bg-gray-50 py-12">
       <div className="container-custom mx-auto px-6 text-center">
-        {/* Badge */}
-        <span className="inline-block mb-4 px-4 py-1 text-sm rounded-full bg-[#02C0E6] text-white">
-          Our services
+        <span className="mb-4 inline-block rounded-full bg-[#02C0E6] px-4 py-1 text-sm text-white">
+          Our Services
         </span>
-
-        {/* Heading */}
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B4E9B] mb-4">
-          Our Professional Cleaning Services
+        <h2 className="mb-4 text-3xl font-extrabold text-[#0B4E9B] md:text-4xl">
+          Cleaning Services for Homes, Businesses and Vehicles
         </h2>
-
-        {/* Description */}
-        <p className="max-w-2xl mx-auto text-gray-600 mb-12 leading-relaxed">
-          We provide complete cleaning solutions for homes and businesses. As
-          one of the leading cleaning companies, we focus on detail, safety, and
-          customer satisfaction.
+        <p className="mx-auto mb-12 max-w-2xl leading-relaxed text-gray-600">
+          Choose the cleaning service that matches your space, schedule and
+          priorities.
         </p>
 
-        {/* Cards */}
-        <div className="grid md:grid-cols-3 gap-6">
-          {services.map((service, index) => {
-            const isMiddle = service.highlighted;
-
-            // Direction logic
-            let initialVariant = "hiddenLeft";
-            if (index === 1) initialVariant = "hiddenTop";
-            if (index === 2) initialVariant = "hiddenRight";
-
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {services.map((service) => {
+            const Icon = service.icon;
             return (
-              <motion.div
-                key={index}
+              <motion.article
+                key={service.title}
                 variants={cardVariants}
-                initial={initialVariant}
+                initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className={`rounded-xl border p-6 text-left transition flex flex-col h-full ${
-                  isMiddle
-                    ? "bg-[#0B4E9B] text-white border-transparent"
-                    : "bg-white border-[#0B4E9B]"
+                className={`flex h-full flex-col rounded-xl border p-6 text-left ${
+                  service.highlighted
+                    ? "border-transparent bg-[#0B4E9B] text-white"
+                    : "border-[#0B4E9B] bg-white"
                 }`}
               >
-                {/* Icon */}
-                <div className="mb-5">
-                  <img
-                    src={service.icon}
-                    alt={`${service.title} icon`}
-                    className="w-16 h-16 object-contain"
-                  />
+                <div
+                  className={`mb-5 flex h-16 w-16 items-center justify-center rounded-xl ${
+                    service.highlighted
+                      ? "bg-white/15 text-white"
+                      : "bg-[#EAF7FB] text-[#0B4E9B]"
+                  }`}
+                >
+                  <Icon size={34} strokeWidth={1.8} aria-hidden="true" />
                 </div>
-
-                {/* Title */}
                 <h3
-                  className={`text-2xl font-bold mb-4 leading-tight ${
-                    isMiddle ? "text-white" : "text-[#0B4E9B]"
+                  className={`mb-4 text-xl font-bold leading-tight ${
+                    service.highlighted ? "text-white" : "text-[#0B4E9B]"
                   }`}
                 >
                   {service.title}
                 </h3>
-
-                {/* Content Area */}
-                <div className="flex flex-col flex-1">
-                  {/* Description */}
-                  <p
-                    className={`flex-1  leading-7 ${
-                      isMiddle ? "text-white/90" : "text-gray-600"
-                    }`}
-                  >
-                    {service.desc}
-                  </p>
-
-                  {/* Button */}
-                  <motion.button
-                    onClick={() => router.push(service.url)}
-                    whileHover={{ y: -3 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`inline-flex self-start items-center gap-2 px-5 py-3 cursor-pointer rounded-lg text-sm font-semibold transition ${
-                      isMiddle
-                        ? "border border-white text-white hover:bg-white hover:text-[#0B4E9B]"
-                        : "bg-[#0077AB] text-white hover:bg-[#0B4E9B]"
-                    }`}
-                  >
-                    Read More <ChevronRightCircle size={18} />
-                  </motion.button>
-                </div>
-              </motion.div>
+                <p
+                  className={`mb-6 flex-1 leading-7 ${
+                    service.highlighted ? "text-white/90" : "text-gray-600"
+                  }`}
+                >
+                  {service.desc}
+                </p>
+                <Link
+                  href={service.url}
+                  className={`inline-flex w-fit rounded-lg px-5 py-3 text-sm font-semibold transition-colors ${
+                    service.highlighted
+                      ? "border border-white text-white hover:bg-white hover:text-[#0B4E9B]"
+                      : "bg-[#0077AB] text-white hover:bg-[#0B4E9B]"
+                  }`}
+                >
+                  {service.linkLabel}
+                </Link>
+              </motion.article>
             );
           })}
         </div>

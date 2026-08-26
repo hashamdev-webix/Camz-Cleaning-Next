@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -1498,10 +1498,13 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
   const [status, setStatus] = useState(booking.status);
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
+  const [serviceImages, setServiceImages] = useState<BookingImage[]>(booking.service_images);
+  const [replacingImage, setReplacingImage] = useState<BookingImage | null>(null);
   const beforeInput = useRef<HTMLInputElement>(null);
   const afterInput = useRef<HTMLInputElement>(null);
-  const before = booking.service_images.filter((image) => image.image_type === "before");
-  const after = booking.service_images.filter((image) => image.image_type === "after");
+  const replaceInput = useRef<HTMLInputElement>(null);
+  const before = serviceImages.filter((image) => image.image_type === "before");
+  const after = serviceImages.filter((image) => image.image_type === "after");
   const assignedNames = booking.assigned_cleaners.map((cleaner) => cleaner.name).join(", ") || "Unassigned";
 
   const uploadImage = async (file: File, type: "before" | "after") => {
@@ -1530,6 +1533,9 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Unable to save image.");
+      if (result.image) {
+        setServiceImages((current) => [...current, result.image as BookingImage]);
+      }
       router.refresh();
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "Unable to upload image.");
@@ -1537,6 +1543,89 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
       setUploading(false);
       setUploadMessage("");
     }
+  };
+
+  const replaceImage = async (file: File, image: BookingImage) => {
+    setUploading(true);
+    setUploadMessage(`Replacing ${image.image_type} image...`);
+
+    let newStoragePath = "";
+
+    try {
+      const supabase = createClient();
+      const optimized = await optimizeImageForUpload(file);
+      const ext = optimized.name.split(".").pop() || "jpg";
+      newStoragePath = `booking_records/${booking.id}/${image.image_type}_${Date.now()}_${crypto.randomUUID()}.${ext}`;
+      const url = await uploadImageToBucket(supabase, "job-images", newStoragePath, optimized);
+
+      setUploadMessage("Updating image record...");
+      const response = await fetch("/api/admin/booking-records", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          image_update: {
+            id: image.id,
+            url,
+            storage_path: newStoragePath,
+            name: file.name,
+            format: ext,
+          },
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to replace image.");
+
+      if (result.image) {
+        setServiceImages((current) =>
+          current.map((item) => (item.id === image.id ? (result.image as BookingImage) : item)),
+        );
+      }
+
+      setReplacingImage(null);
+      router.refresh();
+    } catch (err) {
+      if (newStoragePath) {
+        try {
+          const supabase = createClient();
+          await supabase.storage.from("job-images").remove([newStoragePath]);
+        } catch {
+          // Best-effort cleanup only.
+        }
+      }
+      window.alert(err instanceof Error ? err.message : "Unable to replace image.");
+    } finally {
+      setUploading(false);
+      setUploadMessage("");
+    }
+  };
+
+  const deleteImage = async (image: BookingImage) => {
+    if (!window.confirm(`Delete this ${image.image_type} image?`)) return;
+
+    setUploading(true);
+    setUploadMessage("Deleting image...");
+
+    try {
+      const response = await fetch(`/api/admin/booking-records?imageId=${encodeURIComponent(image.id)}`, {
+        method: "DELETE",
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to delete image.");
+
+      setServiceImages((current) => current.filter((item) => item.id !== image.id));
+      router.refresh();
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : "Unable to delete image.");
+    } finally {
+      setUploading(false);
+      setUploadMessage("");
+    }
+  };
+
+  const openReplaceImage = (image: BookingImage) => {
+    setReplacingImage(image);
+    window.requestAnimationFrame(() => replaceInput.current?.click());
   };
 
   const saveStatus = async () => {
@@ -1641,16 +1730,41 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
               </button>
             </div>
           </div>
-          <input ref={beforeInput} type="file" multiple accept="image/*" onChange={(e) => Array.from(e.target.files || []).forEach((file) => uploadImage(file, "before"))} className="hidden" />
-          <input ref={afterInput} type="file" multiple accept="image/*" onChange={(e) => Array.from(e.target.files || []).forEach((file) => uploadImage(file, "after"))} className="hidden" />
+          <input ref={beforeInput} type="file" multiple accept="image/*" onChange={(e) => { Array.from(e.target.files || []).forEach((file) => uploadImage(file, "before")); e.currentTarget.value = ""; }} className="hidden" />
+          <input ref={afterInput} type="file" multiple accept="image/*" onChange={(e) => { Array.from(e.target.files || []).forEach((file) => uploadImage(file, "after")); e.currentTarget.value = ""; }} className="hidden" />
+          <input
+            ref={replaceInput}
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.currentTarget.files?.[0];
+              const image = replacingImage;
+              e.currentTarget.value = "";
+              if (file && image) void replaceImage(file, image);
+              else setReplacingImage(null);
+            }}
+            className="hidden"
+          />
           {uploading && (
             <p className="mt-3 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-[9px] font-semibold text-blue-700">
               {uploadMessage || "Uploading..."}
             </p>
           )}
           <div className="mt-3 grid gap-3 md:grid-cols-2">
-            <ImageGroup title="Before" images={before} />
-            <ImageGroup title="After" images={after} />
+            <ImageGroup
+              title="Before"
+              images={before}
+              disabled={uploading}
+              onReplace={openReplaceImage}
+              onDelete={deleteImage}
+            />
+            <ImageGroup
+              title="After"
+              images={after}
+              disabled={uploading}
+              onReplace={openReplaceImage}
+              onDelete={deleteImage}
+            />
           </div>
         </section>
 
@@ -2441,22 +2555,80 @@ function CleanerPicker({ cleaners, selected, onChange }: { cleaners: CleanerUser
 function Detail({ label, value, wide = false }: { label: string; value: string | null; wide?: boolean }) {
   return <div className={`min-w-0 rounded-lg border border-slate-100 bg-[#F8FAFD] px-3 py-2.5 ${wide ? "min-h-[64px]" : "min-h-[58px]"}`}><p className="text-[7px] font-extrabold uppercase tracking-[0.07em] text-slate-400">{label}</p><p className={`mt-1 break-words text-[9px] font-semibold leading-4 text-[#13263A] ${wide ? "whitespace-pre-wrap" : ""}`}>{value || "-"}</p></div>;
 }
-function ImageGroup({ title, images }: { title: string; images: BookingImage[] }) {
+function ImageGroup({
+  title,
+  images,
+  disabled = false,
+  onReplace,
+  onDelete,
+}: {
+  title: string;
+  images: BookingImage[];
+  disabled?: boolean;
+  onReplace: (image: BookingImage) => void;
+  onDelete: (image: BookingImage) => void | Promise<void>;
+}) {
   return (
     <div className="rounded-lg border border-slate-200 bg-[#F8FAFD] p-3">
       <div className="flex items-center justify-between gap-2">
         <h4 className="text-[10px] font-bold text-[#13263A]">{title}</h4>
-        <span className="rounded-md bg-white px-2 py-1 text-[7px] font-bold text-slate-400">{images.length} image{images.length === 1 ? "" : "s"}</span>
+        <span className="rounded-md bg-white px-2 py-1 text-[7px] font-bold text-slate-400">
+          {images.length} image{images.length === 1 ? "" : "s"}
+        </span>
       </div>
+
       <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
         {images.map((image) => (
-          <a key={image.id} href={image.url} download target="_blank" className="group block">
-            <span className="relative block aspect-[4/3] overflow-hidden rounded-lg border border-slate-200 bg-white">
-              <img src={image.url} alt={image.name || title} className="h-full w-full object-cover transition group-hover:scale-[1.02]" />
-            </span>
-            <span className="mt-1 flex items-center gap-1 text-[8px] font-bold text-[#4A86F7]"><Download size={10} /> Download</span>
-          </a>
+          <div key={image.id} className="rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm">
+            <a
+              href={image.url}
+              target="_blank"
+              rel="noreferrer"
+              className="group relative block aspect-[4/3] overflow-hidden rounded-md bg-slate-100"
+              title={`View ${title.toLowerCase()} image`}
+            >
+              <img
+                src={image.url}
+                alt={image.name || `${title} service image`}
+                className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+              />
+              <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-slate-950/60 px-2 py-1 text-[7px] font-bold text-white opacity-0 transition group-hover:opacity-100">
+                <Eye size={9} /> View
+              </span>
+            </a>
+
+            <div className="mt-1.5 grid grid-cols-3 gap-1">
+              <a
+                href={image.url}
+                download
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-7 items-center justify-center gap-1 rounded-md bg-blue-50 px-1 text-[7px] font-bold text-[#4A86F7] transition hover:bg-blue-100"
+              >
+                <Download size={9} /> Download
+              </a>
+
+              <button
+                type="button"
+                onClick={() => onReplace(image)}
+                disabled={disabled}
+                className="inline-flex h-7 items-center justify-center gap-1 rounded-md bg-amber-50 px-1 text-[7px] font-bold text-amber-700 transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Pencil size={9} /> Replace
+              </button>
+
+              <button
+                type="button"
+                onClick={() => void onDelete(image)}
+                disabled={disabled}
+                className="inline-flex h-7 items-center justify-center gap-1 rounded-md bg-rose-50 px-1 text-[7px] font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Trash2 size={9} /> Delete
+              </button>
+            </div>
+          </div>
         ))}
+
         {!images.length && (
           <p className="col-span-full rounded-lg border border-dashed border-slate-200 bg-white px-3 py-8 text-center text-[8px] text-slate-400">
             No {title.toLowerCase()} images.
@@ -2466,6 +2638,7 @@ function ImageGroup({ title, images }: { title: string; images: BookingImage[] }
     </div>
   );
 }
+
 function formatDate(date: string) { return new Date(`${date}T00:00:00`).toLocaleDateString("en-CA", { weekday: "short", month: "short", day: "numeric", year: "numeric" }); }
 function formatDateCompact(date: string) { return new Date(`${date}T00:00:00`).toLocaleDateString("en-CA", { month: "short", day: "numeric" }); }
 function formatTime(time: string) {

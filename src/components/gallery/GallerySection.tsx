@@ -1,4 +1,3 @@
-// components/GallerySection.tsx
 "use client";
 
 import { useState } from "react";
@@ -13,10 +12,24 @@ export type GalleryItem = {
 
 const IMAGES_PER_LOAD = 8;
 
-const getAltFromUrl = (url: string): string => {
+const getImageLabel = (url: string): string => {
   const filename = url.split("/").pop() || "";
   const nameOnly = filename.split(".")[0];
-  return nameOnly.replace(/-|_/g, " ");
+
+  const cleaned = nameOnly
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\d+\b/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!cleaned) {
+    return "Recent Camz Cleaning project";
+  }
+
+  return cleaned
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
 export default function GallerySection({
@@ -32,8 +45,10 @@ export default function GallerySection({
 
   const handleLoadMore = async () => {
     setLoadingMore(true);
+
     const supabase = createClient();
     const from = images.length;
+
     const { data, error } = await supabase
       .from("gallery")
       .select("id, image_url, created_at")
@@ -42,18 +57,21 @@ export default function GallerySection({
 
     if (!error) {
       const nextImages = (data ?? []) as GalleryItem[];
+
       setImages((current) => [
         ...current,
         ...nextImages.slice(0, IMAGES_PER_LOAD),
       ]);
+
       setHasMore(nextImages.length > IMAGES_PER_LOAD);
     }
+
     setLoadingMore(false);
   };
 
   return (
     <section className="w-full bg-[#edf6f7] py-20">
-      <div className="mx-auto container-custom px-4 sm:px-6 lg:px-8">
+      <div className="container-custom mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <div className="mb-4 flex justify-center">
           <span className="rounded-full bg-cyan-500 px-5 py-2 text-sm font-semibold text-white shadow">
@@ -64,52 +82,64 @@ export default function GallerySection({
         {/* Heading */}
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <h2 className="text-4xl font-extrabold tracking-tight text-[#0d4ea6] md:text-5xl">
-            Latest Camz Cleaning Projects
+            Recent Cleaning Projects
           </h2>
 
           <p className="mt-5 text-lg leading-8 text-gray-600">
-            Explore our latest Camz Cleaning projects showcasing professional
-            workmanship, detailed cleaning, and outstanding results for homes
-            and businesses.
+            Explore examples of recent work across homes, commercial
+            properties, vehicles and seasonal spaces.
           </p>
         </div>
 
         {/* Empty State */}
         {images.length === 0 && (
           <div className="flex justify-center py-12">
-            <p className="text-lg text-gray-600">No images yet</p>
+            <p className="text-lg text-gray-600">
+              No cleaning projects have been added yet.
+            </p>
           </div>
         )}
 
-        {/* Masonry Grid */}
+        {/* Gallery Grid */}
         {images.length > 0 && (
           <>
             <div className="columns-1 gap-5 sm:columns-2 lg:columns-4">
-              {images.map((item) => (
-                <div
-                  key={item.id}
-                  className="group mb-5 break-inside-avoid overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-xl"
-                >
-                  <div className="relative w-full overflow-hidden">
-                    <Image
-                      src={item.image_url}
-                      alt={getAltFromUrl(item.image_url)}
-                      width={1000}
-                      height={1000}
-                      className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                </div>
-              ))}
+              {images.map((item) => {
+                const imageLabel = getImageLabel(item.image_url);
+
+                return (
+                  <figure
+                    key={item.id}
+                    className="group mb-5 break-inside-avoid overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-xl"
+                  >
+                    <div className="relative w-full overflow-hidden">
+                      <Image
+                        src={item.image_url}
+                        alt={imageLabel}
+                        width={1000}
+                        height={1000}
+                        className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    </div>
+
+                    <figcaption className="px-4 py-4">
+                      <p className="text-sm font-semibold leading-6 text-[#0B4E9B]">
+                        {imageLabel}
+                      </p>
+                    </figcaption>
+                  </figure>
+                );
+              })}
             </div>
 
-            {/* Load More Button */}
+            {/* Load More */}
             {hasMore && (
               <div className="mt-14 flex justify-center">
                 <button
+                  type="button"
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="rounded-full bg-[#0d4ea6] px-8 py-4 text-sm font-semibold text-white transition hover:bg-[#083b7e]"
+                  className="rounded-full bg-[#0d4ea6] px-8 py-4 text-sm font-semibold text-white transition hover:bg-[#083b7e] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loadingMore ? "Loading..." : "Load More"}
                 </button>

@@ -1,123 +1,38 @@
 "use client";
-import React from "react";
+
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ChevronRightCircle } from "lucide-react";
 
-interface ServiceCardProps {
-  title: string;
-  description: string;
-  href: string; // Added href prop
-  isDark?: boolean;
-}
+const services = [
+  { title: "Residential Cleaning in Cochrane", description: "Residential cleaning for homes, apartments and condos, including regular cleaning, deep cleaning and move-in or move-out needs.", href: "/residential-cleaning-services/", dark: false },
+  { title: "Commercial Cleaning in Cochrane", description: "Commercial cleaning for offices, workplaces and shared facilities, with service planned around the property and preferred schedule.", href: "/commercial-cleaning-services/", dark: true },
+  { title: "Mobile Vehicle Cleaning in Cochrane", description: "Mobile interior and exterior vehicle cleaning at an agreed location, subject to weather, safe parking and appointment availability.", href: "/vehicle-cleaning-service/", dark: false },
+  { title: "Seasonal Property Services in Cochrane", description: "Seasonal property and vacation rental cleaning with one-time or recurring options based on the property, season and requested work.", href: "/seasonal-property-service/", dark: true },
+];
 
-const ServiceCard = ({
-  title,
-  description,
-  href,
-  isDark = false,
-}: ServiceCardProps) => {
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className={`p-8 rounded-[1.5rem] shadow-lg flex flex-col h-full transition-all duration-300 ${
-        isDark
-          ? "bg-[#0B4E9B] text-white border-transparent"
-          : "bg-white text-[#0B4E9B] border border-gray-100"
-      }`}
-    >
-      <h3 className="text-2xl font-extrabold mb-4 leading-tight">{title}</h3>
-      <p
-        className={`text-sm mb-8 leading-relaxed font-medium flex-grow ${
-          isDark ? "text-blue-50" : "text-gray-600"
-        }`}
-      >
-        {description}
-      </p>
-
-      <div>
-        <Link
-          href={href} // Using specific service URL
-          className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            isDark
-              ? "border-2 border-white text-white hover:bg-white hover:text-[#0B4E9B]"
-              : "bg-gradient-to-r from-[#0091C1] to-[#0B4E9B] text-white hover:shadow-md"
-          }`}
-        >
-          Read More <ChevronRightCircle size={18} />
-        </Link>
+const ProfessionalServicesGrid = () => (
+  <section className="bg-[#EFFAFC] px-6 py-20 md:px-12 lg:px-24">
+    <div className="container-custom mx-auto">
+      <div className="mx-auto mb-14 max-w-4xl text-center">
+        <h2 className="text-3xl font-extrabold text-[#0B4E9B] md:text-5xl">Cleaning Options for Cochrane Properties</h2>
+        <p className="mx-auto mt-6 max-w-3xl leading-relaxed text-gray-700">Choose from residential, commercial, mobile vehicle and seasonal property cleaning services in Cochrane.</p>
       </div>
-    </motion.div>
-  );
-};
-
-const ProfessionalServicesGrid = () => {
-  const services = [
-    {
-      title: "Residential Cleaning Service Cochrane",
-      description:
-        "Enjoy a spotless, healthy Cochrane home with our expert residential cleaning service, delivering detailed care and a fresh, comfortable living space.",
-      href: "/residential-cleaning-services",
-      isDark: false,
-    },
-    {
-      title: "Commercial Cleaning Cochrane",
-      description:
-        "Maintain a spotless Cochrane workplace with Camz Cleaning’s professional and reliable commercial cleaning services, ensuring cleanliness and a healthy environment.",
-      href: "/commercial-cleaning-services",
-      isDark: true,
-    },
-    {
-      title: "Vehicle Cleaning Services at Home Cochrane",
-      description:
-        "CamzCleaning brings professional vehicle cleaning to your home in Cochrane, interior, exterior, and full detailing done carefully, saving you time and effort.",
-      href: "/vehicle-cleaning-service",
-      isDark: false,
-    },
-    {
-      title: "Seasonal Property Services Cochrane",
-      description:
-        "CamzCleaning Seasonal Property Services. Cochrane keeps your home safe in winter with snow removal and your lawn perfect in summer with expert care.",
-      href: "/seasonal-property-service",
-      isDark: true,
-    },
-    {
-      title: "Move In Move Out Cleaning Cochrane",
-      description:
-        "Make moving stress-free with CamzCleaning’s move-in/move-out cleaning in Cochrane, deep-cleaning kitchens, bathrooms, floors, and hidden corners.",
-      href: "/residential-cleaning-services",
-      isDark: false,
-    },
-    {
-      title: "Duct, Furnace & Fireplace Cleaning",
-      description:
-        "Breathe cleaner air with CamzCleaning! Our duct, furnace, & fireplace cleaning improves airflow, reduces dust, and ensures safe operation with costs explained upfront.",
-      href: "/commercial-cleaning-services",
-      isDark: true,
-    },
-  ];
-
-  return (
-    <section className="bg-[#EFFAFC] py-20 px-6 md:px-12 lg:px-24">
-      <div className="container-custom mx-auto">
-        <h2 className="text-3xl md:text-5xl font-extrabold text-[#0B4E9B] text-center mb-16 leading-relaxed">
-          Keep Your Cochrane Home Fresh & Comfortable <br /> with Camz Cleaning
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <ServiceCard
-              key={index}
-              title={service.title}
-              description={service.description}
-              href={service.href}
-              isDark={service.isDark}
-            />
-          ))}
-        </div>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        {services.map((service) => (
+          <motion.article key={service.title} whileHover={{ y: -5 }} className={`flex h-full flex-col rounded-3xl p-8 shadow-lg ${service.dark ? "bg-[#0B4E9B] text-white" : "border border-gray-100 bg-white text-[#0B4E9B]"}`}>
+            <h3 className="text-2xl font-extrabold">{service.title}</h3>
+            <p className={`mt-4 flex-1 leading-relaxed ${service.dark ? "text-blue-50" : "text-gray-600"}`}>{service.description}</p>
+            <Link href={service.href} className={`mt-7 inline-block w-fit rounded-lg px-6 py-3 font-bold ${service.dark ? "border border-white text-white hover:bg-white hover:text-[#0B4E9B]" : "bg-[#0091C1] text-white hover:bg-[#0B4E9B]"}`}>View Service</Link>
+          </motion.article>
+        ))}
       </div>
-    </section>
-  );
-};
+      <div className="mx-auto mt-14 max-w-3xl text-center">
+        <h2 className="text-2xl font-extrabold text-[#0B4E9B] md:text-4xl">Cleaning Plans for Cochrane Homes and Businesses</h2>
+        <p className="mt-4 leading-relaxed text-gray-700">Camz Cleaning provides one-time and recurring options for Cochrane properties, with the scope and schedule confirmed according to the requested service.</p>
+        <p className="mt-4 leading-relaxed text-gray-700">You can also explore our <Link href="/calgary-cleaning-services/" className="font-bold text-[#0B4E9B] hover:underline">Calgary cleaning services</Link>.</p>
+      </div>
+    </div>
+  </section>
+);
 
 export default ProfessionalServicesGrid;

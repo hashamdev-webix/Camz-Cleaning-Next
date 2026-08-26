@@ -1,54 +1,55 @@
-import AirdrieCleaningServices from '@/components/airdrie/AirdrieCleaningServices'
+import ProfessionalServicesGrid from "@/components/airdrie/ProfessionalServicesGrid";
+import AreaCTA from "@/components/common/AreaCTA";
+import CommonFAQ from "@/components/common/CommonFAQ";
+import CommonHeroSection from "@/components/common/CommonHeroSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import { pageSeo } from "@/lib/seo";
 
-import ProfessionalServicesGrid from "@/components/airdrie/ProfessionalServicesGrid"
-import AreaCTA from '@/components/common/AreaCTA'
-import CommonHeroSection from '@/components/common/CommonHeroSection'
-import TestimonialsSection from '@/components/home/TestimonialsSection'
-import AreasServed from '@/components/airdrie/AreaServed'
+export const metadata = pageSeo({
+  title: "Cleaning Services in Airdrie for Homes & Businesses",
+  description:
+    "Book residential, commercial, vehicle and seasonal property cleaning services in Airdrie. Choose your service and preferred appointment online.",
+  path: "/airdrie-cleaning-services/",
+});
 
-import CommonFAQ from '@/components/common/CommonFAQ'
-
-
-export default function page() {
+export default function Page() {
   const faqData = [
-  {
-    id: 1,
-    question: "1. What areas do you provide fireplace and furnace cleaning in?",
-    answer: "We serve Airdrie, Cochrane, Calgary, and Chestermere, delivering professional cleaning, inspections, and maintenance for safe, efficient homes.",
-  },
-  {
-    id: 2,
-    question: "2. What services are included in fireplace and furnace cleaning?",
-    answer: "Our services include fireplace cleaning & inspection, furnace cleaning & maintenance, vent cleaning, and efficiency checks, with honest pricing.",
-  },
-  {
-    id: 3,
-    question: "3. How often should I have my fireplace and furnace cleaned?",
-    answer: "For safety and efficiency, we recommend a professional cleaning at least once a year, or more frequently for heavy-use homes.",
-  },
- 
-  {
-    id: 4,
-    question: "4. How much does fireplace and furnace cleaning cost?",
-    answer: "Costs vary depending on the service and home size. We provide transparent, honest pricing and a detailed cost breakdown before starting.",
-  },
-];
+    {
+      id: 1,
+      question: "What cleaning services are available in Airdrie?",
+      answer:
+        "Camz Cleaning offers residential, commercial, mobile vehicle and seasonal property cleaning in Airdrie, subject to service scope and appointment availability.",
+    },
+    {
+      id: 2,
+      question: "Can I book a cleaning appointment in Airdrie online?",
+      answer:
+        "Yes. Choose the service, enter the Airdrie address and relevant property or vehicle details, select a preferred date and time, and submit the booking request for confirmation.",
+    },
+    {
+      id: 3,
+      question: "Do you offer recurring residential or commercial cleaning in Airdrie?",
+      answer:
+        "Recurring service may be available based on the property, required tasks, frequency and schedule. Camz Cleaning confirms the proposed plan after reviewing the request.",
+    },
+    {
+      id: 4,
+      question: "How is cleaning priced in Airdrie?",
+      answer:
+        "Pricing depends on the selected service, size, condition, frequency, access and extra tasks. Provide complete details online so the scope and quote can be reviewed accurately.",
+    },
+  ];
+
   return (
-    <div>
-          <CommonHeroSection 
-        backgroundImage="/wp-admin/uploads/vehicle.webp" 
-        title={
-          <>
-           Trusted Cleaning Services in Airdrie for <br /> Homes & Offices
-          </>
-        }
+    <main className="min-h-screen bg-white">
+      <CommonHeroSection
+        backgroundImage="/wp-admin/uploads/vehicle.webp"
+        title={<>Trusted Cleaning Services in Airdrie</>}
       />
-     <AirdrieCleaningServices/>
-      <ProfessionalServicesGrid/>
-     <AreasServed/>
-     <CommonFAQ faqs={faqData}/>
-      <TestimonialsSection/>
-      <AreaCTA city="Airdrie"/>
-    </div>
-  )
+      <ProfessionalServicesGrid />
+      <CommonFAQ faqs={faqData} />
+      <TestimonialsSection />
+      <AreaCTA city="Airdrie" />
+    </main>
+  );
 }

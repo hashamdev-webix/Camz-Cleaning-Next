@@ -1,56 +1,32 @@
+import ProfessionalServicesGrid from "@/components/cochrane/ProfessionalServicesGrid";
+import AreaCTA from "@/components/common/AreaCTA";
+import CommonFAQ from "@/components/common/CommonFAQ";
+import CommonHeroSection from "@/components/common/CommonHeroSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import { pageSeo } from "@/lib/seo";
 
-import AreaCTA from '@/components/common/AreaCTA'
-import CommonHeroSection from '@/components/common/CommonHeroSection'
-import TestimonialsSection from '@/components/home/TestimonialsSection'
+export const metadata = pageSeo({
+  title: "Cleaning Services in Cochrane for Homes & Businesses",
+  description:
+    "Book residential, commercial, vehicle and seasonal property cleaning in Cochrane. Choose the service and preferred appointment online.",
+  path: "/cochrane-cleaning-services/",
+});
 
-import CochraneCleaningServices from '@/components/cochrane/CochraneCleaningServices'
-import ProfessionalServicesGrid from '@/components/cochrane/ProfessionalServicesGrid'
-import AreasServed from '@/components/cochrane/AreasServed'
-
-import CommonFAQ from '@/components/common/CommonFAQ'
-
-
-export default function page() {
+export default function Page() {
   const faqData = [
-  {
-    id: 1,
-    question: "Q1: What are the Cochrane Cleaning Services offered by Camz Cleaning?",
-    answer: "Camz Cleaning provides professional Cochrane cleaning services for homes and offices, including dusting, deep kitchen and bathroom cleaning, floor polishing, and surface sanitization.",
-  },
-  {
-    id: 2,
-    question: "Q2: Why should I choose Camz Cleaning for Cochrane Cleaning Services?",
-    answer: "Clients trust our Cochrane cleaning services for attention to detail, safe cleaning methods, consistency, and exceptional customer satisfaction.",
-  },
-  {
-    id: 3,
-    question: "Q3: Are your Cochrane Cleaning Services suitable for residential and commercial spaces?",
-    answer: "Yes! Our services are designed for both residential and commercial properties, ensuring every space is spotless, hygienic, and well-maintained.",
-  },
- 
-  {
-    id: 4,
-    question: "Q4: Do your Cochrane Cleaning Services guarantee long-term cleanliness?",
-    answer: "Absolutely! We focus on thorough and professional cleaning techniques that maintain hygiene and keep your home or office fresh for the long term.",
-  },
-];
+    { id: 1, question: "What cleaning services do you provide in Cochrane?", answer: "Camz Cleaning offers residential, commercial, mobile vehicle and seasonal property cleaning in Cochrane, subject to service scope and availability." },
+    { id: 2, question: "Can I schedule Cochrane cleaning online?", answer: "Yes. Select a service, add the Cochrane address and required details, choose a preferred appointment, and submit the request. The final scope, timing and price are confirmed after review." },
+    { id: 3, question: "Is move-in or move-out cleaning available in Cochrane?", answer: "Move-in and move-out cleaning can be requested through the residential cleaning service. Include the home size, condition, access details and move date when booking." },
+    { id: 4, question: "Do you offer recurring commercial cleaning in Cochrane?", answer: "Recurring commercial service may be available for offices and other properties Camz Cleaning genuinely serves. Frequency depends on the property, foot traffic, tasks and access." },
+  ];
+
   return (
-    <div>
-          <CommonHeroSection 
-        backgroundImage="/wp-admin/uploads/seasonal-1.webp" 
-        title={
-          <>
-          Top Cochrane Cleaning Services <br />
-Residential & Commercial
-          </>
-        }
-      />
-     <CochraneCleaningServices/>
-      <ProfessionalServicesGrid/>
-     <AreasServed/>
-     <CommonFAQ faqs={faqData}/>
-    <TestimonialsSection/>
-    <AreaCTA city="Cochrane"/>
-    </div>
-  )
+    <main className="min-h-screen bg-white">
+      <CommonHeroSection backgroundImage="/wp-admin/uploads/seasonal-1.webp" title={<>Professional Cleaning Services in Cochrane for Homes &amp; Businesses</>} />
+      <ProfessionalServicesGrid />
+      <CommonFAQ faqs={faqData} />
+      <TestimonialsSection />
+      <AreaCTA city="Cochrane" />
+    </main>
+  );
 }

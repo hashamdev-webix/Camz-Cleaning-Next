@@ -10,9 +10,12 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://camzcleaning.com"),
-  title: "Professional Cleaning Services",
+  title: {
+    default: "Camz Cleaning",
+    template: "%s",
+  },
   description:
-    "Camz Cleaning offers trusted residential and commercial cleaning services in Calgary. Book now for a spotless space!",
+    "Camz Cleaning provides residential, commercial, vehicle and seasonal property cleaning with online booking.",
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",
@@ -25,14 +28,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">
-        {children}
-      </body>
+      <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>
   );
 }

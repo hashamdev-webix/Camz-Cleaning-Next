@@ -4,10 +4,16 @@ import { pageSeo } from "@/lib/seo";
 
 export const metadata = pageSeo({
   title: "Cleaning Services in Cochrane for Homes & Businesses",
-  description: "Get reliable residential and commercial cleaning in Cochrane with flexible scheduling and detailed service tailored to your property.",
+  description:
+    "Book residential, commercial, vehicle and seasonal property cleaning in Cochrane. Choose the service and preferred appointment online.",
   path: "/cochrane-cleaning-services/",
 });
 
 export default function CochraneCleaningLayout({ children }: { children: ReactNode }) {
-  return <><PageJsonLd path="/cochrane-cleaning-services/" />{children}</>;
+  return (
+    <>
+      <PageJsonLd path="/cochrane-cleaning-services/" />
+      {children}
+    </>
+  );
 }

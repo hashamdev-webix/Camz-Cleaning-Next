@@ -1,163 +1,150 @@
 "use client";
+
 import Link from "next/link";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
 const CommercialCleaningContent = () => {
   const coverageItems = [
-    "Office Desks and Workstations",
-    "Meeting Rooms and Reception Areas",
-    "Restrooms Cleaning and Sanitization",
-    "Floor Cleaning and Maintenance",
-    "High-Touch Surface Disinfection",
-    "Waste Collection and Disposal",
+    {
+      title: "Work Areas and Shared Spaces",
+      description:
+        "Dusting, surface wiping and general cleaning for workstations, meeting rooms, reception areas and shared spaces.",
+    },
+    {
+      title: "Washrooms and Staff Kitchens",
+      description:
+        "Cleaning and sanitizing for washrooms, break areas and staff kitchens based on the agreed service checklist.",
+    },
+    {
+      title: "Floors, Waste and High-Touch Surfaces",
+      description:
+        "Vacuuming, mopping, waste removal and attention to frequently touched surfaces throughout the property.",
+    },
   ];
 
   const carouselData = [
     {
       src: "/wp-admin/uploads/stairs-cleaning.webp",
-      alt: "Professional stairs cleaning service",
+      alt: "Commercial stairs and shared-area cleaning",
     },
     {
       src: "/wp-admin/uploads/floor-cleaning-of-home.webp",
-      alt: "Deep floor cleaning of home",
+      alt: "Commercial floor cleaning",
     },
     {
       src: "/wp-admin/uploads/floor cleaning of home-2.webp",
-      alt: "Residential floor sanitization",
+      alt: "Floor and surface cleaning",
     },
     {
       src: "/wp-admin/uploads/floor-cleaning-of-home-3.webp",
-      alt: "Professional home floor maintenance",
+      alt: "Professional floor maintenance",
     },
   ];
 
   return (
     <div className="space-y-12 text-gray-700">
-      {/* Hero Section */}
+      {/* Introduction */}
       <section className="space-y-6">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B4E9B] leading-tight ">
-          Reliable Commercial Cleaning Service for Businesses Across Alberta
-        </h2>
-        <div className="rounded-[2rem] overflow-hidden shadow-md">
+        <div className="overflow-hidden rounded-[2rem] shadow-md">
           <img
             src="/commercial-cleaning.webp"
-            alt="Clean Office Floor"
-            className="w-full object-cover h-[300px] md:h-[400px]"
+            alt="Commercial workspace prepared for professional cleaning"
+            width={1200}
+            height={800}
+            className="h-[300px] w-full object-cover md:h-[400px]"
           />
         </div>
-        <p className="leading-relaxed font-medium">
-          A clean and well-maintained workplace plays an important role in
-          creating a positive impression on clients and supporting employee
-          productivity. Dusty corners, stained carpets, and unclean surfaces can
-          quickly make any office look unprofessional and uncomfortable. At{" "}
-          <Link href="/">
-            <span className="text-[#0B4E9B] font-bold">Camz Cleaning</span>
-          </Link>
-          , we offer dependable Commercial Cleaning Services in Calgary,
-          Airdrie, Cochrane, and Chestermere to keep your workspace spotless,
-          sanitized, and welcoming.
+
+        <p className="font-medium leading-relaxed">
+          Camz Cleaning provides commercial cleaning for workplaces and shared
+          facilities, with each service planned around the property, schedule
+          and agreed cleaning requirements.
         </p>
       </section>
 
-      {/* Why Choose Section */}
-      <section className="space-y-4">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
-          Why Choose Professional Commercial Cleaning Services?
-        </h2>
-        <p className="leading-relaxed">
-          Professional cleaning creates a healthier, safer, and more productive
-          environment. Hiring experts saves businesses time, reduces stress, and
-          maintains high hygiene standards. With our commercial cleaning
-          services, you get attention to detail, reliability, and a workspace
-          that reflects professionalism.
-        </p>
-      </section>
-
-      {/* Services List Section */}
+      {/* Commercial Properties */}
       <section className="space-y-8">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
-          Our Commercial Cleaning Services
-        </h2>
-        <div className="space-y-6">
-          {[
-            {
-              id: 1,
-              title: "Business Cleaning Services",
-              desc: "Customizable business cleaning services meet your unique needs from daily office cleaning to specialized tasks like kitchen or restroom care.",
-            },
-            {
-              id: 2,
-              title: "Cleaning and Sanitization",
-              desc: "High-touch areas like desks, doorknobs, and restrooms are sanitized with our Cleaning and Sanitization service, creating a safer workspace.",
-            },
-            {
-              id: 3,
-              title: "Tile Cleaning Service",
-              desc: "Our tile cleaning service removes grime and restores shine while keeping floors safe for staff and visitors.",
-            },
-            {
-              id: 4,
-              title: "Commercial Office Cleaning",
-              desc: "We cover dusting, vacuuming, and sanitizing. Our Commercial Office Cleaning ensures your workspace stays organized and welcoming.",
-            },
-            {
-              id: 5,
-              title: "Commercial Office and Business Cleaning",
-              desc: "Our commercial cleaning service covers offices, shops, restaurants and other workplaces. Services can include workstation cleaning, restroom sanitization, floor care, waste removal and cleaning of shared or high-touch areas. ",
-            },
-            {
-              id: 6,
-              title: "Window Cleaning",
-              desc: "Our window cleaning ensures streak-free panes, letting natural light brighten your office and improving the overall appearance.",
-            },
-            {
-              id: 7,
-              title: "Post-Construction Cleaning Service",
-              desc: "After renovations, our post-construction cleaning service removes dust and debris, making spaces ready for immediate use.",
-            },
-          ].map((item) => (
-            <div key={item.id} className="space-y-1">
-              <h3 className="text-xl font-bold text-[#0B4E9B]">
-                {item.id}. {item.title}
-              </h3>
-              <p className="text-sm md:text-base leading-relaxed">
-                {item.desc}
-              </p>
-            </div>
-          ))}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-extrabold text-[#0B4E9B] md:text-4xl">
+            Commercial Properties We Clean
+          </h2>
+
+          <p className="leading-relaxed">
+            Explore our commercial cleaning options, each tailored to your
+            property, schedule and day-to-day requirements.
+          </p>
+        </div>
+
+        <div className="space-y-7">
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold text-[#0B4E9B]">
+              Offices and Corporate Workspaces
+            </h3>
+
+            <p className="leading-relaxed">
+              Detailed cleaning for offices, meeting rooms, reception areas and
+              shared workspaces, helping maintain a tidy and welcoming business
+              environment.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold text-[#0B4E9B]">
+              Shops and Shared Facilities
+            </h3>
+
+            <p className="leading-relaxed">
+              Flexible cleaning for shops and shared facilities, covering floors,
+              washrooms, high-touch surfaces and common areas.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold text-[#0B4E9B]">
+              Post-Construction and Renovated Spaces
+            </h3>
+
+            <p className="leading-relaxed">
+              Post-construction cleaning removes dust, debris and surface
+              residue after renovations, helping prepare commercial spaces for
+              use.
+            </p>
+          </div>
+
         </div>
       </section>
 
-      {/* Carousel & Coverage Section */}
-      <section className="space-y-6">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
-          Our Commercial Cleaning Covers
+      {/* Cleaning Scope */}
+      <section className="space-y-8">
+        <h2 className="text-2xl font-extrabold text-[#0B4E9B] md:text-4xl">
+          What Is Included in Commercial Cleaning?
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center overflow-hidden">
-          {/* Checklist */}
-          <ul className="space-y-3">
-            {coverageItems.map((item, idx) => (
-              <li
-                key={idx}
-                className="flex items-center gap-3 font-semibold text-[#0B4E9B]"
-              >
-                {/* <IoCheckmarkCircleOutline size={22} className="shrink-0" /> */}
-                <span>{idx + 1}</span>
-                <span className="text-gray-700">{item}</span>
-              </li>
-            ))}
-          </ul>
+        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
+          <div className="space-y-7">
+            {coverageItems.map((item) => (
+              <div key={item.title} className="space-y-2">
+                <h3 className="text-xl font-bold text-[#0B4E9B]">
+                  {item.title}
+                </h3>
 
-          {/* CSS-Only Carousel - Showing 2 Images */}
-          <div className="relative w-full overflow-hidden rounded-2xl h-[250px]">
-            <div className="flex w-[400%] animate-slide h-full gap-4">
-              {[...carouselData, ...carouselData].map((img, i) => (
-                <div key={i} className="w-1/2 h-full flex-shrink-0 px-2">
+                <p className="leading-relaxed">{item.description}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="relative h-[250px] w-full overflow-hidden rounded-2xl">
+            <div className="flex h-full w-[400%] animate-slide gap-4">
+              {[...carouselData, ...carouselData].map((img, index) => (
+                <div
+                  key={`${img.src}-${index}`}
+                  className="h-full w-1/2 flex-shrink-0 px-2"
+                >
                   <img
                     src={img.src}
-                    className="w-full h-full object-cover rounded-2xl"
                     alt={img.alt}
+                    width={1200}
+            height={800}
+            className="h-full w-full rounded-2xl object-cover"
                   />
                 </div>
               ))}
@@ -166,39 +153,19 @@ const CommercialCleaningContent = () => {
         </div>
       </section>
 
-      {/* Schedule Section */}
-      <section className="space-y-6 pb-10">
-        <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4E9B]">
-          Schedule Your Service
-        </h2>
-        <p>
-          Contact Camz Cleaning today to schedule your commercial cleaning
-          service and maintain a spotless, professional business environment.
-        </p>
-        <Link
-          href="/booking"
-          className="inline-block bg-[#0091C1] text-white px-8 py-3 rounded-lg font-bold hover:bg-[#0B4E9B] transition-colors shadow-lg"
-        >
-          Book Service
-        </Link>
-      </section>
-
-      {/* Internal CSS for Carousel Animation */}
       <style jsx>{`
         @keyframes slide {
           0% {
             transform: translateX(0);
           }
-          /* We translate by 50% because we duplicated the array [...data, ...data] */
+
           100% {
             transform: translateX(-50%);
           }
         }
+
         .animate-slide {
           animation: slide 20s linear infinite;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
         }
       `}</style>
     </div>

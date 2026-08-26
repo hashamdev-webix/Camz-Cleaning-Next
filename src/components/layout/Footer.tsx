@@ -1,20 +1,17 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import {
-  IoMailOutline,
   IoCallOutline,
-  IoTimeOutline,
-  IoLocationOutline,
   IoCheckmarkCircleOutline,
-  IoLogoInstagram,
+  IoLocationOutline,
   IoLogoFacebook,
+  IoLogoInstagram,
   IoLogoLinkedin,
   IoLogoYoutube,
+  IoMailOutline,
 } from "react-icons/io5";
-
 import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
@@ -22,87 +19,56 @@ const Footer = () => {
 
   const quickLinks = [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/about-us" },
-    { name: "Our Services", href: "/services" },
-    { name: "Our Gallery", href: "/gallery" },
-    { name: "Our Blogs", href: "/blogs" },
-    { name: "Contact Us", href: "/contact-us" },
+    { name: "About Us", href: "/about-us/" },
+    { name: "Our Services", href: "/services/" },
+    { name: "Our Gallery", href: "/gallery/" },
+    { name: "Our Blog", href: "/blog/" },
+    { name: "Contact Us", href: "/contact-us/" },
   ];
 
   const services = [
-    { name: "Commercial Cleaning", href: "/commercial-cleaning-services" },
-    { name: "Residential Cleaning", href: "/residential-cleaning-services" },
-    { name: "Vehicle Cleaning", href: "/vehicle-cleaning-service" },
-    { name: "Seasonal Cleaning", href: "/seasonal-property-service" },
+    { name: "Commercial Cleaning", href: "/commercial-cleaning-services/" },
+    { name: "Residential Cleaning", href: "/residential-cleaning-services/" },
+    { name: "Vehicle Cleaning", href: "/vehicle-cleaning-service/" },
+    { name: "Seasonal Property Service", href: "/seasonal-property-service/" },
   ];
+
+  const socialLinks = [
+    { label: "Instagram", href: "https://www.instagram.com/camzcleaning", icon: <IoLogoInstagram size={20} /> },
+    { label: "X", href: "https://x.com/camzcleaning", icon: <FaXTwitter size={18} /> },
+    { label: "Facebook", href: "https://web.facebook.com/Camzcleaning1?_rdc=1&_rdr#", icon: <IoLogoFacebook size={20} /> },
+    { label: "LinkedIn", href: "https://www.linkedin.com/company/camzcleaning", icon: <IoLogoLinkedin size={20} /> },
+    { label: "YouTube", href: "https://www.youtube.com/@CamzCleaning", icon: <IoLogoYoutube size={20} /> },
+  ];
+
   return (
-    <footer className="bg-gradient-to-r from-[#1E5D9E] to-[#16497D] text-white pt-16 pb-8 px-6 md:px-12 lg:px-24 border border-t border-l-0 border-r-0 border-b-0 border-white">
-      <div className="container-custom mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-        {/* Column 1: Logo & Info */}
+    <footer className="border-t border-white bg-gradient-to-r from-[#1E5D9E] to-[#16497D] px-6 pb-8 pt-16 text-white md:px-12 lg:px-24">
+      <div className="container-custom mx-auto mb-12 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-6">
-          <Image
-            src="/wp-admin/uploads/footer-logo.webp"
-            alt="Camz Cleaning"
-            width={304}
-            height={87}
-            className="h-auto w-auto "
-          />
-          <p className="text-white text-sm leading-relaxed">
-            <span className="text-white text-sm">
-              {" "}
-              Camz Cleaning delivers reliable, professional residential and
-              commercial cleaning services focused on quality, consistency, and
-              complete customer satisfaction across communities.
-            </span>
+          <Image src="/wp-admin/uploads/footer-logo.webp" alt="Camz Cleaning" width={304} height={87} className="h-auto w-auto" />
+          <p className="text-sm leading-relaxed text-white">
+            Camz Cleaning provides residential, commercial, vehicle and seasonal
+            property cleaning, with online booking for preferred appointments.
           </p>
           <div className="flex items-center gap-4">
-            <span className="font-bold text-sm">Follow Us On:</span>
+            <span className="text-sm font-bold">Follow Us:</span>
             <div className="flex gap-3">
-              <a
-                href="https://www.instagram.com/camzcleaning"
-                className="hover:text-cyan-400 transition-colors"
-              >
-                <IoLogoInstagram size={20} />
-              </a>
-              <a
-                href="https://x.com/camzcleaning"
-                className="hover:text-cyan-400 transition-colors"
-              >
-                <FaXTwitter size={18} />
-              </a>
-              <a
-                href="https://web.facebook.com/Camzcleaning1?_rdc=1&_rdr#"
-                className="hover:text-cyan-400 transition-colors"
-              >
-                <IoLogoFacebook size={20} />
-              </a>
-              <a
-                href="https://www.linkedin.com/company/camzcleaning"
-                className="hover:text-cyan-400 transition-colors"
-              >
-                <IoLogoLinkedin size={20} />
-              </a>
-              <a
-                href="https://www.youtube.com/@CamzCleaning"
-                className="hover:text-cyan-400 transition-colors"
-              >
-                <IoLogoYoutube size={20} />
-              </a>
+              {socialLinks.map((link) => (
+                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer" aria-label={`Camz Cleaning on ${link.label}`} className="transition-colors hover:text-cyan-300">
+                  {link.icon}
+                </a>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Column 2: Quick Links */}
         <div>
-          <h3 className="text-xl font-extrabold mb-6">Quick Links</h3>
+          <h3 className="mb-6 text-xl font-extrabold">Quick Links</h3>
           <ul className="space-y-3">
             {quickLinks.map((link) => (
               <li key={link.name}>
-                <Link
-                  href={link.href}
-                  className="flex items-center gap-2 text-blue-50 hover:text-cyan-400 transition-colors text-base"
-                >
-                  <IoCheckmarkCircleOutline size={18} className="text-white" />
+                <Link href={link.href} className="flex items-center gap-2 text-blue-50 transition-colors hover:text-cyan-300">
+                  <IoCheckmarkCircleOutline size={18} aria-hidden="true" />
                   {link.name}
                 </Link>
               </li>
@@ -110,17 +76,13 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Column 3: Our Services */}
         <div>
-          <h3 className="text-xl font-extrabold mb-6">Our Services</h3>
+          <h3 className="mb-6 text-xl font-extrabold">Our Services</h3>
           <ul className="space-y-3">
             {services.map((service) => (
               <li key={service.name}>
-                <Link
-                  href={service.href}
-                  className="flex items-center gap-2 text-blue-50 hover:text-cyan-400 transition-colors text-base"
-                >
-                  <IoCheckmarkCircleOutline size={18} className="text-white" />
+                <Link href={service.href} className="flex items-center gap-2 text-blue-50 transition-colors hover:text-cyan-300">
+                  <IoCheckmarkCircleOutline size={18} aria-hidden="true" />
                   {service.name}
                 </Link>
               </li>
@@ -128,60 +90,24 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Column 4: Contact Info */}
         <div>
-          <h3 className="text-xl font-extrabold mb-6">Contact Info</h3>
+          <h3 className="mb-6 text-xl font-extrabold">Contact Info</h3>
           <ul className="space-y-5">
-            {/* Email */}
             <li>
-              <a
-                href="mailto:info@camzcleaning.com"
-                className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
-              >
-                <div className="bg-white/10 p-2 rounded-md">
-                  <IoMailOutline size={20} />
-                </div>
+              <a href="mailto:info@camzcleaning.com" className="flex items-center gap-3 transition-colors hover:text-[#00B7EB]">
+                <span className="rounded-md bg-white/10 p-2"><IoMailOutline size={20} aria-hidden="true" /></span>
                 info@camzcleaning.com
               </a>
             </li>
-
-            {/* Phone */}
             <li>
-              <a
-                href="tel:+15878371977"
-                className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
-              >
-                <div className="bg-white/10 p-2 rounded-md">
-                  <IoCallOutline size={20} />
-                </div>
+              <a href="tel:+15878371977" className="flex items-center gap-3 transition-colors hover:text-[#00B7EB]">
+                <span className="rounded-md bg-white/10 p-2"><IoCallOutline size={20} aria-hidden="true" /></span>
                 +1 587-837-1977
               </a>
             </li>
-
-            {/* Time */}
             <li>
-              <a
-                href="#"
-                className="flex items-center gap-3 text-base cursor-default"
-              >
-                <div className="bg-white/10 p-2 rounded-md">
-                  <IoTimeOutline size={20} />
-                </div>
-                9:00 AM – 5:00 PM
-              </a>
-            </li>
-
-            {/* Location */}
-            <li>
-              <a
-                href="https://maps.google.com/?q=Calgary,AB,Canada"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-base hover:text-[#00B7EB] transition-colors"
-              >
-                <div className="bg-white/10 p-2 rounded-md">
-                  <IoLocationOutline size={20} />
-                </div>
+              <a href="https://maps.google.com/?q=Calgary,AB,Canada" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 transition-colors hover:text-[#00B7EB]">
+                <span className="rounded-md bg-white/10 p-2"><IoLocationOutline size={20} aria-hidden="true" /></span>
                 Calgary, AB, Canada
               </a>
             </li>
@@ -189,18 +115,10 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="container-custom mx-auto pt-8 border-t border-white/70 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium">
-        <p>
-          <span className="text-white">
-            Copyright © {currentYear} Camz Cleaning All rights reserved
-          </span>{" "}
-        </p>
-        <Link
-          href="/privacy-policy"
-          className="flex items-center gap-2 hover:text-cyan-400 transition-colors"
-        >
-          <IoCheckmarkCircleOutline size={18} />
+      <div className="container-custom mx-auto flex flex-col items-center justify-between gap-4 border-t border-white/70 pt-8 text-sm font-medium md:flex-row">
+        <p>Copyright © {currentYear} Camz Cleaning. All rights reserved.</p>
+        <Link href="/privacy-policy/" className="flex items-center gap-2 transition-colors hover:text-cyan-300">
+          <IoCheckmarkCircleOutline size={18} aria-hidden="true" />
           Privacy Policy
         </Link>
       </div>
