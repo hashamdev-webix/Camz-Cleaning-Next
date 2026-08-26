@@ -4,12 +4,31 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, Check, Clock3, ClipboardList, DollarSign, Download, MapPin, Plus, Search, Sparkles, UserPlus, UserRound, X } from "lucide-react";
+import { ArrowLeft, CalendarClock, Check, CheckCircle2, Clock3, ClipboardList, DollarSign, Download, Eye, Lock, Mail, MapPin, Pencil, Phone, Plus, Search, ShieldCheck, Sparkles, Trash2, UserPlus, UsersRound, UserRound, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { optimizeImageForUpload, uploadImageToBucket } from "@/lib/images/upload";
-import CreateUserModal from "@/components/admin/users/CreateUserModal";
+import { labelRole } from "@/components/admin/users/userUiHelpers";
 
-export type CleanerUser = { id: string; name: string; email: string };
+export type CleanerUser = { id: string; name: string; email: string; role: string };
+
+export type PortalUser = {
+  id: string;
+  name: string;
+  email: string;
+  phone_number: string | null;
+  role: string;
+  approval_status: string | null;
+  source: string | null;
+  is_blocked: boolean | null;
+  verified: boolean | null;
+  is_online: boolean | null;
+  is_available: boolean | null;
+  is_working: boolean | null;
+  offering_fixed?: boolean | null;
+  offering_hourly?: boolean | null;
+  hourly_rate?: string | number | null;
+  created_at: string;
+};
 export type BookingImage = {
   id: string;
   booking_id: string;
@@ -70,12 +89,17 @@ const emptyForm: FormState = {
   completion_remarks: "", completed_by: null, worked_hours: 0, hours_approved: false, approved_hours: 0, assigned_cleaner_ids: [],
 };
 
-export default function BookingRecordsPortal({ bookings, cleaners, currentUser }: { bookings: BookingRecord[]; cleaners: CleanerUser[]; currentUser: CurrentUser }) {
+export default function BookingRecordsPortal({ bookings, cleaners, assignedUsers, currentUser }: { bookings: BookingRecord[]; cleaners: CleanerUser[]; assignedUsers: PortalUser[]; currentUser: CurrentUser }) {
   const router = useRouter();
   const [records, setRecords] = useState(bookings);
   useEffect(() => {
     setRecords(bookings);
   }, [bookings]);
+
+  const [users, setUsers] = useState(assignedUsers);
+  useEffect(() => {
+    setUsers(assignedUsers);
+  }, [assignedUsers]);
   const role = currentUser?.role?.toLowerCase() || "admin";
   const isCleaner = role === "cleaner";
   const isDataEntry = role === "data_entry";
@@ -83,7 +107,7 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
   const canEdit = role === "admin";
   const canAssign = role === "admin";
   const canDelete = role === "admin";
-  const canCreateUser = role === "admin" || isDataEntry;
+  const canManageUsers = role === "admin";
   const ownBookings = useMemo(() => {
     if (isCleaner) return records.filter((booking) => booking.assigned_cleaners.some((cleaner) => cleaner.id === currentUser?.id));
     if (isDataEntry) return records.filter((booking) => booking.added_by_user === currentUser?.id);
@@ -102,8 +126,7 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
   const [form, setForm] = useState<FormState>({ ...emptyForm, added_by: currentUser?.name || "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [userModalOpen, setUserModalOpen] = useState(false);
-  const [userSuccess, setUserSuccess] = useState("");
+  const [manageUsersOpen, setManageUsersOpen] = useState(false);
 
   const filtered = useMemo(() => scopedBookings.filter((booking) => {
     const today = toDateInput(new Date());
@@ -169,186 +192,1222 @@ export default function BookingRecordsPortal({ bookings, cleaners, currentUser }
     if (!response.ok) window.alert(result.error || "Unable to delete booking."); else router.refresh();
   };
 
-  return <div className={`min-h-screen ${theme.page} px-4 py-7 text-slate-900 sm:px-7 lg:px-10`}>
-    <div className="mx-auto max-w-7xl">
-      <section className={`relative overflow-hidden rounded-[2rem] bg-gradient-to-r ${theme.hero} p-6 text-white shadow-2xl shadow-slate-900/15 sm:p-8`}>
-        <div className="absolute right-6 top-6 hidden h-28 w-28 rounded-full border border-white/20 bg-white/10 lg:block" />
-        <div className="absolute -bottom-16 right-20 hidden h-44 w-44 rounded-full border border-white/10 bg-white/5 lg:block" />
-        <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div className="max-w-2xl"><p className="inline-flex rounded-full bg-white/15 px-4 py-2 text-xs font-bold tracking-[0.28em]">{isCleaner ? "CLEANER DASHBOARD" : isDataEntry ? "DATA ENTRY DASHBOARD" : "ADMIN DASHBOARD"}</p><h1 className="mt-5 text-4xl font-bold leading-tight sm:text-5xl">{isCleaner ? "My Bookings" : "Booking Records"}</h1><p className="mt-3 text-base font-medium text-white/85 sm:text-lg">{isCleaner ? "Track assigned work, review schedules, update progress, and keep service images organized." : isDataEntry ? `Logged in as ${currentUser?.name || "Data Entry User"}. Add records quickly and keep booking details ready for operations.` : "Full access - manage, assign, approve, and track all bookings."}</p><div className="mt-5 flex flex-wrap gap-2 text-sm font-bold"><span className="rounded-full bg-white/15 px-4 py-2">{stats.allTotal} visible</span><span className="rounded-full bg-white/15 px-4 py-2">{stats.pending} pending</span><span className="rounded-full bg-white/15 px-4 py-2">{stats.upcoming} upcoming</span></div></div>
-          <div className="flex flex-wrap gap-3">
-            {canCreateUser && <button type="button" onClick={() => setUserModalOpen(true)} className="flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-white/50 bg-white/10 px-7 font-bold text-white shadow-xl transition hover:-translate-y-0.5 hover:bg-white/20 hover:shadow-2xl"><UserPlus size={18} /> Create User</button>}
-            {canCreate && <button type="button" onClick={openAdd} className={`flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-white px-7 font-bold ${theme.accent} shadow-xl transition hover:-translate-y-0.5 hover:shadow-2xl`}><Plus size={18} /> Add Booking</button>}
+  if (formOpen && canCreate) {
+    return (
+      <div className={`min-h-screen ${theme.page} px-4 py-7 text-slate-900 sm:px-7 lg:px-10`}>
+        <div className="mx-auto max-w-7xl">
+          <BookingFormPanel
+            form={form}
+            setForm={setForm}
+            cleaners={cleaners}
+            saving={saving}
+            error={error}
+            onClose={() => {
+              setFormOpen(false);
+              setError("");
+            }}
+            onSubmit={saveBooking}
+            currentUser={currentUser}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (manageUsersOpen && canManageUsers) {
+    return (
+      <div className={`min-h-screen ${theme.page} px-4 py-7 text-slate-900 sm:px-7 lg:px-10`}>
+        <div className="mx-auto max-w-7xl">
+          <ManageUsersPanel
+            users={users}
+            currentUser={currentUser}
+            onClose={() => setManageUsersOpen(false)}
+            onChanged={() => router.refresh()}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#F4F7FB] px-4 py-4 text-slate-900 sm:px-5 lg:px-6">
+      <div className="mx-auto max-w-[1500px]">
+        {/* PAGE HEADER */}
+        <section className="rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
+              <p className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-[#4A86F7]">
+                {isCleaner
+                  ? "Cleaner Calendar"
+                  : isDataEntry
+                    ? "Data Entry Calendar"
+                    : "Admin Calendar"}
+              </p>
+
+              <h1 className="mt-1 font-bold tracking-tight text-[#13263A]">
+                {isCleaner ? "My Booking Calendar" : "Booking Records"}
+              </h1>
+
+              <p className="mt-1 max-w-2xl text-slate-500">
+                {isCleaner
+                  ? "View assigned bookings, schedules, progress and service details."
+                  : isDataEntry
+                    ? `Logged in as ${currentUser?.name || "Data Entry User"}. Add and maintain booking records.`
+                    : "Manage booking records, schedules, assignments and operations."}
+              </p>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-[9px] font-bold text-slate-600">
+                  {stats.allTotal} visible
+                </span>
+                <span className="rounded-lg bg-amber-50 px-2.5 py-1 text-[9px] font-bold text-amber-700">
+                  {stats.pending} pending
+                </span>
+                <span className="rounded-lg bg-blue-50 px-2.5 py-1 text-[9px] font-bold text-blue-700">
+                  {stats.upcoming} upcoming
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {canManageUsers && (
+                <button
+                  type="button"
+                  onClick={() => setManageUsersOpen(true)}
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 text-[10px] font-bold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-[#4A86F7]"
+                >
+                  <UsersRound size={14} />
+                  Manage Users
+                </button>
+              )}
+
+              {canCreate && (
+                <button
+                  type="button"
+                  onClick={openAdd}
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#4A86F7] px-3.5 text-[10px] font-bold text-white shadow-sm transition hover:bg-blue-600"
+                >
+                  <Plus size={14} />
+                  Add Booking
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* STATS */}
+        <section className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {isCleaner ? (
+            <>
+              <Stat
+                label="Today's Hours"
+                value={`${stats.todayHours.toFixed(1)} hrs`}
+                sub="Approved hours worked today"
+              />
+              <Stat
+                label="This Week"
+                value={`${stats.weekHours.toFixed(1)} hrs`}
+                sub="Approved hours this week"
+              />
+              <Stat
+                label="This Month"
+                value={`${stats.monthHours.toFixed(1)} hrs`}
+                sub="Approved hours this month"
+              />
+              <Stat
+                label="Upcoming Jobs"
+                value={stats.upcoming}
+                sub="Assigned bookings after today"
+              />
+            </>
+          ) : (
+            <>
+              <Stat
+                label={isDataEntry ? "Total Added" : "Total Bookings"}
+                value={stats.total}
+                sub={
+                  isDataEntry
+                    ? `${stats.allTotal} total bookings visible`
+                    : "All visible booking records"
+                }
+              />
+              <Stat
+                label="Today"
+                value={stats.todayCount}
+                sub="Scheduled for today"
+              />
+              <Stat
+                label="Upcoming"
+                value={stats.upcoming}
+                sub="Scheduled after today"
+              />
+              <Stat
+                label="Pending"
+                value={stats.pending}
+                sub="Awaiting action"
+              />
+            </>
+          )}
+        </section>
+
+        {/* FILTERS */}
+        <section className="mt-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="grid gap-3 lg:grid-cols-[minmax(260px,1fr)_220px_auto]">
+            <FilterInput
+              placeholder="Search customer, service, email or phone..."
+              value={query}
+              onChange={setQuery}
+            />
+
+            <select
+              value={areaFilter}
+              onChange={(event) => setAreaFilter(event.target.value)}
+              className="h-9 rounded-lg border border-slate-200 bg-[#F8FAFD] px-3 text-[10px] font-semibold text-slate-700 outline-none transition focus:border-blue-300 focus:bg-white"
+            >
+              <option value="all">All Areas</option>
+              {areas.map((area) => (
+                <option key={area}>{area}</option>
+              ))}
+            </select>
+
+            <button
+              type="button"
+              onClick={() => {
+                setQuery("");
+                setAreaFilter("all");
+              }}
+              className="h-9 rounded-lg border border-slate-200 bg-white px-4 text-[10px] font-bold text-slate-600 transition hover:bg-slate-50"
+            >
+              Reset
+            </button>
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
+            {quickFilters.map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setQuickFilter(value)}
+                className={`h-8 rounded-lg px-3 text-[9px] font-bold transition ${
+                  quickFilter === value
+                    ? "bg-[#13263A] text-white"
+                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* CALENDAR FIRST */}
+        <section className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(300px,.55fr)]">
+          <BookingCalendar
+            bookings={scopedBookings}
+            month={calendarMonth}
+            setMonth={setCalendarMonth}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            activeClass="bg-[#4A86F7]"
+          />
+
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="border-b border-slate-100 pb-3">
+              <p className="text-[9px] font-extrabold uppercase tracking-[0.1em] text-[#4A86F7]">
+                Selected Date
+              </p>
+
+              <h2 className="mt-1 font-bold text-[#13263A]">
+                {formatDate(selectedDate)}
+              </h2>
+
+              <p className="mt-0.5 text-slate-500">
+                {selectedDayBookings.length} booking
+                {selectedDayBookings.length === 1 ? "" : "s"}
+              </p>
+            </div>
+
+            <div className="mt-3 max-h-[430px] space-y-2 overflow-y-auto pr-1">
+              {selectedDayBookings.map((booking) => (
+                <button
+                  type="button"
+                  key={booking.id}
+                  onClick={() => setDetails(booking)}
+                  className="group w-full rounded-lg border border-slate-200 bg-[#F8FAFD] p-3 text-left transition hover:border-blue-200 hover:bg-blue-50"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="truncate text-[11px] font-bold text-[#13263A]">
+                        {booking.full_name}
+                      </div>
+
+                      <div className="mt-1 flex items-center gap-1.5 text-[9px] text-slate-500">
+                        <Clock3 size={11} />
+                        {formatTime(booking.service_time)}
+                      </div>
+                    </div>
+
+                    <StatusPill status={booking.status} />
+                  </div>
+
+                  <div className="mt-2 truncate text-[9px] text-slate-500">
+                    {booking.cleaning_type} • {booking.area}
+                  </div>
+
+                  {!isCleaner && (
+                    <div className="mt-2 truncate text-[8px] text-slate-400">
+                      Assigned:{" "}
+                      {booking.assigned_cleaners
+                        .map((cleaner) => cleaner.name)
+                        .join(", ") || "Unassigned"}
+                    </div>
+                  )}
+                </button>
+              ))}
+
+              {!selectedDayBookings.length && (
+                <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center text-[10px] text-slate-400">
+                  No bookings on this date.
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* BOOKINGS LIST */}
+        <section className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex flex-col gap-3 border-b border-slate-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-bold text-[#13263A]">
+                {quickFilter === "my"
+                  ? "My Bookings"
+                  : isCleaner
+                    ? "All Bookings"
+                    : "Booking List"}
+              </h2>
+
+              <p className="mt-0.5 text-slate-500">
+                {filtered.length} booking
+                {filtered.length === 1 ? "" : "s"}
+              </p>
+            </div>
+          </div>
+
+          {/* MOBILE */}
+          <div className="divide-y divide-slate-100 lg:hidden">
+            {filtered.map((booking) => (
+              <article key={booking.id} className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="truncate text-[12px] font-bold text-[#13263A]">
+                      {booking.full_name}
+                    </h3>
+                    <p className="mt-1 truncate text-[10px] text-slate-500">
+                      {booking.cleaning_type}
+                    </p>
+                  </div>
+
+                  <StatusPill status={booking.status} />
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <InfoChip icon={MapPin} label={booking.area} />
+                  <InfoChip
+                    icon={CalendarClock}
+                    label={formatDate(booking.service_date)}
+                  />
+                  <InfoChip
+                    icon={Clock3}
+                    label={formatTime(booking.service_time)}
+                  />
+                  <InfoChip
+                    icon={DollarSign}
+                    label={
+                      isCleaner && !booking.show_price_to_cleaner
+                        ? "Hidden"
+                        : `$${Number(booking.price).toFixed(2)}`
+                    }
+                  />
+                </div>
+
+                {!isCleaner && (
+                  <p className="mt-3 text-[9px] text-slate-500">
+                    Assigned:{" "}
+                    <span className="font-semibold text-slate-700">
+                      {booking.assigned_cleaners
+                        .map((cleaner) => cleaner.name)
+                        .join(", ") || "Unassigned"}
+                    </span>
+                  </p>
+                )}
+
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  <Action
+                    onClick={() => setDetails(booking)}
+                    label="View"
+                    className="bg-[#4A86F7]"
+                  />
+                  {canAssign && (
+                    <Action
+                      onClick={() => setAssigning(booking)}
+                      label="Assign"
+                      className="bg-violet-600"
+                    />
+                  )}
+                  {canEdit && (
+                    <Action
+                      onClick={() => openEdit(booking)}
+                      label="Edit"
+                      className="bg-amber-500"
+                    />
+                  )}
+                  {canDelete && (
+                    <Action
+                      onClick={() => deleteBooking(booking)}
+                      label="Delete"
+                      className="bg-rose-600"
+                    />
+                  )}
+                </div>
+              </article>
+            ))}
+
+            {!filtered.length && (
+              <p className="p-8 text-center text-[10px] font-semibold text-slate-400">
+                No bookings match these filters.
+              </p>
+            )}
+          </div>
+
+          {/* DESKTOP */}
+          <div className="hidden overflow-x-auto lg:block">
+            <table className="w-full min-w-[900px] table-fixed text-left">
+              <thead className="bg-[#F8FAFD]">
+                <tr>
+                  {[
+                    "Customer",
+                    "Cleaning",
+                    "Area",
+                    "Date",
+                    "Time",
+                    "Price",
+                    "Status",
+                    ...(!isCleaner ? ["Assigned To"] : []),
+                    "Actions",
+                  ].map((head) => (
+                    <th
+                      key={head}
+                      className="border-b border-slate-200 px-3 py-2.5 text-[8px] font-extrabold uppercase tracking-[0.08em] text-slate-400"
+                    >
+                      {head}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-slate-100">
+                {filtered.map((booking) => (
+                  <tr
+                    key={booking.id}
+                    className="transition hover:bg-blue-50/40"
+                  >
+                    <td className="px-3 py-3">
+                      <span
+                        className="block truncate text-[10px] font-bold text-[#13263A]"
+                        title={booking.full_name}
+                      >
+                        {booking.full_name}
+                      </span>
+                    </td>
+
+                    <td className="px-3 py-3">
+                      <span
+                        className="block truncate text-[9px] text-slate-600"
+                        title={booking.cleaning_type}
+                      >
+                        {booking.cleaning_type}
+                      </span>
+                    </td>
+
+                    <td className="px-3 py-3">
+                      <span
+                        className="block truncate rounded-md bg-blue-50 px-2 py-1 text-[8px] font-bold text-blue-700"
+                        title={booking.area}
+                      >
+                        {booking.area}
+                      </span>
+                    </td>
+
+                    <td className="whitespace-nowrap px-3 py-3 text-[9px] text-slate-600">
+                      {formatDateCompact(booking.service_date)}
+                    </td>
+
+                    <td className="whitespace-nowrap px-3 py-3 text-[9px] text-slate-600">
+                      {formatTime(booking.service_time)}
+                    </td>
+
+                    <td className="whitespace-nowrap px-3 py-3">
+                      {isCleaner && !booking.show_price_to_cleaner ? (
+                        <span className="text-[9px] text-slate-400">
+                          Hidden
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold text-emerald-700">
+                          ${Number(booking.price).toFixed(2)}
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="whitespace-nowrap px-3 py-3">
+                      <StatusPill status={booking.status} />
+                    </td>
+
+                    {!isCleaner && (
+                      <td className="px-3 py-3">
+                        <div className="max-w-[170px] truncate text-[8px] text-slate-600">
+                          {booking.assigned_cleaners
+                            .map((cleaner) => cleaner.name)
+                            .join(", ") || "Unassigned"}
+                        </div>
+                      </td>
+                    )}
+
+                    <td className="whitespace-nowrap px-3 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        <CompactAction
+                          onClick={() => setDetails(booking)}
+                          label="View"
+                          className="bg-[#4A86F7]"
+                        />
+
+                        {canAssign && (
+                          <CompactAction
+                            onClick={() => setAssigning(booking)}
+                            label="Assign"
+                            className="bg-violet-600"
+                          />
+                        )}
+
+                        {canEdit && (
+                          <CompactAction
+                            onClick={() => openEdit(booking)}
+                            label="Edit"
+                            className="bg-amber-500"
+                          />
+                        )}
+
+                        {canDelete && (
+                          <CompactAction
+                            onClick={() => deleteBooking(booking)}
+                            label="Delete"
+                            className="bg-rose-600"
+                          />
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+
+                {!filtered.length && (
+                  <tr>
+                    <td
+                      colSpan={isCleaner ? 8 : 9}
+                      className="px-4 py-12 text-center text-[10px] text-slate-400"
+                    >
+                      No bookings match these filters.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      {assigning && canAssign && (
+        <AssignModal
+          booking={assigning}
+          cleaners={cleaners}
+          onClose={() => setAssigning(null)}
+          onSaved={() => {
+            setAssigning(null);
+            router.refresh();
+          }}
+        />
+      )}
+
+      {details && (
+        <DetailsModal
+          booking={details}
+          canDelete={canDelete}
+          canEdit={canEdit}
+          onClose={() => setDetails(null)}
+          onEdit={() => {
+            openEdit(details);
+            setDetails(null);
+          }}
+          onDeleted={() => {
+            setDetails(null);
+            router.refresh();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function Stat({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: string | number;
+  sub?: string;
+}) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-[8px] font-extrabold uppercase tracking-[0.1em] text-slate-400">
+            {label}
+          </p>
+
+          <div className="mt-1.5 text-[20px] font-extrabold leading-none text-[#13263A]">
+            {value}
           </div>
         </div>
-      </section>
 
-      {userSuccess && <p className="mt-5 rounded-2xl border border-emerald-300 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800">{userSuccess}</p>}
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[#4A86F7]">
+          <Sparkles size={14} />
+        </span>
+      </div>
 
-      <section className={`mt-8 grid gap-4 ${isCleaner ? "md:grid-cols-4" : "md:grid-cols-4"}`}>
-        {isCleaner ? <>
-          <Stat label="Today's Hours" value={`${stats.todayHours.toFixed(1)} hrs`} sub="Approved hours worked today" />
-          <Stat label="This Week" value={`${stats.weekHours.toFixed(1)} hrs`} sub="Approved hours this week" />
-          <Stat label="This Month" value={`${stats.monthHours.toFixed(1)} hrs`} sub="Approved hours this month" />
-          <Stat label="Upcoming Jobs" value={stats.upcoming} sub="Bookings assigned to you after today" />
-        </> : <>
-          <Stat label={isDataEntry ? "Total Added" : "Total Bookings"} value={stats.total} sub={isDataEntry ? `Created by you (${stats.allTotal} total bookings visible)` : undefined} />
-          <Stat label="Today" value={stats.todayCount} sub="Bookings scheduled for today" />
-          <Stat label="Upcoming" value={stats.upcoming} sub="Bookings scheduled after today" />
-          <Stat label="Pending" value={stats.pending} sub={isDataEntry ? "Pending bookings (your records)" : undefined} />
-        </>}
-      </section>
-
-      <section className="mt-8 rounded-[1.5rem] border border-white/70 bg-white/90 p-4 shadow-xl shadow-slate-900/5 backdrop-blur sm:p-5"><div className="grid gap-4 md:grid-cols-[1fr_220px_auto]"><FilterInput placeholder="Search customer, service, email, phone" value={query} onChange={setQuery} /><select value={areaFilter} onChange={(event) => setAreaFilter(event.target.value)} className="h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 outline-none transition focus:border-slate-400"><option value="all">All Areas</option>{areas.map((area) => <option key={area}>{area}</option>)}</select><button type="button" onClick={() => { setQuery(""); setAreaFilter("all"); }} className="h-12 rounded-xl border border-slate-200 bg-white px-6 font-bold text-slate-700 transition hover:bg-slate-50">Reset</button></div></section>
-
-      <section className="mt-8 rounded-3xl bg-white shadow-sm">
-        <div className="flex flex-col justify-between gap-4 p-6 lg:flex-row lg:items-center"><div><h2 className="text-2xl font-bold">{quickFilter === "my" ? "My Bookings" : isCleaner ? "All Bookings" : "Bookings"}</h2><p className="text-slate-500">{filtered.length} booking{filtered.length === 1 ? "" : "s"}</p></div><div className="flex flex-wrap gap-2">{quickFilters.map(([value, label]) => <button key={value} type="button" onClick={() => setQuickFilter(value)} className={`h-11 rounded-xl px-4 font-bold ${quickFilter === value ? `${theme.active} text-white` : "border border-slate-200 text-slate-600"}`}>{label}</button>)}</div></div>
-        <div className="divide-y divide-slate-100 lg:hidden">{filtered.map((booking) => <article key={booking.id} className="p-5"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="truncate text-lg font-bold text-slate-950">{booking.full_name}</h3><p className="mt-1 line-clamp-2 text-sm text-slate-500">{booking.cleaning_type}</p></div><StatusPill status={booking.status} /></div><div className="mt-4 grid grid-cols-2 gap-3 text-sm"><InfoChip icon={MapPin} label={booking.area} /><InfoChip icon={CalendarClock} label={formatDate(booking.service_date)} /><InfoChip icon={Clock3} label={formatTime(booking.service_time)} /><InfoChip icon={DollarSign} label={isCleaner && !booking.show_price_to_cleaner ? "Hidden" : `$${Number(booking.price).toFixed(2)}`} />{booking.use_manpower_time && <InfoChip icon={UserRound} label={formatManpowerTime(booking)} />}</div>{!isCleaner && <p className="mt-4 text-sm text-slate-500">Assigned: <span className="font-semibold text-slate-800">{booking.assigned_cleaners.map((cleaner) => cleaner.name).join(", ") || "Unassigned"}</span></p>}<div className="mt-4 flex flex-wrap gap-2"><Action onClick={() => setDetails(booking)} label="View" className={theme.button} />{canAssign && <Action onClick={() => setAssigning(booking)} label="Assign" className="bg-purple-700" />}{canEdit && <Action onClick={() => openEdit(booking)} label="Edit" className="bg-amber-500" />}{canDelete && <Action onClick={() => deleteBooking(booking)} label="Delete" className="bg-red-600" />}</div></article>)}{!filtered.length && <p className="p-8 text-center text-sm font-semibold text-slate-400">No bookings match these filters.</p>}</div><div className="hidden overflow-x-auto lg:block"><table className="w-full min-w-[1020px] text-left"><thead className="bg-slate-950 text-sm text-white"><tr>{["Name", "Cleaning", "Area", "Date", "Time (Calgary)", "Manpower", "Price", "Status", ...(!isCleaner ? ["Added By", "Assigned To"] : []), "Actions"].map((head) => <th key={head} className="px-5 py-4">{head}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{filtered.map((booking) => <tr key={booking.id} className="align-top"><td className="px-5 py-5 font-bold">{booking.full_name}</td><td className="max-w-52 px-5 py-5 text-slate-600">{booking.cleaning_type}</td><td className="px-5 py-5"><span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-bold text-blue-700">{booking.area}</span></td><td className="px-5 py-5">{formatDate(booking.service_date)}</td><td className="px-5 py-5">{formatTime(booking.service_time)}</td><td className="px-5 py-5">{booking.use_manpower_time ? <span className="rounded-full bg-cyan-100 px-3 py-1 text-sm font-bold text-cyan-800">{formatManpowerTime(booking)}</span> : <span className="text-slate-400">-</span>}</td><td className="px-5 py-5">{isCleaner && !booking.show_price_to_cleaner ? <span className="text-slate-400">Hidden</span> : <span className="rounded-full bg-emerald-100 px-3 py-1 font-bold text-emerald-700">${Number(booking.price).toFixed(2)}</span>}</td><td className="px-5 py-5"><StatusPill status={booking.status} /></td>{!isCleaner && <td className="px-5 py-5 text-slate-600">{booking.added_by || "-"}</td>}{!isCleaner && <td className="px-5 py-5"><div className="flex flex-wrap gap-1">{booking.assigned_cleaners.map((cleaner) => <span key={cleaner.id} className="rounded-full bg-purple-100 px-2 py-1 text-xs font-bold text-purple-700">{cleaner.name}</span>)}</div></td>}<td className="px-5 py-5"><div className="flex flex-wrap gap-2"><Action onClick={() => setDetails(booking)} label="View" className={theme.button} />{canAssign && <Action onClick={() => setAssigning(booking)} label="Assign" className="bg-purple-700" />}{canEdit && <Action onClick={() => openEdit(booking)} label="Edit" className="bg-amber-500" />}{canDelete && <Action onClick={() => deleteBooking(booking)} label="Delete" className="bg-red-600" />}</div></td></tr>)}</tbody></table></div>
-      </section>
-
-      <section className="mt-8 grid gap-6 xl:grid-cols-[2fr_1fr]"><BookingCalendar bookings={scopedBookings} month={calendarMonth} setMonth={setCalendarMonth} selectedDate={selectedDate} setSelectedDate={setSelectedDate} activeClass={theme.active} /><div className="rounded-3xl bg-white p-6 shadow-sm"><h2 className="text-xl font-bold">{formatDate(selectedDate)}</h2><p className="text-slate-500">{selectedDayBookings.length} booking{selectedDayBookings.length === 1 ? "" : "s"}</p><div className="mt-5 space-y-4">{selectedDayBookings.map((booking) => <div key={booking.id} className="rounded-2xl border border-slate-100 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{booking.full_name}</p><p className="text-sm text-slate-500">{formatTime(booking.service_time)} - {booking.cleaning_type} - {booking.area}</p></div><StatusPill status={booking.status} /></div><button type="button" onClick={() => setDetails(booking)} className={`mt-3 h-9 w-full rounded-lg ${theme.button} text-sm font-bold text-white`}>View Details</button></div>)}</div></div></section>
+      {sub && (
+        <p className="mt-2 text-[9px] leading-4 text-slate-500">
+          {sub}
+        </p>
+      )}
     </div>
-
-    {formOpen && canCreate && <BookingFormModal form={form} setForm={setForm} cleaners={cleaners} saving={saving} error={error} onClose={() => setFormOpen(false)} onSubmit={saveBooking} currentUser={currentUser} />}
-    {canCreateUser && <CreateUserModal open={userModalOpen} onClose={() => setUserModalOpen(false)} allowedRoles={["cleaner", "customer", "data_entry"]} onCreated={(message) => { setUserSuccess(message); router.refresh(); }} />}
-    {assigning && canAssign && <AssignModal booking={assigning} cleaners={cleaners} onClose={() => setAssigning(null)} onSaved={() => { setAssigning(null); router.refresh(); }} />}
-    {details && <DetailsModal booking={details} canDelete={canDelete} canEdit={canEdit} onClose={() => setDetails(null)} onEdit={() => { openEdit(details); setDetails(null); }} onDeleted={() => { setDetails(null); router.refresh(); }} />}
-  </div>;
+  );
 }
 
-function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) { return <div className="rounded-[1.4rem] border border-white/70 bg-white/90 p-5 shadow-xl shadow-slate-900/5 backdrop-blur"><div className="flex items-start justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">{label}</p><p className="mt-3 text-3xl font-bold text-slate-950">{value}</p></div><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white"><Sparkles size={18} /></span></div>{sub && <p className="mt-3 text-sm leading-5 text-slate-500">{sub}</p>}</div>; }
-function FilterInput({ value, onChange, placeholder }: { value: string; onChange: (value: string) => void; placeholder: string }) { return <label className="flex h-12 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 transition focus-within:border-slate-400"><Search size={16} className="text-slate-400" /><input value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} className="min-w-0 flex-1 bg-transparent text-sm font-medium outline-none placeholder:text-slate-400" /></label>; }
-function StatusPill({ status }: { status: string }) { const tone = status === "completed" ? "bg-emerald-100 text-emerald-700" : status === "ongoing" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"; return <span className={`rounded-full px-3 py-1 text-xs font-bold capitalize ${tone}`}>{status}</span>; }
-function Action({ label, className, onClick }: { label: string; className: string; onClick: () => void }) { return <button type="button" onClick={onClick} className={`min-h-9 rounded-xl px-4 text-xs font-bold text-white shadow-sm transition hover:-translate-y-0.5 ${className}`}>{label}</button>; }
-function InfoChip({ icon: Icon, label }: { icon: typeof CalendarClock; label: string }) { return <span className="flex min-h-10 items-center gap-2 rounded-xl bg-slate-50 px-3 text-xs font-bold text-slate-600"><Icon size={15} className="text-slate-400" />{label}</span>; }
+function FilterInput({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+}) {
+  return (
+    <label className="flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-[#F8FAFD] px-3 transition focus-within:border-blue-300 focus-within:bg-white">
+      <Search size={14} className="text-slate-400" />
+      <input
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        className="min-w-0 flex-1 bg-transparent text-[10px] font-medium text-slate-700 outline-none placeholder:text-slate-400"
+      />
+    </label>
+  );
+}
 
-function BookingCalendar({ bookings, month, setMonth, selectedDate, setSelectedDate, activeClass }: { bookings: BookingRecord[]; month: Date; setMonth: (date: Date) => void; selectedDate: string; setSelectedDate: (date: string) => void; activeClass: string }) {
+function StatusPill({ status }: { status: string }) {
+  const tone =
+    status === "completed"
+      ? "border-emerald-100 bg-emerald-50 text-emerald-700"
+      : status === "ongoing"
+        ? "border-blue-100 bg-blue-50 text-blue-700"
+        : "border-amber-100 bg-amber-50 text-amber-700";
+
+  return (
+    <span
+      className={`inline-flex rounded-md border px-2 py-1 text-[7px] font-extrabold uppercase tracking-[0.04em] ${tone}`}
+    >
+      {status}
+    </span>
+  );
+}
+
+function Action({
+  label,
+  className,
+  onClick,
+}: {
+  label: string;
+  className: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`h-8 rounded-lg px-3 text-[9px] font-bold text-white transition hover:opacity-90 ${className}`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function CompactAction({
+  label,
+  className,
+  onClick,
+}: {
+  label: string;
+  className: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`h-7 rounded-md px-2 text-[8px] font-bold text-white transition hover:opacity-90 ${className}`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function InfoChip({
+  icon: Icon,
+  label,
+}: {
+  icon: typeof CalendarClock;
+  label: string;
+}) {
+  return (
+    <span className="flex min-h-8 items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 text-[9px] font-semibold text-slate-600">
+      <Icon size={12} className="text-slate-400" />
+      <span className="truncate">{label}</span>
+    </span>
+  );
+}
+
+function BookingCalendar({
+  bookings,
+  month,
+  setMonth,
+  selectedDate,
+  setSelectedDate,
+  activeClass,
+}: {
+  bookings: BookingRecord[];
+  month: Date;
+  setMonth: (date: Date) => void;
+  selectedDate: string;
+  setSelectedDate: (date: string) => void;
+  activeClass: string;
+}) {
   const first = new Date(month.getFullYear(), month.getMonth(), 1);
-  const days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
-  const cells: Array<Date | null> = [...Array.from({ length: first.getDay() }, () => null), ...Array.from({ length: days }, (_, index) => new Date(month.getFullYear(), month.getMonth(), index + 1))];
-  const counts = bookings.reduce<Record<string, number>>((acc, booking) => { acc[booking.service_date] = (acc[booking.service_date] || 0) + 1; return acc; }, {});
-  return <div className="rounded-3xl bg-white p-3 shadow-sm sm:p-5 lg:p-6">
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h2 className="text-lg font-bold sm:text-xl">Bookings Calendar</h2>
-        <p className="text-sm text-slate-500 sm:text-base">{month.toLocaleDateString("en-CA", { month: "long", year: "numeric" })}</p>
+  const days = new Date(
+    month.getFullYear(),
+    month.getMonth() + 1,
+    0,
+  ).getDate();
+
+  const cells: Array<Date | null> = [
+    ...Array.from({ length: first.getDay() }, () => null),
+    ...Array.from(
+      { length: days },
+      (_, index) =>
+        new Date(
+          month.getFullYear(),
+          month.getMonth(),
+          index + 1,
+        ),
+    ),
+  ];
+
+  const counts = bookings.reduce<Record<string, number>>(
+    (acc, booking) => {
+      acc[booking.service_date] =
+        (acc[booking.service_date] || 0) + 1;
+      return acc;
+    },
+    {},
+  );
+
+  const today = toDateInput(new Date());
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-3 border-b border-slate-100 pb-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-[9px] font-extrabold uppercase tracking-[0.1em] text-[#4A86F7]">
+            Calendar
+          </p>
+
+          <h2 className="mt-1 font-bold text-[#13263A]">
+            {month.toLocaleDateString("en-CA", {
+              month: "long",
+              year: "numeric",
+            })}
+          </h2>
+
+          <p className="mt-0.5 text-slate-500">
+            Select a date to view scheduled bookings.
+          </p>
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() =>
+              setMonth(
+                new Date(
+                  month.getFullYear(),
+                  month.getMonth() - 1,
+                  1,
+                ),
+              )
+            }
+            className="h-8 rounded-lg border border-slate-200 bg-white px-3 text-[9px] font-bold text-slate-600 transition hover:bg-slate-50"
+          >
+            Previous
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const now = new Date();
+              setMonth(
+                new Date(
+                  now.getFullYear(),
+                  now.getMonth(),
+                  1,
+                ),
+              );
+              setSelectedDate(toDateInput(now));
+            }}
+            className="h-8 rounded-lg bg-slate-100 px-3 text-[9px] font-bold text-slate-600 transition hover:bg-slate-200"
+          >
+            Today
+          </button>
+
+          <button
+            type="button"
+            onClick={() =>
+              setMonth(
+                new Date(
+                  month.getFullYear(),
+                  month.getMonth() + 1,
+                  1,
+                ),
+              )
+            }
+            className="h-8 rounded-lg border border-slate-200 bg-white px-3 text-[9px] font-bold text-slate-600 transition hover:bg-slate-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
-      <div className="grid grid-cols-2 gap-2 sm:flex">
-        <button type="button" onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))} className="h-10 rounded-xl border px-3 text-sm font-bold sm:px-4">Prev</button>
-        <button type="button" onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))} className="h-10 rounded-xl border px-3 text-sm font-bold sm:px-4">Next</button>
+
+      <div className="mt-3 grid grid-cols-7 gap-1">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+          (day) => (
+            <div
+              key={day}
+              className="py-1 text-center text-[8px] font-extrabold uppercase tracking-[0.05em] text-slate-400"
+            >
+              <span className="hidden sm:inline">{day}</span>
+              <span className="sm:hidden">{day.charAt(0)}</span>
+            </div>
+          ),
+        )}
+      </div>
+
+      <div className="mt-1 grid grid-cols-7 gap-1.5">
+        {cells.map((date, index) => {
+          const key = date ? toDateInput(date) : "";
+          const active = key === selectedDate;
+          const isToday = key === today;
+          const count = counts[key] || 0;
+
+          if (!date) {
+            return (
+              <div
+                key={`blank-${index}`}
+                className="aspect-square rounded-lg bg-slate-50/40"
+              />
+            );
+          }
+
+          return (
+            <button
+              key={date.toISOString()}
+              type="button"
+              onClick={() => setSelectedDate(key)}
+              className={`relative aspect-square min-h-[46px] rounded-lg border p-1 text-left transition sm:min-h-[58px] ${
+                active
+                  ? `${activeClass} border-transparent text-white shadow-sm`
+                  : count
+                    ? "border-blue-100 bg-blue-50/70 text-slate-700 hover:border-blue-300"
+                    : isToday
+                      ? "border-[#4A86F7] bg-white text-[#13263A]"
+                      : "border-slate-100 bg-white text-slate-600 hover:border-blue-200 hover:bg-blue-50/40"
+              }`}
+            >
+              <span
+                className={`flex h-5 w-5 items-center justify-center rounded-md text-[9px] font-bold ${
+                  active
+                    ? "bg-white/15 text-white"
+                    : isToday
+                      ? "bg-[#4A86F7] text-white"
+                      : ""
+                }`}
+              >
+                {date.getDate()}
+              </span>
+
+              {count > 0 && (
+                <span
+                  className={`absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-center rounded-md px-1 py-1 text-[7px] font-extrabold ${
+                    active
+                      ? "bg-white/15 text-white"
+                      : "bg-white text-[#4A86F7]"
+                  }`}
+                >
+                  {count} booking{count === 1 ? "" : "s"}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
-    <div className="mt-5 grid grid-cols-7 gap-1 text-center text-[10px] font-bold uppercase text-slate-400 sm:text-xs">
-      {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => <p key={`${day}-${index}`} className="min-w-0">{day}</p>)}
-    </div>
-    <div className="mt-2 grid grid-cols-7 gap-1 sm:mt-4 sm:gap-2">
-      {cells.map((date, index) => {
-        const key = date ? toDateInput(date) : "";
-        const active = key === selectedDate;
-        const count = counts[key] || 0;
-        return <button
-          key={date?.toISOString() || `blank-${index}`}
-          disabled={!date}
-          onClick={() => date && setSelectedDate(key)}
-          className={`aspect-square min-h-0 rounded-lg text-xs font-bold transition sm:rounded-xl sm:text-sm ${active ? `${activeClass} text-white shadow-lg` : count ? "bg-emerald-50 text-slate-700" : "text-slate-500"} ${date ? "hover:ring-2 hover:ring-blue-200" : "cursor-default"}`}
-        >
-          {date && <span className="flex h-full flex-col items-center justify-center leading-none">
-            <span>{date.getDate()}</span>
-            {count > 0 && <span className={`mt-1 rounded-full px-1.5 py-0.5 text-[10px] leading-none ${active ? "bg-white/20 text-white" : "bg-blue-100 text-blue-600"}`}>{count}</span>}
-          </span>}
-        </button>;
-      })}
-    </div>
-  </div>;
+  );
 }
 
-function BookingFormModal({ form, setForm, cleaners, saving, error, onClose, onSubmit, currentUser }: { form: FormState; setForm: (form: FormState) => void; cleaners: CleanerUser[]; saving: boolean; error: string; onClose: () => void; onSubmit: (event: FormEvent) => void; currentUser: CurrentUser }) {
-  const update = (key: keyof FormState, value: string | boolean | string[] | number | null) => setForm({ ...form, [key]: value });
-  const [cleaningTypeMode, setCleaningTypeMode] = useState(() => cleaningTypeOptions.includes(form.cleaning_type) ? form.cleaning_type : form.cleaning_type ? "Other" : "");
-  const toggleManpower = (enabled: boolean) => setForm({
-    ...form,
-    use_manpower_time: enabled,
-    manpower_min_hours: enabled ? form.manpower_min_hours : "",
-    manpower_max_hours: enabled ? form.manpower_max_hours : "",
-  });
+function BookingFormPanel({
+  form,
+  setForm,
+  cleaners,
+  saving,
+  error,
+  onClose,
+  onSubmit,
+  currentUser,
+}: {
+  form: FormState;
+  setForm: (form: FormState) => void;
+  cleaners: CleanerUser[];
+  saving: boolean;
+  error: string;
+  onClose: () => void;
+  onSubmit: (event: FormEvent) => void;
+  currentUser: CurrentUser;
+}) {
+  const update = (
+    key: keyof FormState,
+    value: string | boolean | string[] | number | null,
+  ) => setForm({ ...form, [key]: value });
 
-  return <Modal title={form.id ? "Edit Booking" : "Add Booking"} subtitle={form.id ? form.full_name : "Create a clean, complete booking record"} onClose={onClose} wide>
-    <form onSubmit={onSubmit} className="space-y-6">
-      {error && <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</p>}
+  const [cleaningTypeMode, setCleaningTypeMode] = useState(() =>
+    cleaningTypeOptions.includes(form.cleaning_type)
+      ? form.cleaning_type
+      : form.cleaning_type
+        ? "Other"
+        : "",
+  );
 
-      <FormSection title="Customer Details" icon={UserRound}>
-        <div className="grid gap-4 md:grid-cols-3">
-          <Field label="Full Name" value={form.full_name} onChange={(v) => update("full_name", v)} required />
-          <Field label="Email Address" value={form.email} onChange={(v) => update("email", v)} type="email" required />
-          <Field label="Phone Number" value={form.phone} onChange={(v) => update("phone", v)} required />
+  const toggleManpower = (enabled: boolean) =>
+    setForm({
+      ...form,
+      use_manpower_time: enabled,
+      manpower_min_hours: enabled ? form.manpower_min_hours : "",
+      manpower_max_hours: enabled ? form.manpower_max_hours : "",
+    });
+
+  const isEdit = Boolean(form.id);
+
+  return (
+    <section className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-xl shadow-slate-900/10">
+      {/* Normal inline module header - not a modal */}
+      <div className="flex flex-col justify-between gap-4 bg-gradient-to-r from-blue-800 via-blue-700 to-cyan-500 p-5 text-white sm:flex-row sm:items-center sm:p-6">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/75">
+            {isEdit ? "EDIT BOOKING" : "ADD BOOKING"}
+          </p>
+
+          <h1 className="mt-1 text-2xl font-bold sm:text-3xl">
+            {isEdit ? form.full_name || "Edit Booking" : "Create Booking"}
+          </h1>
+
+          <p className="mt-1 max-w-2xl text-sm text-white/75">
+            {isEdit
+              ? "Update booking details, assignment, schedule and visibility."
+              : "Add customer, service, schedule and assignment details."}
+          </p>
         </div>
-        <Field label="Full Address" value={form.full_address} onChange={(v) => update("full_address", v)} required />
-      </FormSection>
 
-      <FormSection title="Booking Details" icon={CalendarClock}>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <label className="block">
-            <span className="mb-2 block text-sm font-bold text-slate-700">Cleaning Type</span>
-            <select required value={cleaningTypeMode} onChange={(e) => { setCleaningTypeMode(e.target.value); update("cleaning_type", e.target.value === "Other" ? "" : e.target.value); }} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
-              <option value="">Select cleaning type</option>
-              {cleaningTypeOptions.map((type) => <option key={type} value={type}>{type}</option>)}
-              <option value="Other">Other</option>
-            </select>
-          </label>
-          {cleaningTypeMode === "Other" && <Field label="Other Cleaning Name" value={form.cleaning_type} onChange={(v) => update("cleaning_type", v)} placeholder="Deep cleaning" required />}
-          <label className="block">
-            <span className="mb-2 block text-sm font-bold text-slate-700">Calgary Area</span>
-            <select required value={form.area} onChange={(e) => update("area", e.target.value)} className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100">
-              <option value="">Select Calgary Area</option>
-              {areas.map((area) => <option key={area}>{area}</option>)}
-            </select>
-          </label>
-          <Field label="Service Date" value={form.service_date} onChange={(v) => update("service_date", v)} type="date" required min={form.id ? undefined : todayInBusinessTz()} />
-          <Field label="Service Time" value={form.service_time} onChange={(v) => update("service_time", v)} type="time" required />
-          <Field label="Price (CAD)" value={String(form.price)} onChange={(v) => update("price", v)} type="number" required />
-          <Field label="Added By" value={form.added_by || currentUser?.name || ""} onChange={() => {}} readOnly />
-        </div>
-        <label className="flex flex-col gap-4 rounded-2xl border border-cyan-100 bg-cyan-50/70 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <span>
-            <b className="text-slate-950">Apply manpower time</b>
-            <span className="block text-sm text-slate-500">Use this when a booking needs a min/max service window, for example 4 to 5 hours.</span>
-          </span>
-          <span className={`relative h-8 w-14 shrink-0 rounded-full transition ${form.use_manpower_time ? "bg-cyan-700" : "bg-slate-300"}`}>
-            <input type="checkbox" checked={form.use_manpower_time} onChange={(e) => toggleManpower(e.target.checked)} className="peer sr-only" />
-            <span className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition ${form.use_manpower_time ? "left-7" : "left-1"}`} />
-          </span>
-        </label>
-        {form.use_manpower_time && <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Minimum Hours" value={String(form.manpower_min_hours || "")} onChange={(v) => update("manpower_min_hours", v)} type="number" placeholder="4" required />
-          <Field label="Maximum Hours" value={String(form.manpower_max_hours || "")} onChange={(v) => update("manpower_max_hours", v)} type="number" placeholder="5" required />
-        </div>}
-      </FormSection>
-
-      <FormSection title="Instructions" icon={ClipboardList}>
-        <div className="grid gap-4 lg:grid-cols-3">
-          <TextArea label="Scope Of Work" value={form.scope_of_work || ""} onChange={(v) => update("scope_of_work", v)} />
-          <TextArea label="Focus Details" value={form.focus_details || ""} onChange={(v) => update("focus_details", v)} />
-          <TextArea label="Parking Instructions" value={form.parking_instructions || ""} onChange={(v) => update("parking_instructions", v)} />
-        </div>
-      </FormSection>
-
-      <FormSection title="Assignment & Visibility" icon={UserRound}>
-        <label className="mb-5 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <span><b className="text-slate-900">Show price to cleaner</b><span className="block text-sm text-slate-500">Turn on when cleaner should see booking price.</span></span>
-          <span className={`relative h-8 w-14 rounded-full transition ${form.show_price_to_cleaner ? "bg-blue-700" : "bg-slate-300"}`}>
-            <input type="checkbox" checked={form.show_price_to_cleaner} onChange={(e) => update("show_price_to_cleaner", e.target.checked)} className="peer sr-only" />
-            <span className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow transition ${form.show_price_to_cleaner ? "left-7" : "left-1"}`} />
-          </span>
-        </label>
-        <CleanerPicker cleaners={cleaners} selected={form.assigned_cleaner_ids} onChange={(ids) => update("assigned_cleaner_ids", ids)} />
-      </FormSection>
-
-      <div className="sticky bottom-0 -mx-6 -mb-6 flex flex-col gap-3 border-t border-slate-100 bg-white/95 p-5 backdrop-blur sm:flex-row sm:justify-end">
-        <button type="button" onClick={onClose} className="h-12 rounded-2xl border border-slate-200 px-7 font-bold text-slate-700 transition hover:bg-slate-50">Cancel</button>
-        <button disabled={saving} className="h-12 rounded-2xl bg-blue-700 px-9 font-bold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 disabled:opacity-60">{saving ? "Saving..." : "Save Booking"}</button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="inline-flex h-10 w-fit items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/10 px-4 text-sm font-bold text-white transition hover:bg-white/20"
+        >
+          <ArrowLeft size={16} />
+          Back to Bookings
+        </button>
       </div>
-    </form>
-  </Modal>;
+
+      <form onSubmit={onSubmit} className="space-y-4 p-4 sm:p-5">
+        {error && (
+          <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            {error}
+          </p>
+        )}
+
+        <FormSection title="Customer Details" icon={UserRound}>
+          <div className="grid gap-3 md:grid-cols-3">
+            <Field
+              label="Full Name"
+              value={form.full_name}
+              onChange={(v) => update("full_name", v)}
+              required
+            />
+            <Field
+              label="Email Address"
+              value={form.email}
+              onChange={(v) => update("email", v)}
+              type="email"
+              required
+            />
+            <Field
+              label="Phone Number"
+              value={form.phone}
+              onChange={(v) => update("phone", v)}
+              required
+            />
+          </div>
+
+          <Field
+            label="Full Address"
+            value={form.full_address}
+            onChange={(v) => update("full_address", v)}
+            required
+          />
+        </FormSection>
+
+        <FormSection title="Booking Details" icon={CalendarClock}>
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                Cleaning Type
+              </span>
+
+              <select
+                required
+                value={cleaningTypeMode}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setCleaningTypeMode(value);
+                  update("cleaning_type", value === "Other" ? "" : value);
+                }}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+              >
+                <option value="">Select cleaning type</option>
+                {cleaningTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+                <option value="Other">Other</option>
+              </select>
+            </label>
+
+            {cleaningTypeMode === "Other" && (
+              <Field
+                label="Other Cleaning Name"
+                value={form.cleaning_type}
+                onChange={(v) => update("cleaning_type", v)}
+                placeholder="Deep cleaning"
+                required
+              />
+            )}
+
+            <label className="block">
+              <span className="mb-1.5 block text-xs font-bold text-slate-700">
+                Calgary Area
+              </span>
+
+              <select
+                required
+                value={form.area}
+                onChange={(event) => update("area", event.target.value)}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+              >
+                <option value="">Select Calgary Area</option>
+                {areas.map((area) => (
+                  <option key={area}>{area}</option>
+                ))}
+              </select>
+            </label>
+
+            <Field
+              label="Service Date"
+              value={form.service_date}
+              onChange={(v) => update("service_date", v)}
+              type="date"
+              required
+              min={form.id ? undefined : todayInBusinessTz()}
+            />
+
+            <Field
+              label="Service Time"
+              value={form.service_time}
+              onChange={(v) => update("service_time", v)}
+              type="time"
+              required
+            />
+
+            <Field
+              label="Price (CAD)"
+              value={String(form.price)}
+              onChange={(v) => update("price", v)}
+              type="number"
+              required
+            />
+
+            <Field
+              label="Added By"
+              value={form.added_by || currentUser?.name || ""}
+              onChange={() => {}}
+              readOnly
+            />
+          </div>
+
+          <label className="flex flex-col gap-3 rounded-xl border border-cyan-100 bg-cyan-50/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              <b className="text-sm text-slate-950">Apply manpower time</b>
+              <span className="block text-xs text-slate-500">
+                Set a minimum and maximum service window.
+              </span>
+            </span>
+
+            <span
+              className={`relative h-7 w-12 shrink-0 rounded-full transition ${
+                form.use_manpower_time ? "bg-cyan-700" : "bg-slate-300"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={form.use_manpower_time}
+                onChange={(event) => toggleManpower(event.target.checked)}
+                className="peer sr-only"
+              />
+              <span
+                className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition ${
+                  form.use_manpower_time ? "left-6" : "left-1"
+                }`}
+              />
+            </span>
+          </label>
+
+          {form.use_manpower_time && (
+            <div className="grid gap-3 md:grid-cols-2">
+              <Field
+                label="Minimum Hours"
+                value={String(form.manpower_min_hours || "")}
+                onChange={(v) => update("manpower_min_hours", v)}
+                type="number"
+                placeholder="4"
+                required
+              />
+              <Field
+                label="Maximum Hours"
+                value={String(form.manpower_max_hours || "")}
+                onChange={(v) => update("manpower_max_hours", v)}
+                type="number"
+                placeholder="5"
+                required
+              />
+            </div>
+          )}
+        </FormSection>
+
+        <FormSection title="Instructions" icon={ClipboardList}>
+          <div className="grid gap-3 lg:grid-cols-3">
+            <TextArea
+              label="Scope Of Work"
+              value={form.scope_of_work || ""}
+              onChange={(v) => update("scope_of_work", v)}
+            />
+            <TextArea
+              label="Focus Details"
+              value={form.focus_details || ""}
+              onChange={(v) => update("focus_details", v)}
+            />
+            <TextArea
+              label="Parking Instructions"
+              value={form.parking_instructions || ""}
+              onChange={(v) => update("parking_instructions", v)}
+            />
+          </div>
+        </FormSection>
+
+        <FormSection title="Assignment & Visibility" icon={UserRound}>
+          <label className="mb-4 flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              <b className="text-sm text-slate-900">Show price to assigned user</b>
+              <span className="block text-xs text-slate-500">
+                Enable this when the assigned team member should see the booking price.
+              </span>
+            </span>
+
+            <span
+              className={`relative h-7 w-12 rounded-full transition ${
+                form.show_price_to_cleaner ? "bg-blue-700" : "bg-slate-300"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={form.show_price_to_cleaner}
+                onChange={(event) =>
+                  update("show_price_to_cleaner", event.target.checked)
+                }
+                className="peer sr-only"
+              />
+              <span
+                className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition ${
+                  form.show_price_to_cleaner ? "left-6" : "left-1"
+                }`}
+              />
+            </span>
+          </label>
+
+          <CleanerPicker
+            cleaners={cleaners}
+            selected={form.assigned_cleaner_ids}
+            onChange={(ids) => update("assigned_cleaner_ids", ids)}
+          />
+        </FormSection>
+
+        <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-11 rounded-xl border border-slate-200 px-6 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+          >
+            Cancel
+          </button>
+
+          <button
+            disabled={saving}
+            className="h-11 rounded-xl bg-blue-700 px-7 text-sm font-bold text-white shadow-md transition hover:bg-blue-800 disabled:opacity-60"
+          >
+            {saving
+              ? "Saving..."
+              : isEdit
+                ? "Save Changes"
+                : "Save Booking"}
+          </button>
+        </div>
+      </form>
+    </section>
+  );
 }
 
 function AssignModal({ booking, cleaners, onClose, onSaved }: { booking: BookingRecord; cleaners: CleanerUser[]; onClose: () => void; onSaved: () => void }) { const [selected, setSelected] = useState(booking.assigned_cleaners.map((cleaner) => cleaner.id)); const [saving, setSaving] = useState(false); const save = async () => { setSaving(true); await fetch("/api/admin/booking-records", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: booking.id, assigned_cleaner_ids: selected }) }); setSaving(false); onSaved(); }; return <Modal title="Assign Cleaner" subtitle={booking.full_name} onClose={onClose}><CleanerPicker cleaners={cleaners} selected={selected} onChange={setSelected} /><div className="mt-6 flex gap-3"><button onClick={save} disabled={saving} className="h-12 flex-1 rounded-xl bg-purple-700 font-bold text-white">{saving ? "Saving..." : "Confirm"}</button><button onClick={onClose} className="h-12 rounded-xl border px-8 font-bold">Cancel</button></div></Modal>; }
@@ -429,14 +1488,967 @@ function DetailsModal({ booking, canDelete, canEdit, onClose, onEdit, onDeleted 
   </div></Modal>;
 }
 
+
+type UserEditorState = {
+  id?: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  password: string;
+  role: string;
+  approval_status: string;
+  source: string;
+  is_blocked: boolean;
+  is_available: boolean;
+  offering_fixed: boolean;
+  offering_hourly: boolean;
+  hourly_rate: string;
+};
+
+const emptyUserEditor: UserEditorState = {
+  name: "",
+  email: "",
+  phone_number: "",
+  password: "",
+  role: "cleaner",
+  approval_status: "approved",
+  source: "Web",
+  is_blocked: false,
+  is_available: false,
+  offering_fixed: true,
+  offering_hourly: false,
+  hourly_rate: "0",
+};
+
+/*
+  IMPORTANT:
+  This Booking Records user manager is intentionally limited to operational
+  roles. Admin and Customer accounts are never shown here.
+*/
+const managedRoles = ["cleaner", "data_entry"];
+
+function ManageUsersPanel({
+  users,
+  currentUser,
+  onClose,
+  onChanged,
+}: {
+  users: PortalUser[];
+  currentUser: CurrentUser;
+  onClose: () => void;
+  onChanged: () => void;
+}) {
+  const [screen, setScreen] = useState<"list" | "add" | "view" | "edit">("list");
+  const [query, setQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [selectedUser, setSelectedUser] = useState<PortalUser | null>(null);
+  const [editForm, setEditForm] = useState<UserEditorState>(emptyUserEditor);
+  const [addForm, setAddForm] = useState<UserEditorState>(emptyUserEditor);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  // Defensive filter: even if wrong data is passed in, never display
+  // admin/customer users in this Booking Records module.
+  const assignedOperationalUsers = useMemo(
+    () =>
+      users.filter((user) =>
+        managedRoles.includes(String(user.role || "").toLowerCase()),
+      ),
+    [users],
+  );
+
+  const filteredUsers = useMemo(() => {
+    const q = query.trim().toLowerCase();
+
+    return assignedOperationalUsers.filter((user) => {
+      const text =
+        `${user.name} ${user.email} ${user.phone_number || ""} ${user.role}`.toLowerCase();
+
+      return (
+        (!q || text.includes(q)) &&
+        (roleFilter === "all" || user.role === roleFilter)
+      );
+    });
+  }, [assignedOperationalUsers, query, roleFilter]);
+
+  const openList = () => {
+    setScreen("list");
+    setSelectedUser(null);
+    setError("");
+  };
+
+  const openView = (user: PortalUser) => {
+    setSelectedUser(user);
+    setScreen("view");
+    setError("");
+    setMessage("");
+  };
+
+  const openEdit = (user: PortalUser) => {
+    setSelectedUser(user);
+    setEditForm({
+      id: user.id,
+      name: user.name || "",
+      email: user.email || "",
+      phone_number: user.phone_number || "",
+      password: "",
+      role: managedRoles.includes(user.role) ? user.role : "cleaner",
+      approval_status: user.approval_status || "approved",
+      source: user.source || "Web",
+      is_blocked: Boolean(user.is_blocked),
+      is_available: Boolean(user.is_available),
+      offering_fixed: Boolean(user.offering_fixed ?? true),
+      offering_hourly: Boolean(user.offering_hourly),
+      hourly_rate: String(user.hourly_rate ?? "0"),
+    });
+    setScreen("edit");
+    setError("");
+    setMessage("");
+  };
+
+  const saveEditedUser = async (event: FormEvent) => {
+    event.preventDefault();
+
+    if (!selectedUser) return;
+
+    setSaving(true);
+    setError("");
+    setMessage("");
+
+    const response = await fetch("/api/admin/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: selectedUser.id,
+        name: editForm.name,
+        email: editForm.email,
+        phone_number: editForm.phone_number,
+        role: editForm.role,
+        approval_status: editForm.approval_status,
+        source: editForm.source,
+        is_blocked: editForm.is_blocked,
+        is_available:
+          editForm.role === "cleaner" ? editForm.is_available : false,
+        offering_fixed:
+          editForm.role === "cleaner" ? editForm.offering_fixed : false,
+        offering_hourly:
+          editForm.role === "cleaner" ? editForm.offering_hourly : false,
+        hourly_rate:
+          editForm.role === "cleaner" ? editForm.hourly_rate : "0",
+      }),
+    });
+
+    const result = await response.json();
+    setSaving(false);
+
+    if (!response.ok) {
+      setError(result.error || "Unable to update user.");
+      return;
+    }
+
+    setMessage("User updated successfully.");
+    setScreen("list");
+    setSelectedUser(null);
+    onChanged();
+  };
+
+  const deleteUser = async (user: PortalUser) => {
+    if (
+      !window.confirm(
+        `Delete ${user.name}? This will permanently remove the user's portal account.`,
+      )
+    ) {
+      return;
+    }
+
+    setError("");
+    setMessage("");
+
+    const response = await fetch(
+      `/api/admin/users?id=${encodeURIComponent(user.id)}`,
+      { method: "DELETE" },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      setError(result.error || "Unable to delete user.");
+      return;
+    }
+
+    setMessage(`${user.name} deleted successfully.`);
+    setSelectedUser(null);
+    setScreen("list");
+    onChanged();
+  };
+
+  const addUser = async (event: FormEvent) => {
+    event.preventDefault();
+
+    setSaving(true);
+    setError("");
+    setMessage("");
+
+    const response = await fetch("/api/admin/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: addForm.name,
+        email: addForm.email,
+        password: addForm.password,
+        phone_number: addForm.phone_number,
+
+        // Booking Records module only creates operational users.
+        role: addForm.role,
+
+        source: addForm.source,
+        approval_status: addForm.approval_status,
+        is_available:
+          addForm.role === "cleaner" ? addForm.is_available : false,
+        offering_fixed:
+          addForm.role === "cleaner" ? addForm.offering_fixed : false,
+        offering_hourly:
+          addForm.role === "cleaner" ? addForm.offering_hourly : false,
+        hourly_rate:
+          addForm.role === "cleaner" ? addForm.hourly_rate : "0",
+      }),
+    });
+
+    const result = await response.json();
+    setSaving(false);
+
+    if (!response.ok) {
+      setError(result.error || "Unable to create user.");
+      return;
+    }
+
+    setAddForm({ ...emptyUserEditor });
+    setScreen("list");
+    setMessage(
+      "User created successfully. It will appear in Assigned Users after a booking is assigned to it.",
+    );
+    onChanged();
+  };
+
+  return (
+    <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      {/* LIGHT COMPACT HEADER */}
+      <div className="flex flex-col justify-between gap-3 border-b border-slate-200 bg-white px-5 py-4 sm:flex-row sm:items-center">
+        <div>
+          <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#4A86F7]">
+            Booking Operations
+          </p>
+
+          <h1 className="mt-1 font-bold tracking-tight text-[#13263A]">
+            Users & Roles
+          </h1>
+
+          <p className="mt-1 text-slate-500">
+            Only operational users with assigned jobs are shown. Admins and customers are excluded.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="inline-flex h-9 w-fit items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 text-[10px] font-bold text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-[#4A86F7]"
+        >
+          <ArrowLeft size={14} />
+          Back to Bookings
+        </button>
+      </div>
+
+      <div className="space-y-4 p-4">
+        {/* TABS */}
+        {(screen === "list" || screen === "add") && (
+          <div className="grid gap-2 rounded-xl border border-slate-200 bg-[#F8FAFD] p-1 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={openList}
+              className={`flex h-9 items-center justify-center gap-2 rounded-lg text-[10px] font-bold transition ${
+                screen === "list"
+                  ? "bg-[#13263A] text-white shadow-sm"
+                  : "text-slate-600 hover:bg-white"
+              }`}
+            >
+              <UsersRound size={14} />
+              Assigned Users
+              <span
+                className={`rounded-md px-1.5 py-0.5 text-[8px] font-extrabold ${
+                  screen === "list"
+                    ? "bg-white/15 text-white"
+                    : "bg-white text-slate-500"
+                }`}
+              >
+                {assignedOperationalUsers.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setScreen("add");
+                setError("");
+                setMessage("");
+              }}
+              className={`flex h-9 items-center justify-center gap-2 rounded-lg text-[10px] font-bold transition ${
+                screen === "add"
+                  ? "bg-[#4A86F7] text-white shadow-sm"
+                  : "text-slate-600 hover:bg-white"
+              }`}
+            >
+              <UserPlus size={14} />
+              Add User
+            </button>
+          </div>
+        )}
+
+        {message && (
+          <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-[10px] font-semibold text-emerald-700">
+            {message}
+          </p>
+        )}
+
+        {error && (
+          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-[10px] font-semibold text-red-700">
+            {error}
+          </p>
+        )}
+
+        {screen === "list" && (
+          <>
+            {/* FILTERS */}
+            <div className="grid gap-3 md:grid-cols-[minmax(240px,1fr)_210px]">
+              <FilterInput
+                value={query}
+                onChange={setQuery}
+                placeholder="Search assigned user..."
+              />
+
+              <select
+                value={roleFilter}
+                onChange={(event) => setRoleFilter(event.target.value)}
+                className="h-9 rounded-lg border border-slate-200 bg-[#F8FAFD] px-3 text-[10px] font-semibold text-slate-700 outline-none transition focus:border-blue-300 focus:bg-white"
+              >
+                <option value="all">All operational roles</option>
+                {managedRoles.map((item) => (
+                  <option key={item} value={item}>
+                    {labelRole(item)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* TABLE */}
+            <div className="overflow-hidden rounded-xl border border-slate-200">
+              <div className="hidden overflow-x-auto md:block">
+                <table className="w-full min-w-[720px] text-left">
+                  <thead className="bg-[#F8FAFD]">
+                    <tr>
+                      {["User", "Role", "Status", "Activity", "Actions"].map(
+                        (head) => (
+                          <th
+                            key={head}
+                            className="border-b border-slate-200 px-3 py-2.5 text-[8px] font-extrabold uppercase tracking-[0.08em] text-slate-400"
+                          >
+                            {head}
+                          </th>
+                        ),
+                      )}
+                    </tr>
+                  </thead>
+
+                  <tbody className="divide-y divide-slate-100 bg-white">
+                    {filteredUsers.map((user) => (
+                      <tr
+                        key={user.id}
+                        className="transition hover:bg-blue-50/40"
+                      >
+                        <td className="px-3 py-3">
+                          <div className="text-[10px] font-bold text-[#13263A]">
+                            {user.name}
+                          </div>
+                          <div className="mt-0.5 max-w-[280px] truncate text-[8px] text-slate-400">
+                            {user.email}
+                            {user.phone_number ? ` • ${user.phone_number}` : ""}
+                          </div>
+                        </td>
+
+                        <td className="px-3 py-3">
+                          <RoleBadgeInline role={user.role} />
+                        </td>
+
+                        <td className="px-3 py-3">
+                          <UserStatusBadge
+                            blocked={user.is_blocked}
+                            status={user.approval_status}
+                          />
+                        </td>
+
+                        <td className="px-3 py-3 text-[9px] text-slate-600">
+                          {userActivity(user)}
+                        </td>
+
+                        <td className="px-3 py-3">
+                          <div className="flex flex-wrap gap-1">
+                            <MiniUserAction
+                              label="View"
+                              icon={Eye}
+                              onClick={() => openView(user)}
+                              className="bg-[#4A86F7]"
+                            />
+
+                            <MiniUserAction
+                              label="Edit"
+                              icon={Pencil}
+                              onClick={() => openEdit(user)}
+                              className="bg-amber-500"
+                            />
+
+                            <MiniUserAction
+                              label="Delete"
+                              icon={Trash2}
+                              onClick={() => deleteUser(user)}
+                              className="bg-rose-600"
+                              disabled={user.id === currentUser?.id}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* MOBILE */}
+              <div className="divide-y divide-slate-100 md:hidden">
+                {filteredUsers.map((user) => (
+                  <article key={user.id} className="bg-white p-3.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="truncate text-[11px] font-bold text-[#13263A]">
+                          {user.name}
+                        </h3>
+
+                        <p className="mt-1 truncate text-[9px] text-slate-500">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      <RoleBadgeInline role={user.role} />
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <UserStatusBadge
+                        blocked={user.is_blocked}
+                        status={user.approval_status}
+                      />
+
+                      <span className="text-[9px] text-slate-500">
+                        {userActivity(user)}
+                      </span>
+                    </div>
+
+                    <div className="mt-3 grid grid-cols-3 gap-1.5">
+                      <MiniUserAction
+                        label="View"
+                        icon={Eye}
+                        onClick={() => openView(user)}
+                        className="bg-[#4A86F7]"
+                      />
+                      <MiniUserAction
+                        label="Edit"
+                        icon={Pencil}
+                        onClick={() => openEdit(user)}
+                        className="bg-amber-500"
+                      />
+                      <MiniUserAction
+                        label="Delete"
+                        icon={Trash2}
+                        onClick={() => deleteUser(user)}
+                        className="bg-rose-600"
+                        disabled={user.id === currentUser?.id}
+                      />
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              {!filteredUsers.length && (
+                <div className="bg-white px-5 py-12 text-center">
+                  <UsersRound
+                    size={28}
+                    className="mx-auto text-slate-300"
+                  />
+                  <p className="mt-2 text-[10px] font-semibold text-slate-400">
+                    No assigned operational users found.
+                  </p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {screen === "add" && (
+          <UserEditorForm
+            title="Add User"
+            subtitle="Create a Cleaner or Data Entry user. It will appear here after a booking is assigned."
+            form={addForm}
+            setForm={setAddForm}
+            saving={saving}
+            submitLabel="Create User"
+            onSubmit={addUser}
+            showPassword
+          />
+        )}
+
+        {screen === "view" && selectedUser && (
+          <section className="rounded-xl border border-slate-200 bg-white p-4">
+            <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+              <div>
+                <p className="text-[9px] font-extrabold uppercase tracking-[0.12em] text-[#4A86F7]">
+                  Assigned User
+                </p>
+
+                <h2 className="mt-1 font-bold text-[#13263A]">
+                  {selectedUser.name}
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={openList}
+                className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-[10px] font-bold text-slate-600 hover:bg-slate-50"
+              >
+                <ArrowLeft size={14} />
+                Assigned Users
+              </button>
+            </div>
+
+            <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+              <Detail label="Name" value={selectedUser.name} />
+              <Detail label="Role" value={labelRole(selectedUser.role)} />
+              <Detail label="Email" value={selectedUser.email} />
+              <Detail
+                label="Phone"
+                value={selectedUser.phone_number || "-"}
+              />
+              <Detail
+                label="Approval"
+                value={selectedUser.approval_status || "approved"}
+              />
+              <Detail
+                label="Status"
+                value={selectedUser.is_blocked ? "Blocked" : "Active"}
+              />
+              <Detail
+                label="Activity"
+                value={userActivity(selectedUser)}
+              />
+              <Detail
+                label="Verified"
+                value={selectedUser.verified ? "Yes" : "No"}
+              />
+              <Detail
+                label="Joined"
+                value={formatDateTime(selectedUser.created_at)}
+              />
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => openEdit(selectedUser)}
+                className="h-9 rounded-lg bg-amber-500 px-4 text-[10px] font-bold text-white"
+              >
+                Edit User
+              </button>
+
+              <button
+                type="button"
+                onClick={() => deleteUser(selectedUser)}
+                disabled={selectedUser.id === currentUser?.id}
+                className="h-9 rounded-lg bg-rose-600 px-4 text-[10px] font-bold text-white disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Delete User
+              </button>
+            </div>
+          </section>
+        )}
+
+        {screen === "edit" && selectedUser && (
+          <div>
+            <button
+              type="button"
+              onClick={openList}
+              className="mb-3 inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-[10px] font-bold text-slate-600"
+            >
+              <ArrowLeft size={14} />
+              Assigned Users
+            </button>
+
+            <UserEditorForm
+              title={`Edit ${selectedUser.name}`}
+              subtitle="Update profile, access status or operational role."
+              form={editForm}
+              setForm={setEditForm}
+              saving={saving}
+              submitLabel="Save Changes"
+              onSubmit={saveEditedUser}
+            />
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function UserEditorForm({
+  title,
+  subtitle,
+  form,
+  setForm,
+  saving,
+  submitLabel,
+  onSubmit,
+  showPassword = false,
+}: {
+  title: string;
+  subtitle: string;
+  form: UserEditorState;
+  setForm: (value: UserEditorState) => void;
+  saving: boolean;
+  submitLabel: string;
+  onSubmit: (event: FormEvent) => void;
+  showPassword?: boolean;
+}) {
+  const update = <K extends keyof UserEditorState,>(
+    key: K,
+    value: UserEditorState[K],
+  ) => setForm({ ...form, [key]: value });
+
+  return (
+    <form
+      onSubmit={onSubmit}
+      className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"
+    >
+      <div className="mb-5">
+        <h3 className="text-lg font-bold text-slate-950">{title}</h3>
+        <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <UserInput
+          icon={UserRound}
+          label="Full Name"
+          value={form.name}
+          onChange={(v) => update("name", v)}
+          required
+        />
+
+        <UserInput
+          icon={Mail}
+          label="Email"
+          value={form.email}
+          onChange={(v) => update("email", v)}
+          type="email"
+          required
+        />
+
+        <UserInput
+          icon={Phone}
+          label="Phone Number"
+          value={form.phone_number}
+          onChange={(v) => update("phone_number", v)}
+          required
+        />
+
+        {showPassword && (
+          <UserInput
+            icon={Lock}
+            label="Password"
+            value={form.password}
+            onChange={(v) => update("password", v)}
+            type="password"
+            required
+          />
+        )}
+
+        <label className="block">
+          <span className="mb-2 block text-sm font-bold text-slate-700">
+            Role
+          </span>
+          <select
+            value={form.role}
+            onChange={(event) => update("role", event.target.value)}
+            className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none focus:border-blue-500"
+          >
+            {managedRoles.map((item) => (
+              <option key={item} value={item}>
+                {labelRole(item)}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="mb-2 block text-sm font-bold text-slate-700">
+            Approval Status
+          </span>
+          <select
+            value={form.approval_status}
+            onChange={(event) =>
+              update("approval_status", event.target.value)
+            }
+            className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold outline-none focus:border-blue-500"
+          >
+            <option value="approved">Approved</option>
+            <option value="pending">Pending</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </label>
+
+        <UserInput
+          icon={ShieldCheck}
+          label="Source"
+          value={form.source}
+          onChange={(v) => update("source", v)}
+        />
+      </div>
+
+      {!showPassword && (
+        <label className="mt-4 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <span>
+            <b className="text-sm text-slate-900">Blocked</b>
+            <span className="block text-xs text-slate-500">
+              Block or restore portal access.
+            </span>
+          </span>
+
+          <input
+            type="checkbox"
+            checked={form.is_blocked}
+            onChange={(event) =>
+              update("is_blocked", event.target.checked)
+            }
+            className="h-5 w-5"
+          />
+        </label>
+      )}
+
+      {form.role === "cleaner" && (
+        <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
+          <h4 className="font-bold text-slate-900">Cleaner Settings</h4>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <SmallToggle
+              label="Available"
+              checked={form.is_available}
+              onChange={(v) => update("is_available", v)}
+            />
+            <SmallToggle
+              label="Fixed Jobs"
+              checked={form.offering_fixed}
+              onChange={(v) => update("offering_fixed", v)}
+            />
+            <SmallToggle
+              label="Hourly Jobs"
+              checked={form.offering_hourly}
+              onChange={(v) => update("offering_hourly", v)}
+            />
+          </div>
+
+          <div className="mt-4 max-w-xs">
+            <UserInput
+              icon={DollarSign}
+              label="Hourly Rate"
+              value={form.hourly_rate}
+              onChange={(v) => update("hourly_rate", v)}
+              type="number"
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="mt-5 flex justify-end">
+        <button
+          disabled={saving}
+          className="h-11 rounded-xl bg-blue-700 px-6 text-sm font-bold text-white transition hover:bg-blue-800 disabled:opacity-60"
+        >
+          {saving ? "Saving..." : submitLabel}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function UserInput({
+  icon: Icon,
+  label,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}: {
+  icon: typeof UserRound;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+  required?: boolean;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm font-bold text-slate-700">
+        {label}
+      </span>
+
+      <div className="relative">
+        <Icon
+          size={17}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+        />
+
+        <input
+          required={required}
+          type={type}
+          step={type === "number" ? "0.25" : undefined}
+          min={type === "number" ? "0" : undefined}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+        />
+      </div>
+    </label>
+  );
+}
+
+function SmallToggle({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <label className="flex items-center justify-between gap-3 rounded-xl border border-blue-100 bg-white p-3 text-xs font-bold text-slate-700">
+      <span>{label}</span>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        className="h-4 w-4"
+      />
+    </label>
+  );
+}
+
+function RoleBadgeInline({ role }: { role: string }) {
+  const tone =
+    role === "cleaner"
+      ? "bg-emerald-100 text-emerald-700"
+      : "bg-cyan-100 text-cyan-700";
+
+  return (
+    <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${tone}`}>
+      {labelRole(role)}
+    </span>
+  );
+}
+
+function UserStatusBadge({
+  blocked,
+  status,
+}: {
+  blocked: boolean | null;
+  status: string | null;
+}) {
+  if (blocked) {
+    return (
+      <span className="rounded-full bg-red-100 px-2.5 py-1 text-[10px] font-bold text-red-700">
+        Blocked
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-bold capitalize text-emerald-700">
+      <CheckCircle2 size={11} />
+      {status || "approved"}
+    </span>
+  );
+}
+
+function MiniUserAction({
+  label,
+  icon: Icon,
+  onClick,
+  className,
+  disabled = false,
+}: {
+  label: string;
+  icon: typeof Eye;
+  onClick: () => void;
+  className: string;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`inline-flex h-8 items-center justify-center gap-1 rounded-lg px-2.5 text-[10px] font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35 ${className}`}
+    >
+      <Icon size={12} />
+      {label}
+    </button>
+  );
+}
+
+function userActivity(user: PortalUser) {
+  if (user.role !== "cleaner") {
+    return user.is_online ? "Online" : "Offline";
+  }
+
+  if (user.is_working) return "Working";
+  if (user.is_available) return "Available";
+  return user.is_online ? "Online" : "Offline";
+}
+
 function Modal({ title, subtitle, wide, children, onClose }: { title: string; subtitle?: string; wide?: boolean; children: React.ReactNode; onClose: () => void }) { return <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 p-3 backdrop-blur-sm sm:p-4"><div className={`max-h-[94vh] overflow-y-auto rounded-[1.75rem] bg-white shadow-2xl ${wide ? "w-full max-w-5xl" : "w-full max-w-xl"}`}><div className="sticky top-0 z-10 flex items-center justify-between bg-gradient-to-r from-blue-800 via-blue-700 to-cyan-500 p-6 text-white"><div><p className="text-xs font-bold uppercase tracking-[0.25em]">{title}</p>{subtitle && <h2 className="mt-1 text-2xl font-bold">{subtitle}</h2>}</div><button type="button" onClick={onClose} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 transition hover:bg-white/30"><X size={20} /></button></div><div className="p-6">{children}</div></div></div>; }
-function FormSection({ title, icon: Icon, children }: { title: string; icon: typeof UserRound; children: React.ReactNode }) { return <section className="rounded-[1.4rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"><div className="mb-4 flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><Icon size={18} /></span><h3 className="text-lg font-bold text-slate-950">{title}</h3></div><div className="space-y-4">{children}</div></section>; }
-function Field({ label, value, onChange, type = "text", required = false, placeholder = "", readOnly = false, min }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean; placeholder?: string; readOnly?: boolean; min?: string }) { return <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">{label}</span><input required={required} value={value} type={type} step={type === "number" ? "0.25" : undefined} min={type === "number" ? "0" : min} readOnly={readOnly} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className={`h-12 w-full rounded-2xl border border-slate-200 px-4 text-sm font-semibold outline-none transition placeholder:text-slate-400 ${readOnly ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-white text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"}`} /></label>; }
-function TextArea({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) { return <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">{label}</span><textarea value={value} onChange={(e) => onChange(e.target.value)} rows={5} className="min-h-32 w-full resize-y rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" /></label>; }
-function CleanerPicker({ cleaners, selected, onChange }: { cleaners: CleanerUser[]; selected: string[]; onChange: (ids: string[]) => void }) { return <div><p className="mb-3 font-bold">Select Cleaners <span className="text-sm font-normal text-slate-400">(one or more)</span></p><div className="flex flex-wrap gap-2">{cleaners.map((cleaner) => { const active = selected.includes(cleaner.id); return <button type="button" key={cleaner.id} onClick={() => onChange(active ? selected.filter((id) => id !== cleaner.id) : [...selected, cleaner.id])} className={`h-11 rounded-2xl px-4 font-bold ${active ? "bg-purple-700 text-white" : "border border-slate-200 text-slate-600"}`}>{active && <Check className="mr-1 inline" size={16} />}{cleaner.name}</button>; })}</div>{!!selected.length && <button type="button" onClick={() => onChange([])} className="mt-3 text-sm font-bold text-red-500">Clear all</button>}</div>; }
+function FormSection({ title, icon: Icon, children }: { title: string; icon: typeof UserRound; children: React.ReactNode }) { return <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><div className="mb-3 flex items-center gap-2.5"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-700"><Icon size={16} /></span><h3 className="text-base font-bold text-slate-950">{title}</h3></div><div className="space-y-3">{children}</div></section>; }
+function Field({ label, value, onChange, type = "text", required = false, placeholder = "", readOnly = false, min }: { label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean; placeholder?: string; readOnly?: boolean; min?: string }) { return <label className="block"><span className="mb-1.5 block text-xs font-bold text-slate-700">{label}</span><input required={required} value={value} type={type} step={type === "number" ? "0.25" : undefined} min={type === "number" ? "0" : min} readOnly={readOnly} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className={`h-11 w-full rounded-xl border border-slate-200 px-3 text-sm font-semibold outline-none transition placeholder:text-slate-400 ${readOnly ? "cursor-not-allowed bg-slate-100 text-slate-500" : "bg-white text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"}`} /></label>; }
+function TextArea({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) { return <label className="block"><span className="mb-1.5 block text-xs font-bold text-slate-700">{label}</span><textarea value={value} onChange={(e) => onChange(e.target.value)} rows={3} className="min-h-24 w-full resize-y rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100" /></label>; }
+function CleanerPicker({ cleaners, selected, onChange }: { cleaners: CleanerUser[]; selected: string[]; onChange: (ids: string[]) => void }) {
+  return <div>
+    <p className="mb-3 font-bold text-slate-800">Assign Cleaner <span className="text-sm font-normal text-slate-400">(one or more)</span></p>
+    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      {cleaners.map((cleaner) => {
+        const active = selected.includes(cleaner.id);
+        return <button
+          type="button"
+          key={cleaner.id}
+          onClick={() => onChange(active ? selected.filter((id) => id !== cleaner.id) : [...selected, cleaner.id])}
+          className={`flex min-h-14 items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left transition ${active ? "border-purple-700 bg-purple-700 text-white" : "border-slate-200 bg-white text-slate-700 hover:border-blue-300"}`}
+        >
+          <span className="min-w-0">
+            <span className="flex items-center gap-1.5 truncate text-sm font-bold">{active && <Check size={14} />}{cleaner.name}</span>
+            <span className={`mt-0.5 block truncate text-[10px] ${active ? "text-white/70" : "text-slate-400"}`}>{cleaner.email}</span>
+          </span>
+          <span className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-bold uppercase ${active ? "bg-white/20 text-white" : "bg-emerald-50 text-emerald-700"}`}>{labelRole(cleaner.role)}</span>
+        </button>;
+      })}
+    </div>
+    {!!selected.length && <button type="button" onClick={() => onChange([])} className="mt-3 text-sm font-bold text-red-500">Clear all</button>}
+  </div>;
+}
 function Detail({ label, value }: { label: string; value: string | null }) { return <div className="rounded-2xl bg-slate-50 p-4"><p className="text-xs font-bold uppercase text-slate-400">{label}</p><p className="mt-2 font-semibold text-slate-800">{value || "-"}</p></div>; }
 function ImageGroup({ title, images }: { title: string; images: BookingImage[] }) { return <div><h4 className="font-bold">{title}</h4><div className="mt-3 grid grid-cols-2 gap-3">{images.map((image) => <a key={image.id} href={image.url} download target="_blank" className="block"><span className="relative block aspect-square overflow-hidden rounded-xl border bg-slate-50"><img src={image.url} alt={image.name || title} className="h-full w-full object-contain" /></span><span className="mt-1 flex items-center gap-1 text-xs font-bold text-blue-700"><Download size={13} /> Download</span></a>)}{!images.length && <p className="col-span-2 rounded-xl border border-dashed p-8 text-center text-sm text-slate-400">No {title.toLowerCase()} images.</p>}</div></div>; }
 function formatDate(date: string) { return new Date(`${date}T00:00:00`).toLocaleDateString("en-CA", { weekday: "short", month: "short", day: "numeric", year: "numeric" }); }
+function formatDateCompact(date: string) { return new Date(`${date}T00:00:00`).toLocaleDateString("en-CA", { month: "short", day: "numeric" }); }
 function formatTime(time: string) {
   const [hourValue = "0", minuteValue = "0"] = time.split(":");
   const hour24 = Number(hourValue);

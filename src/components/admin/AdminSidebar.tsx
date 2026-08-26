@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Banknote,
+  BarChart3,
   BookOpen,
   CalendarDays,
   ClipboardCheck,
@@ -14,7 +15,6 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
-  BarChart3,
   Menu,
   ReceiptText,
   Settings2,
@@ -43,7 +43,11 @@ const groups: AdminGroup[] = [
   {
     label: "Workspace",
     links: [
-      { label: "Overview", href: "/admin-dashboard", icon: LayoutDashboard },
+      {
+        label: "Overview",
+        href: "/admin-dashboard",
+        icon: LayoutDashboard,
+      },
       {
         label: "Custom Requests",
         href: "/admin-dashboard/custom-requests",
@@ -60,7 +64,11 @@ const groups: AdminGroup[] = [
         icon: ClipboardCheck,
         roles: ["admin", "data_entry", "cleaner"],
       },
-      { label: "Customers", href: "/admin-dashboard/customers", icon: Users },
+      {
+        label: "Customers",
+        href: "/admin-dashboard/customers",
+        icon: Users,
+      },
       {
         label: "Cleaners",
         href: "/admin-dashboard/manage/cleaners",
@@ -81,8 +89,16 @@ const groups: AdminGroup[] = [
   {
     label: "Operations",
     links: [
-      { label: "Services", href: "/admin-dashboard/services", icon: Wrench },
-      { label: "All Users", href: "/admin-dashboard/users", icon: UserCheck },
+      {
+        label: "Services",
+        href: "/admin-dashboard/services",
+        icon: Wrench,
+      },
+      {
+        label: "All Users",
+        href: "/admin-dashboard/users",
+        icon: UserCheck,
+      },
       {
         label: "Verification",
         href: "/admin-dashboard/manage/verification",
@@ -113,7 +129,11 @@ const groups: AdminGroup[] = [
         href: "/admin-dashboard/manage/gallery",
         icon: GalleryHorizontal,
       },
-      { label: "Blog", href: "/admin-dashboard/blogs", icon: BookOpen },
+      {
+        label: "Blog",
+        href: "/admin-dashboard/blogs",
+        icon: BookOpen,
+      },
       {
         label: "Before / After",
         href: "/admin-dashboard/before-after",
@@ -129,16 +149,23 @@ const groups: AdminGroup[] = [
   },
 ];
 
-export default function AdminSidebar({ role = "admin" }: { role?: string }) {
+export default function AdminSidebar({
+  role = "admin",
+}: {
+  role?: string;
+}) {
   const pathname = usePathname();
   const { signOut } = useAuth();
+
   const [open, setOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
     if (loggingOut) return;
+
     setLoggingOut(true);
     setOpen(false);
+
     try {
       await signOut();
     } catch (error) {
@@ -147,31 +174,77 @@ export default function AdminSidebar({ role = "admin" }: { role?: string }) {
     }
   };
 
+  const isActive = (href: string) => {
+    if (href === "/admin-dashboard") {
+      return pathname === href;
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   const navigation = (
     <>
-      <div className="flex-1 overflow-y-auto pr-1">
+      <div
+        className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto pr-2"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "#4F6478 transparent",
+          scrollbarGutter: "stable",
+        }}
+      >
         {groups.map((group) => {
           const visibleLinks = group.links.filter(
-            (item) => role === "admin" || item.roles?.includes(role),
+            (item) =>
+              role === "admin" ||
+              item.roles?.includes(role),
           );
+
           if (!visibleLinks.length) return null;
+
           return (
-            <div key={group.label} className="mb-6">
-              <p className="mb-2 px-3 text-[11px] font-bold uppercase text-white/35">
+            <div
+              key={group.label}
+              className="mb-5"
+            >
+              <p className="mb-2 px-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#718296]">
                 {group.label}
               </p>
+
               <nav className="space-y-1">
                 {visibleLinks.map((item) => {
                   const Icon = item.icon;
-                  const active = pathname === item.href;
+                  const active = isActive(item.href);
+
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className={`flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition ${active ? "bg-[#4A86F7] text-white shadow-lg shadow-blue-500/20" : "text-white/65 hover:bg-white/5 hover:text-white"}`}
+                      className={[
+                        "group relative flex h-10 items-center gap-3 overflow-hidden rounded-xl px-3",
+                        "text-[12.5px] font-semibold transition-all duration-200",
+                        active
+                          ? "bg-[#F7F9FC] text-[#10243A] shadow-sm"
+                          : "text-[#9CACBC] hover:bg-[#17344D] hover:text-white",
+                      ].join(" ")}
                     >
-                      <Icon size={18} /> {item.label}
+                      {active && (
+                        <span className="absolute inset-y-0 left-0 w-1 rounded-r-full bg-[#4A86F7]" />
+                      )}
+
+                      <Icon
+                        size={17}
+                        strokeWidth={1.9}
+                        className={
+                          active
+                            ? "text-[#4A86F7]"
+                            : "text-[#8294A6] transition group-hover:text-white"
+                        }
+                      />
+
+                      <span className="truncate">
+                        {item.label}
+                      </span>
                     </Link>
                   );
                 })}
@@ -180,76 +253,95 @@ export default function AdminSidebar({ role = "admin" }: { role?: string }) {
           );
         })}
       </div>
-      <button
-        type="button"
-        onClick={handleLogout}
-        disabled={loggingOut}
-        className="mt-3 flex min-h-12 items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-4 text-sm font-semibold text-red-400 hover:bg-red-500/20 disabled:cursor-wait disabled:opacity-60"
-      >
-        <LogOut size={19} /> {loggingOut ? "Logging out..." : "Log out"}
-      </button>
+
+      <div className="mt-2 shrink-0 border-t border-white/[0.07] pt-3">
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-[#30485F] bg-[#142B40] px-3 text-[13px] font-bold text-white transition hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-300 disabled:cursor-wait disabled:opacity-50"
+        >
+          <LogOut size={17} />
+          {loggingOut ? "Logging out..." : "Sign out"}
+        </button>
+      </div>
     </>
   );
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/10 bg-[#020817] px-4 lg:hidden">
+      {/* MOBILE HEADER */}
+      <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-white/10 bg-[#0C2134] px-4 lg:hidden">
         <Link href="/admin-dashboard">
           <Image
             src="/logo.webp"
             alt="Camz Cleaning"
-            width={150}
-            height={56}
-            className="h-10 w-auto brightness-0 invert"
+            width={130}
+            height={48}
+            priority
+            className="h-8 w-auto brightness-0 invert"
           />
         </Link>
+
         <button
           type="button"
           aria-label="Open admin menu"
           onClick={() => setOpen(true)}
-          className="flex h-11 w-11 items-center justify-center rounded-md border border-white/15 text-white"
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-white"
         >
-          <Menu size={23} />
+          <Menu size={19} />
         </button>
       </header>
-      <aside className="fixed inset-y-0 left-0 z-50 hidden w-[280px] flex-col border-r border-white/10 bg-[#020817] p-6 lg:flex">
-        <Link href="/admin-dashboard" className="mb-8">
+
+      {/* DESKTOP SIDEBAR */}
+      <aside className="fixed inset-y-0 left-0 z-50 hidden w-[236px] flex-col border-r border-white/[0.08] bg-[#0C2134] px-4 py-4 lg:flex">
+        <Link
+          href="/admin-dashboard"
+          className="mb-4 flex h-[58px] shrink-0 items-center border-b border-white/[0.07] pb-3"
+        >
           <Image
             src="/logo.webp"
             alt="Camz Cleaning"
-            width={180}
-            height={67}
-            className="h-14 w-auto brightness-0 invert"
+            width={145}
+            height={54}
+            priority
+            className="h-[43px] w-auto object-contain brightness-0 invert"
           />
         </Link>
+
         {navigation}
       </aside>
+
+      {/* MOBILE DRAWER */}
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
             aria-label="Close admin menu"
-            className="absolute inset-0 bg-slate-950/60"
             onClick={() => setOpen(false)}
+            className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px]"
           />
-          <aside className="relative flex h-full w-[min(84vw,310px)] flex-col border-r border-white/10 bg-[#020817] p-5 text-white shadow-xl">
-            <div className="mb-7 flex items-center justify-between">
+
+          <aside className="relative flex h-full w-[255px] max-w-[82vw] flex-col border-r border-white/10 bg-[#0C2134] px-4 py-4 text-white shadow-2xl">
+            <div className="mb-4 flex h-[54px] shrink-0 items-center justify-between border-b border-white/[0.07] pb-3">
               <Image
                 src="/logo.webp"
                 alt="Camz Cleaning"
-                width={165}
-                height={61}
-                className="h-11 w-auto brightness-0 invert"
+                width={135}
+                height={50}
+                className="h-9 w-auto brightness-0 invert"
               />
+
               <button
                 type="button"
                 aria-label="Close admin menu"
                 onClick={() => setOpen(false)}
-                className="flex h-10 w-10 items-center justify-center rounded-md bg-white/10"
+                className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.07] transition hover:bg-white/10"
               >
-                <X size={20} />
+                <X size={17} />
               </button>
             </div>
+
             {navigation}
           </aside>
         </div>
