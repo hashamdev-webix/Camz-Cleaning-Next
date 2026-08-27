@@ -52,7 +52,7 @@ export default async function BookingRecordsPage() {
     supabase.auth.getUser(),
   ]);
 
-  const roleDefinitions: BookingRoleDefinition[] =
+  const bookingRoleDefinitions: BookingRoleDefinition[] =
     roleRows && roleRows.length
       ? roleRows.map((role) => ({
           key: role.key,
@@ -77,6 +77,20 @@ export default async function BookingRecordsPage() {
             created_at: "",
           },
         ];
+
+  // Admin is a real application role, not a custom booking_roles row.
+  // Inject it as a built-in option so Calendar > Manage Users can create
+  // and display admin accounts without requiring a database migration.
+  const roleDefinitions: BookingRoleDefinition[] = [
+    {
+      key: "admin",
+      name: "Admin",
+      base_role: "admin",
+      is_system: true,
+      created_at: "",
+    },
+    ...bookingRoleDefinitions.filter((role) => role.key !== "admin"),
+  ];
 
   const roleMap = new Map(roleDefinitions.map((role) => [role.key, role]));
 
@@ -108,13 +122,18 @@ export default async function BookingRecordsPage() {
     };
   }) as PortalUser[];
 
-  const operationalUsers = portalUsers.filter((user) =>
-    ["cleaner", "data_entry"].includes(user.role),
+  const managedUsers = portalUsers.filter((user) =>
+    ["admin", "cleaner", "data_entry"].includes(user.role),
   );
 
-  const assignableUsers = operationalUsers.filter((user) => !user.is_blocked);
+  // Admin accounts can be managed from the Calendar, but booking assignment
+  // remains limited to operational Cleaner/Data Entry users.
+  const assignableUsers = portalUsers.filter(
+    (user) =>
+      ["cleaner", "data_entry"].includes(user.role) && !user.is_blocked,
+  );
   const operationalUserMap = new Map(
-    operationalUsers.map((user) => [user.id, user]),
+    assignableUsers.map((user) => [user.id, user]),
   );
 
   const assignmentsByBooking = new Map<string, CleanerUser[]>();
@@ -167,7 +186,7 @@ export default async function BookingRecordsPage() {
         role_key: user.booking_role_key || user.role,
         role_label: user.role_label ?? undefined,
       }))}
-      assignedUsers={operationalUsers}
+      assignedUsers={managedUsers}
       roleDefinitions={roleDefinitions}
       currentUser={
         currentUser.data

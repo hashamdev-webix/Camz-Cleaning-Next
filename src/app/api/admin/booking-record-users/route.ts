@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
-type BaseRole = "cleaner" | "data_entry";
+type BaseRole = "admin" | "cleaner" | "data_entry";
 
 type UserPayload = {
   id?: string;
@@ -28,7 +28,7 @@ type RoleDefinition = {
   is_system: boolean;
 };
 
-const BASE_ROLES = new Set<BaseRole>(["cleaner", "data_entry"]);
+const BASE_ROLES = new Set<BaseRole>(["admin", "cleaner", "data_entry"]);
 const APPROVAL_STATUSES = new Set(["approved", "pending", "rejected"]);
 
 async function getAdminActor(): Promise<{ id: string } | null> {
@@ -76,6 +76,12 @@ function missingAdminKey() {
   );
 }
 
+function builtInRoleName(role: BaseRole) {
+  if (role === "admin") return "Admin";
+  if (role === "data_entry") return "Data Entry";
+  return "Cleaner";
+}
+
 async function resolveRole(
   admin: AdminClient,
   roleKeyValue?: string,
@@ -84,6 +90,16 @@ async function resolveRole(
   const roleKey = String(roleKeyValue || fallbackBase || "cleaner")
     .trim()
     .toLowerCase();
+
+  // Admin is a built-in application role and does not need a booking_roles row.
+  if (roleKey === "admin") {
+    return {
+      key: "admin",
+      name: "Admin",
+      base_role: "admin",
+      is_system: true,
+    };
+  }
 
   const { data, error } = await admin
     .from("booking_roles")
@@ -106,7 +122,7 @@ async function resolveRole(
   if (BASE_ROLES.has(roleKey as BaseRole)) {
     return {
       key: roleKey,
-      name: roleKey === "cleaner" ? "Cleaner" : "Data Entry",
+      name: builtInRoleName(roleKey as BaseRole),
       base_role: roleKey as BaseRole,
       is_system: true,
     };
@@ -177,7 +193,7 @@ export async function POST(request: NextRequest) {
     phone_number: phone,
     phone,
     role: baseRole,
-    booking_role_key: roleDef.key,
+    booking_role_key: baseRole === "admin" ? null : roleDef.key,
     booking_role_name: roleDef.name,
     source,
     approval_status: approvalStatus,
@@ -210,7 +226,7 @@ export async function POST(request: NextRequest) {
     email,
     phone_number: phone,
     role: baseRole,
-    booking_role_key: roleDef.key,
+    booking_role_key: baseRole === "admin" ? null : roleDef.key,
     approval_status: approvalStatus,
     source,
     is_blocked: false,
@@ -302,6 +318,31 @@ export async function PATCH(request: NextRequest) {
   }
 
   const baseRole = roleDef.base_role;
+
+  if (existingBase === "admin" && baseRole !== "admin") {
+    if (body.id === actor.id) {
+      return NextResponse.json(
+        { error: "You cannot remove your own admin access from the Booking Calendar." },
+        { status: 400 },
+      );
+    }
+
+    const { count, error: countError } = await admin
+      .from("users")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "admin");
+
+    if (countError) {
+      return NextResponse.json({ error: countError.message }, { status: 400 });
+    }
+
+    if ((count || 0) <= 1) {
+      return NextResponse.json(
+        { error: "At least one admin account must remain." },
+        { status: 400 },
+      );
+    }
+  }
   const name = body.name?.trim() || String(existing.name || "");
   const email = body.email?.trim().toLowerCase() || String(existing.email || "");
   const phone =
@@ -315,7 +356,7 @@ export async function PATCH(request: NextRequest) {
     email,
     phone_number: phone,
     role: baseRole,
-    booking_role_key: roleDef.key,
+    booking_role_key: baseRole === "admin" ? null : roleDef.key,
     approval_status: approvalStatus,
     source,
     is_blocked:
@@ -357,7 +398,7 @@ export async function PATCH(request: NextRequest) {
       phone_number: phone,
       phone,
       role: baseRole,
-      booking_role_key: roleDef.key,
+      booking_role_key: baseRole === "admin" ? null : roleDef.key,
       booking_role_name: roleDef.name,
       approval_status: approvalStatus,
       source,
@@ -432,9 +473,29 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "User not found." }, { status: 404 });
   }
 
-  if (!BASE_ROLES.has(String(target.role || "").toLowerCase() as BaseRole)) {
+  const targetRole = String(target.role || "").toLowerCase() as BaseRole;
+
+  if (targetRole === "admin") {
+    const { count, error: countError } = await admin
+      .from("users")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "admin");
+
+    if (countError) {
+      return NextResponse.json({ error: countError.message }, { status: 400 });
+    }
+
+    if ((count || 0) <= 1) {
+      return NextResponse.json(
+        { error: "The last admin account cannot be deleted." },
+        { status: 400 },
+      );
+    }
+  }
+
+  if (!BASE_ROLES.has(targetRole)) {
     return NextResponse.json(
-      { error: "Only Cleaner/Data Entry booking users can be deleted here." },
+      { error: "Only Admin, Cleaner, or Data Entry users can be deleted here." },
       { status: 400 },
     );
   }

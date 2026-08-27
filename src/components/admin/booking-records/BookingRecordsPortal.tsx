@@ -21,7 +21,7 @@ export type CleanerUser = {
 export type BookingRoleDefinition = {
   key: string;
   name: string;
-  base_role: "cleaner" | "data_entry";
+  base_role: "admin" | "cleaner" | "data_entry";
   is_system: boolean;
   created_at?: string | null;
 };
@@ -1844,7 +1844,7 @@ type UserEditorState = {
   email: string;
   phone_number: string;
   password: string;
-  role: "cleaner" | "data_entry";
+  role: "admin" | "cleaner" | "data_entry";
   role_key: string;
   approval_status: string;
   source: string;
@@ -1871,7 +1871,7 @@ const emptyUserEditor: UserEditorState = {
   hourly_rate: "0",
 };
 
-const operationalBaseRoles = ["cleaner", "data_entry"];
+const operationalBaseRoles = ["admin", "cleaner", "data_entry"];
 
 function roleName(roles: BookingRoleDefinition[], key: string | null | undefined, baseRole?: string) {
   const found = roles.find((role) => role.key === key);
@@ -1946,7 +1946,7 @@ function ManageUsersPanel({
   const openEdit = (user: PortalUser) => {
     const roleKey = user.booking_role_key || user.role || "cleaner";
     const roleDef = roles.find((item) => item.key === roleKey);
-    const baseRole = (roleDef?.base_role || user.role || "cleaner") as "cleaner" | "data_entry";
+    const baseRole = (roleDef?.base_role || user.role || "cleaner") as "admin" | "cleaner" | "data_entry";
 
     setSelectedUser(user);
     setEditForm({
@@ -2096,8 +2096,7 @@ function ManageUsersPanel({
           "cleaner",
         booking_role_key: createdRoleKey,
         role_label:
-          createdRoleDef?.name ||
-          (addForm.role === "data_entry" ? "Data Entry" : "Cleaner"),
+          createdRoleDef?.name || labelRole(addForm.role),
         approval_status:
           result.user.approval_status ||
           addForm.approval_status ||
@@ -2143,7 +2142,7 @@ function ManageUsersPanel({
         <div>
           <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-[#4A86F7]">Booking Operations</p>
           <h1 className="mt-1 font-bold tracking-tight text-[#13263A]">Booking Users</h1>
-          <p className="mt-1 text-slate-500">Manage operational booking users and their custom roles. Admins/customers stay outside this module.</p>
+          <p className="mt-1 text-slate-500">Manage admins and operational booking users from the calendar. Customers stay outside this module.</p>
         </div>
 
         <button type="button" onClick={onClose} className="inline-flex h-9 w-fit items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 text-[10px] font-bold text-slate-600 hover:bg-slate-50">
@@ -2204,7 +2203,7 @@ function ManageUsersPanel({
                   <article key={user.id} className="bg-white p-3.5">
                     <div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="truncate text-[11px] font-bold text-[#13263A]">{user.name}</h3><p className="mt-1 truncate text-[9px] text-slate-500">{user.email}</p></div><RoleBadgeInline baseRole={user.role} label={roleName(roles, user.booking_role_key || user.role, user.role)} /></div>
                     <div className="mt-3 flex items-center justify-between gap-3"><UserStatusBadge blocked={user.is_blocked} status={user.approval_status} /><span className="text-[9px] text-slate-500">{userActivity(user)}</span></div>
-                    <div className="mt-3 grid grid-cols-3 gap-1.5"><MiniUserAction label="View" icon={Eye} onClick={() => openView(user)} className="bg-[#4A86F7]" /><MiniUserAction label="Edit" icon={Pencil} onClick={() => openEdit(user)} className="bg-amber-500" /><MiniUserAction label="Delete" icon={Trash2} onClick={() => deleteUser(user)} className="bg-rose-600" /></div>
+                    <div className="mt-3 grid grid-cols-3 gap-1.5"><MiniUserAction label="View" icon={Eye} onClick={() => openView(user)} className="bg-[#4A86F7]" /><MiniUserAction label="Edit" icon={Pencil} onClick={() => openEdit(user)} className="bg-amber-500" /><MiniUserAction label="Delete" icon={Trash2} onClick={() => deleteUser(user)} className="bg-rose-600" disabled={user.id === currentUser?.id} /></div>
                   </article>
                 ))}
               </div>
@@ -2232,7 +2231,7 @@ function ManageUsersPanel({
               <Detail label="Activity" value={userActivity(selectedUser)} />
               <Detail label="Joined" value={formatDateTime(selectedUser.created_at)} />
             </div>
-            <div className="mt-4 flex gap-2"><button type="button" onClick={() => openEdit(selectedUser)} className="h-9 rounded-lg bg-amber-500 px-4 text-[10px] font-bold text-white">Edit User</button><button type="button" onClick={() => deleteUser(selectedUser)} className="h-9 rounded-lg bg-rose-600 px-4 text-[10px] font-bold text-white">Delete User</button></div>
+            <div className="mt-4 flex gap-2"><button type="button" onClick={() => openEdit(selectedUser)} className="h-9 rounded-lg bg-amber-500 px-4 text-[10px] font-bold text-white">Edit User</button><button type="button" onClick={() => deleteUser(selectedUser)} disabled={selectedUser.id === currentUser?.id} className="h-9 rounded-lg bg-rose-600 px-4 text-[10px] font-bold text-white disabled:cursor-not-allowed disabled:opacity-40">Delete User</button></div>
           </section>
         )}
 
@@ -2242,6 +2241,21 @@ function ManageUsersPanel({
       </div>
     </section>
   );
+}
+
+function withAdminRole(roles: BookingRoleDefinition[]) {
+  const adminRole: BookingRoleDefinition = {
+    key: "admin",
+    name: "Admin",
+    base_role: "admin",
+    is_system: true,
+    created_at: null,
+  };
+
+  return [
+    adminRole,
+    ...roles.filter((role) => role.key !== "admin"),
+  ];
 }
 
 function UserEditorForm({
@@ -2293,7 +2307,9 @@ function UserEditorForm({
     const result = await response.json();
     setRoleBusy(false);
     if (!response.ok) { setRoleError(result.error || "Unable to add role."); return; }
-    const nextRoles = (result.roles || []) as BookingRoleDefinition[];
+    const nextRoles = withAdminRole(
+      (result.roles || []) as BookingRoleDefinition[],
+    );
     setRoles(nextRoles);
     const createdKey = newRoleName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 48);
     const created = nextRoles.find((role) => role.key === createdKey);
@@ -2310,7 +2326,9 @@ function UserEditorForm({
     const result = await response.json();
     setRoleBusy(false);
     if (!response.ok) { setRoleError(result.error || "Unable to delete role."); return; }
-    const nextRoles = (result.roles || []) as BookingRoleDefinition[];
+    const nextRoles = withAdminRole(
+      (result.roles || []) as BookingRoleDefinition[],
+    );
     setRoles(nextRoles);
     if (form.role_key === role.key) {
       setForm({ ...form, role_key: role.base_role, role: role.base_role });
@@ -2430,9 +2448,11 @@ function SmallToggle({
 
 function RoleBadgeInline({ baseRole, label }: { baseRole: string; label: string }) {
   const tone =
-    baseRole === "cleaner"
-      ? "bg-emerald-100 text-emerald-700"
-      : "bg-cyan-100 text-cyan-700";
+    baseRole === "admin"
+      ? "bg-violet-100 text-violet-700"
+      : baseRole === "cleaner"
+        ? "bg-emerald-100 text-emerald-700"
+        : "bg-cyan-100 text-cyan-700";
 
   return (
     <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${tone}`}>
