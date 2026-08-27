@@ -99,34 +99,34 @@ export default function PersonalInformationPage() {
   // Loading state
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[#020817] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F7FB] text-slate-900 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-[#4A86F7] mx-auto mb-3" />
-          <p className="text-gray-400 text-sm">Loading your information...</p>
+          <p className="text-slate-500 text-sm">Loading your information...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020817] text-white px-4 py-6 md:px-6">
+    <div className="min-h-screen bg-[#F4F7FB] text-slate-900 px-4 py-4 sm:px-5 lg:px-6">
       <div className="mx-auto max-w-2xl">
         {/* Avatar */}
         <div className="mb-8 flex flex-col items-center">
-          <div className="flex h-28 w-28 items-center justify-center rounded-full border-[4px] border-[#1B2A45] bg-[#071224] text-5xl font-bold text-[#4A86F7] shadow-lg">
+          <div className="flex h-28 w-28 items-center justify-center rounded-full border-[4px] border-slate-200 bg-white text-5xl font-bold text-[#4A86F7] shadow-lg">
             {getInitials(name)}
           </div>
 
           <h2 className="mt-4 text-3xl font-bold">{name || "User"}</h2>
 
-          <p className="mt-1 text-sm text-gray-400">Customer Account</p>
+          <p className="mt-1 text-sm text-slate-500">Customer Account</p>
         </div>
 
         {/* Success Message */}
         {success && (
-          <div className="mb-5 rounded-2xl border border-green-500/30 bg-green-500/10 p-4 flex items-center gap-3">
-            <CheckCircle2 className="text-green-400" size={20} />
-            <p className="text-sm text-green-400 font-medium">
+          <div className="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 flex items-center gap-3">
+            <CheckCircle2 className="text-emerald-700" size={20} />
+            <p className="text-sm text-emerald-700 font-medium">
               Changes saved successfully!
             </p>
           </div>
@@ -134,69 +134,69 @@ export default function PersonalInformationPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-5 rounded-2xl border border-red-500/30 bg-red-500/10 p-4">
-            <p className="text-sm text-red-400">{error}</p>
+          <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 p-4">
+            <p className="text-sm text-rose-700">{error}</p>
           </div>
         )}
 
         {/* Form */}
-        <div className="space-y-5 rounded-[28px] border border-white/10 bg-[#071224] p-5 md:p-6">
+        <div className="space-y-5 rounded-[28px] border border-slate-200 bg-white p-5 md:p-6">
           {/* Full Name */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-300">
+            <label className="mb-2 block text-sm font-medium text-slate-600">
               Full Name
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B1B34] px-4 py-3">
-              <User size={18} className="text-gray-400" />
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <User size={18} className="text-slate-500" />
 
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your full name"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-gray-500"
+                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500"
               />
             </div>
           </div>
 
           {/* Phone */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-300">
+            <label className="mb-2 block text-sm font-medium text-slate-600">
               Phone Number
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0B1B34] px-4 py-3">
-              <Phone size={18} className="text-gray-400" />
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <Phone size={18} className="text-slate-500" />
 
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter your phone number"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-gray-500"
+                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500"
               />
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-300">
+            <label className="mb-2 block text-sm font-medium text-slate-600">
               Email Address
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl border border-white/20 bg-[#0B1B34] px-4 py-3">
-              <Mail size={18} className="text-gray-400" />
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3">
+              <Mail size={18} className="text-slate-500" />
 
               <input
                 type="email"
                 value={user?.email || ""}
                 disabled
-                className="w-full bg-transparent text-sm text-gray-500 outline-none"
+                className="w-full bg-transparent text-sm text-slate-500 outline-none"
               />
             </div>
 
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-xs text-slate-500">
               Email address cannot be changed.
             </p>
           </div>
@@ -205,7 +205,7 @@ export default function PersonalInformationPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="mt-2 w-full rounded-2xl bg-[#4A86F7] px-6 py-3 text-sm font-semibold transition hover:bg-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[#4A86F7] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#2563EB] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {saving ? (
               <>

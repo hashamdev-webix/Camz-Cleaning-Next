@@ -150,20 +150,20 @@ export default function SavedAddressesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#020817] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F7FB] text-slate-900 flex items-center justify-center">
         <Loader2 className="w-10 h-10 animate-spin text-[#4A86F7]" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020817] text-white px-4 md:px-8 py-6">
+    <div className="min-h-screen bg-[#F4F7FB] text-slate-900 px-4 py-4 sm:px-5 lg:px-6">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">Saved Addresses</h1>
-            <p className="text-gray-400 text-sm mt-1">
+            <p className="text-slate-500 text-sm mt-1">
               {addresses.length} address{addresses.length !== 1 ? "es" : ""}{" "}
               saved
             </p>
@@ -177,8 +177,8 @@ export default function SavedAddressesPage() {
             }}
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
               showForm
-                ? "bg-white/10 text-white hover:bg-white/20"
-                : "bg-[#4A86F7] hover:bg-[#2563EB]"
+                ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                : "bg-[#4A86F7] text-white hover:bg-[#2563EB]"
             }`}
           >
             {showForm ? (
@@ -193,20 +193,20 @@ export default function SavedAddressesPage() {
 
         {/* Feedback */}
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+          <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-4 p-3 rounded-xl bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
+          <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
             {success}
           </div>
         )}
 
         {/* Add Form */}
         {showForm && (
-          <div className="rounded-[22px] border border-white/10 bg-[#071224] p-6 mb-6">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 mb-6">
             <h3 className="text-lg font-bold mb-5">Add New Address</h3>
 
             {/* Label Tabs */}
@@ -220,7 +220,7 @@ export default function SavedAddressesPage() {
                     className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition ${
                       activeTab === tab.id
                         ? "bg-[#4A86F7] text-white"
-                        : "border border-[#1B2A45] bg-[#0B1B34] text-[#4A86F7]"
+                        : "border border-slate-200 bg-slate-50 text-[#4A86F7]"
                     }`}
                   >
                     <Icon size={18} />
@@ -233,33 +233,33 @@ export default function SavedAddressesPage() {
             {/* Fields */}
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-300">
+                <label className="mb-2 block text-sm font-medium text-slate-600">
                   Address Line
                 </label>
-                <div className="flex items-center gap-3 rounded-2xl bg-[#131E35] px-4 py-3">
-                  <MapPin size={18} className="text-gray-400 shrink-0" />
+                <div className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3">
+                  <MapPin size={18} className="text-slate-500 shrink-0" />
                   <input
                     type="text"
                     value={addressLine}
                     onChange={(e) => setAddressLine(e.target.value)}
                     placeholder="Enter your address"
-                    className="w-full bg-transparent text-sm outline-none placeholder:text-gray-500"
+                    className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-300">
+                <label className="mb-2 block text-sm font-medium text-slate-600">
                   City
                 </label>
-                <div className="flex items-center gap-3 rounded-2xl bg-[#131E35] px-4 py-3">
-                  <Navigation size={18} className="text-gray-400 shrink-0" />
+                <div className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3">
+                  <Navigation size={18} className="text-slate-500 shrink-0" />
                   <input
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="City"
-                    className="w-full bg-transparent text-sm outline-none placeholder:text-gray-500"
+                    className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500"
                   />
                 </div>
               </div>
@@ -267,7 +267,7 @@ export default function SavedAddressesPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full rounded-2xl bg-[#4A86F7] px-6 py-3 text-sm font-semibold transition hover:bg-[#2563EB] disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#4A86F7] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#2563EB] disabled:opacity-50"
               >
                 {saving && <Loader2 size={16} className="animate-spin" />}
                 {saving ? "Saving..." : "Save Address"}
@@ -278,10 +278,10 @@ export default function SavedAddressesPage() {
 
         {/* Saved Addresses List */}
         {addresses.length === 0 && !showForm ? (
-          <div className="rounded-[22px] border border-white/10 bg-[#071224] p-10 text-center">
+          <div className="rounded-xl border border-slate-200 bg-white p-10 text-center">
             <MapPin size={40} className="text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-bold mb-2">No Addresses Yet</h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-slate-500 text-sm">
               Add your first address to get started.
             </p>
           </div>
@@ -290,9 +290,9 @@ export default function SavedAddressesPage() {
             {addresses.map((addr) => (
               <div
                 key={addr.id}
-                className="rounded-[22px] border border-white/10 bg-[#071224] p-5 flex items-start gap-4"
+                className="rounded-xl border border-slate-200 bg-white p-5 flex items-start gap-4"
               >
-                <div className="w-12 h-12 rounded-xl bg-[#0B1B34] flex items-center justify-center text-[#4A86F7] shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-[#4A86F7] shrink-0">
                   {getLabelIcon(addr.label)}
                 </div>
 
@@ -307,17 +307,17 @@ export default function SavedAddressesPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-gray-300 text-sm truncate">
+                  <p className="text-slate-600 text-sm truncate">
                     {addr.address_line}
                   </p>
-                  <p className="text-gray-500 text-xs">{addr.city}</p>
+                  <p className="text-slate-500 text-xs">{addr.city}</p>
                 </div>
 
                 <div className="flex gap-2 shrink-0">
                   {!addr.is_default && (
                     <button
                       onClick={() => handleSetDefault(addr.id)}
-                      className="p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-yellow-400 transition"
+                      className="p-2 rounded-lg hover:bg-slate-50 text-slate-500 hover:text-yellow-400 transition"
                       title="Set as default"
                     >
                       <Star size={16} />
@@ -325,7 +325,7 @@ export default function SavedAddressesPage() {
                   )}
                   <button
                     onClick={() => handleDelete(addr.id)}
-                    className="p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-red-400 transition"
+                    className="p-2 rounded-lg hover:bg-slate-50 text-slate-500 hover:text-rose-700 transition"
                     title="Delete"
                   >
                     <Trash2 size={16} />

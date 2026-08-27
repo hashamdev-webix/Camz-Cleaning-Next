@@ -1,6 +1,17 @@
+import type { Metadata } from "next";
 import { AuthProvider } from "@/context/AuthContext";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+
+import "./customer.css";
+
+export const metadata: Metadata = {
+  title: "Customer Dashboard | Camz Cleaning",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function CustomerDashboardLayout({
   children,
@@ -9,16 +20,13 @@ export default function CustomerDashboardLayout({
 }) {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-[#f7f7f7] flex">
-
-        {/* Sidebar */}
+      <div className="customer-dashboard-scope min-h-screen bg-[#F4F7FB]">
         <DashboardSidebar />
 
-        {/* Main Area */}
-        <div className="flex-1 lg:ml-[280px]">
+        <div className="lg:ml-[236px]">
           <DashboardHeader />
 
-          <main className="">
+          <main className="min-h-[calc(100vh-68px)] bg-[#F4F7FB]">
             {children}
           </main>
         </div>

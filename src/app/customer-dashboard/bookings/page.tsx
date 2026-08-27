@@ -35,13 +35,13 @@ const tabToStatus: Record<string, string[]> = {
 // Get color class based on status
 const getStatusStyle = (status: string): string => {
   const s = status.toLowerCase();
-  if (s === "pending") return "bg-yellow-500/20 text-yellow-400";
+  if (s === "pending") return "bg-amber-50 text-amber-700";
   if (s === "assigned" || s === "in_progress" || s === "accepted")
-    return "bg-blue-500/20 text-blue-400";
-  if (s === "completed") return "bg-green-500/20 text-green-400";
+    return "bg-blue-50 text-blue-700";
+  if (s === "completed") return "bg-emerald-50 text-emerald-700";
   if (s === "cancelled" || s === "canceled")
-    return "bg-red-500/20 text-red-400";
-  return "bg-gray-500/20 text-gray-400";
+    return "bg-rose-50 text-rose-700";
+  return "bg-gray-500/20 text-slate-500";
 };
 
 // Format status text for display
@@ -140,21 +140,21 @@ export default function BookingsPage() {
   // Loading state for auth or initial fetch
   if (authLoading || (loading && bookings.length === 0)) {
     return (
-      <div className="min-h-screen bg-[#020817] text-white px-4 md:px-8 py-6 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F7FB] text-slate-900 px-4 py-4 sm:px-5 lg:px-6 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-[#4A86F7] mx-auto mb-3" />
-          <p className="text-gray-400 text-sm">Loading your bookings...</p>
+          <p className="text-slate-500 text-sm">Loading your bookings...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020817] text-white px-4 md:px-8 py-6">
+    <div className="min-h-screen bg-[#F4F7FB] text-slate-900 px-4 py-4 sm:px-5 lg:px-6">
       {/* Heading */}
       <div className="mb-10">
         <h1 className="text-4xl md:text-5xl font-bold">My Bookings</h1>
-        <p className="text-gray-400 text-sm mt-2">
+        <p className="text-slate-500 text-sm mt-2">
           {bookings.length} total booking{bookings.length === 1 ? "" : "s"}
         </p>
       </div>
@@ -168,12 +168,12 @@ export default function BookingsPage() {
             className={`relative whitespace-nowrap text-lg font-semibold transition pb-2 ${
               activeTab === tab
                 ? "text-[#4A86F7]"
-                : "text-white/60 hover:text-white"
+                : "text-slate-500 hover:text-[#13263A]"
             }`}
           >
             {tab}
             {tabCounts[tab] > 0 && (
-              <span className="ml-2 text-xs bg-white/10 px-2 py-0.5 rounded-full">
+              <span className="ml-2 text-xs bg-slate-100 px-2 py-0.5 rounded-full">
                 {tabCounts[tab]}
               </span>
             )}
@@ -186,22 +186,22 @@ export default function BookingsPage() {
 
       {/* Error State */}
       {error && (
-        <div className="rounded-[22px] border border-red-500/30 bg-red-500/10 p-6 text-center mb-6">
-          <p className="text-red-400 font-bold mb-2">Failed to load bookings</p>
-          <p className="text-gray-400 text-sm">{error}</p>
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-center mb-6">
+          <p className="text-rose-700 font-bold mb-2">Failed to load bookings</p>
+          <p className="text-slate-500 text-sm">{error}</p>
         </div>
       )}
 
       {/* Empty State */}
       {!error && filteredBookings.length === 0 ? (
-        <div className="rounded-[32px] border border-white/10 bg-[#071224] p-10 text-center">
+        <div className="rounded-xl border border-slate-200 bg-white p-10 text-center">
           <h3 className="text-3xl font-bold mb-4">No Bookings Found</h3>
-          <p className="text-gray-400 mb-8 max-w-lg mx-auto">
+          <p className="text-slate-500 mb-8 max-w-lg mx-auto">
             You currently have no {activeTab.toLowerCase()} bookings.
           </p>
           <Link
-            href="/booking"
-            className="inline-flex items-center justify-center rounded-2xl bg-[#4A86F7] px-8 py-4 font-bold hover:bg-[#2563EB] transition"
+            href="/customer-dashboard/booking"
+            className="inline-flex items-center justify-center rounded-lg bg-[#4A86F7] px-6 py-3 font-bold text-white transition hover:bg-[#2563EB]"
           >
             Book Now
           </Link>
@@ -213,14 +213,14 @@ export default function BookingsPage() {
             return (
               <div
                 key={booking.id}
-                className="overflow-hidden rounded-[22px] border border-white/10 bg-[#071224]"
+                className="overflow-hidden rounded-xl border border-slate-200 bg-white"
               >
                 {/* Card Body */}
                 <div className="p-4">
                   <div className="flex gap-3">
                     {/* Date Box */}
-                    <div className="overflow-hidden rounded-xl bg-[#0B1B34] w-[60px] flex-shrink-0 h-fit">
-                      <div className="bg-[#4A86F7] py-1.5 text-center text-[10px] font-bold">
+                    <div className="overflow-hidden rounded-xl bg-slate-50 w-[60px] flex-shrink-0 h-fit">
+                      <div className="bg-[#4A86F7] py-1.5 text-center text-[10px] font-bold text-white">
                         {month}
                       </div>
                       <div className="py-3 text-center text-2xl font-bold">
@@ -245,7 +245,7 @@ export default function BookingsPage() {
                       </h3>
 
                       {/* Location */}
-                      <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-4">
+                      <div className="flex items-center gap-1.5 text-slate-500 text-xs mb-4">
                         <MapPin size={14} className="shrink-0" />
                         <span className="truncate">{booking.address}</span>
                       </div>
@@ -259,8 +259,8 @@ export default function BookingsPage() {
                 </div>
 
                 {/* Footer */}
-                <div className="border-t border-white/10 px-4 py-3 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-gray-400 text-xs">
+                <div className="border-t border-slate-200 px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-slate-500 text-xs">
                     <Clock3 size={14} />
                     <span>{time}</span>
                   </div>
@@ -280,8 +280,8 @@ export default function BookingsPage() {
 
       {/* Floating Button */}
       <Link
-        href="/booking"
-        className="fixed bottom-24 md:bottom-8 right-5 md:right-8 z-50 inline-flex items-center gap-3 rounded-2xl bg-[#4A86F7] px-6 py-4 font-bold shadow-xl shadow-blue-500/20 hover:bg-[#2563EB] transition"
+        href="/customer-dashboard/booking"
+        className="fixed bottom-24 right-5 z-50 inline-flex items-center gap-2 rounded-lg bg-[#4A86F7] px-5 py-3 font-bold text-white shadow-lg transition hover:bg-[#2563EB] md:bottom-8 md:right-8"
       >
         <Plus size={20} />
         <span className="hidden sm:block">New Booking</span>

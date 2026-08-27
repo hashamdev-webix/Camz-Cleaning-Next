@@ -1,5 +1,8 @@
 "use client";
-import { Menu, Bell, RefreshCw } from "lucide-react";
+
+import Image from "next/image";
+import Link from "next/link";
+import { Menu, RefreshCw, UserRound } from "lucide-react";
 import { useState } from "react";
 import MobileSidebar from "./MobileSidebar";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,61 +11,61 @@ export default function DashboardHeader() {
   const [open, setOpen] = useState(false);
   const { user, userData } = useAuth();
 
-  // Get user's display name (from userData if available, else email)
-  const displayName = userData?.name || user?.email?.split("@")[0] || "User";
-
-  // Get first letter for avatar
+  const displayName = userData?.name || user?.email?.split("@")[0] || "Customer";
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <>
       <MobileSidebar open={open} setOpen={setOpen} />
 
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#020817] px-4 md:px-8 py-5">
-        <div className="flex items-center justify-between">
-          {/* Left */}
-          <div className="flex items-center gap-4">
-            {/* Mobile Menu */}
-            <button
-              onClick={() => setOpen(true)}
-              className="lg:hidden text-white"
-            >
-              <Menu size={30} />
-            </button>
+      {/* MOBILE HEADER */}
+      <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-white/10 bg-[#0C2134] px-4 lg:hidden">
+        <Link href="/customer-dashboard">
+          <Image
+            src="/logo.webp"
+            alt="Camz Cleaning"
+            width={130}
+            height={48}
+            priority
+            className="h-8 w-auto brightness-0 invert"
+          />
+        </Link>
 
-            <div>
-              <h1 className="hidden md:block text-3xl font-bold text-white">
-                Customer Dashboard
-              </h1>
-              <p className="hidden md:block text-gray-400 mt-1">
-                Manage your bookings, favorites, and settings.
-              </p>
-            </div>
-          </div>
+        <button
+          type="button"
+          aria-label="Open customer menu"
+          onClick={() => setOpen(true)}
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-white"
+        >
+          <Menu size={19} />
+        </button>
+      </header>
 
-          {/* Right */}
-          <div className="flex items-center gap-4">
-            {/* Notification */}
-            <button className="text-gray-400 hover:text-white transition">
-              <Bell size={24} />
-            </button>
+      {/* DESKTOP HEADER */}
+      <header className="customer-dashboard-header sticky top-0 z-30 hidden h-[68px] items-center justify-between border-b border-slate-200 bg-white px-6 shadow-sm lg:flex">
+        <div>
+          <h1 className="font-bold text-[#13263A]">Customer Dashboard</h1>
+          <p className="mt-1 text-slate-500">
+            Manage your bookings, favorites, and account settings.
+          </p>
+        </div>
 
-            {/* Refresh */}
-            <button
-              onClick={() => window.location.reload()}
-              className="text-gray-400 hover:text-white transition"
-              aria-label="Refresh"
-            >
-              <RefreshCw size={22} />
-            </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            aria-label="Refresh dashboard"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-blue-200 hover:bg-blue-50 hover:text-[#4A86F7]"
+          >
+            <RefreshCw size={17} />
+          </button>
 
-            {/* User Avatar */}
-            <div
-              className="w-11 h-11 rounded-full bg-[#4A86F7] text-white flex items-center justify-center font-bold shadow-lg shadow-blue-500/30 cursor-default"
-              title={displayName}
-            >
-              {initial}
-            </div>
+          <div
+            className="flex h-9 min-w-9 items-center justify-center rounded-lg bg-blue-50 px-2.5 text-[12px] font-bold text-[#4A86F7]"
+            title={displayName}
+          >
+            <UserRound size={16} className="mr-1.5" />
+            <span className="max-w-[120px] truncate">{displayName || initial}</span>
           </div>
         </div>
       </header>

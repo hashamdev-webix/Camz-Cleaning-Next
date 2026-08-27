@@ -30,14 +30,14 @@ const statusToStep: Record<string, number> = {
 
 const getStatusStyle = (status: string) => {
   const s = status.toLowerCase();
-  if (s === "pending") return "bg-yellow-500/20 text-yellow-400";
+  if (s === "pending") return "bg-amber-50 text-amber-700";
   if (s === "accepted" || s === "assigned" || s === "in_progress")
-    return "bg-blue-500/20 text-blue-400";
+    return "bg-blue-50 text-blue-700";
   if (s === "completed" || s === "approved")
-    return "bg-green-500/20 text-green-400";
+    return "bg-emerald-50 text-emerald-700";
   if (s === "cancelled" || s === "canceled")
-    return "bg-red-500/20 text-red-400";
-  return "bg-gray-500/20 text-gray-400";
+    return "bg-rose-50 text-rose-700";
+  return "bg-gray-500/20 text-slate-500";
 };
 
 interface Job {
@@ -121,7 +121,7 @@ export default function BookingDetailsPage() {
 
   if (loading || authLoading) {
     return (
-      <div className="min-h-screen bg-[#020817] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F7FB] text-slate-900 flex items-center justify-center">
         <Loader2 className="w-10 h-10 animate-spin text-[#4A86F7]" />
       </div>
     );
@@ -129,8 +129,8 @@ export default function BookingDetailsPage() {
 
   if (error || !job) {
     return (
-      <div className="min-h-screen bg-[#020817] text-white px-4 md:px-8 py-6">
-        <div className="rounded-[28px] border border-white/10 bg-[#071224] p-10 text-center">
+      <div className="min-h-screen bg-[#F4F7FB] text-slate-900 px-4 py-4 sm:px-5 lg:px-6">
+        <div className="rounded-[28px] border border-slate-200 bg-white p-10 text-center">
           <h2 className="text-2xl font-bold mb-4">
             {error || "Booking not found"}
           </h2>
@@ -164,21 +164,21 @@ export default function BookingDetailsPage() {
   const taxAmount = totalPrice - subtotal;
 
   return (
-    <div className="min-h-screen bg-[#020817] text-white px-4 md:px-8 py-6">
+    <div className="min-h-screen bg-[#F4F7FB] text-slate-900 px-4 py-4 sm:px-5 lg:px-6">
       {/* Back Button */}
       <Link
         href="/customer-dashboard/bookings"
-        className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition mb-6 text-sm"
+        className="inline-flex items-center gap-2 text-slate-500 hover:text-[#13263A] transition mb-6 text-sm"
       >
         <ChevronLeft size={18} />
         Back to Bookings
       </Link>
 
       {/* Booking Card */}
-      <div className="rounded-[28px] border border-white/10 bg-[#071224] p-5 md:p-8 mb-6">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-5 md:p-8 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 mb-8">
           <div>
-            <p className="text-gray-500 mb-3 text-sm">
+            <p className="text-slate-500 mb-3 text-sm">
               #{job.id.slice(0, 8).toUpperCase()}
             </p>
             <h1 className="text-2xl md:text-4xl font-bold text-[#4A86F7] leading-tight">
@@ -195,7 +195,7 @@ export default function BookingDetailsPage() {
 
         <div className="space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3 text-gray-400 text-sm md:text-base">
+            <div className="flex items-center gap-3 text-slate-500 text-sm md:text-base">
               <Calendar size={18} />
               <span>Date & Time:</span>
             </div>
@@ -205,7 +205,7 @@ export default function BookingDetailsPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3 text-gray-400 text-sm md:text-base">
+            <div className="flex items-center gap-3 text-slate-500 text-sm md:text-base">
               <MapPin size={18} />
               <span>Location:</span>
             </div>
@@ -215,7 +215,7 @@ export default function BookingDetailsPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3 text-gray-400 text-sm md:text-base">
+            <div className="flex items-center gap-3 text-slate-500 text-sm md:text-base">
               <User size={18} />
               <span>Cleaner:</span>
             </div>
@@ -225,7 +225,7 @@ export default function BookingDetailsPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3 text-gray-400 text-sm md:text-base">
+            <div className="flex items-center gap-3 text-slate-500 text-sm md:text-base">
               <CreditCard size={18} />
               <span>Billing:</span>
             </div>
@@ -238,7 +238,7 @@ export default function BookingDetailsPage() {
           {(job.bedrooms || job.washrooms) && (
             <div className="flex gap-6 pt-2">
               {job.bedrooms && (
-                <div className="flex items-center gap-2 text-gray-400 text-sm">
+                <div className="flex items-center gap-2 text-slate-500 text-sm">
                   <Bed size={18} />
                   <span>
                     {job.bedrooms} Bedroom{job.bedrooms > 1 ? "s" : ""}
@@ -246,7 +246,7 @@ export default function BookingDetailsPage() {
                 </div>
               )}
               {job.washrooms && (
-                <div className="flex items-center gap-2 text-gray-400 text-sm">
+                <div className="flex items-center gap-2 text-slate-500 text-sm">
                   <Bath size={18} />
                   <span>
                     {job.washrooms} Washroom{job.washrooms > 1 ? "s" : ""}
@@ -257,7 +257,7 @@ export default function BookingDetailsPage() {
           )}
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3 text-gray-400 text-sm md:text-base">
+            <div className="flex items-center gap-3 text-slate-500 text-sm md:text-base">
               <BadgeDollarSign size={18} />
               <span>Price:</span>
             </div>
@@ -269,7 +269,7 @@ export default function BookingDetailsPage() {
       </div>
 
       {/* Progress */}
-      <div className="rounded-[28px] border border-white/10 bg-[#071224] p-5 md:p-8 mb-6">
+      <div className="rounded-[28px] border border-slate-200 bg-white p-5 md:p-8 mb-6">
         <h3 className="text-2xl md:text-3xl font-bold mb-8">Job Progress</h3>
 
         <div className="overflow-x-auto scrollbar-hide">
@@ -282,7 +282,7 @@ export default function BookingDetailsPage() {
                 {index !== steps.length - 1 && (
                   <div
                     className={`absolute top-6 left-[60%] w-full h-[2px] ${
-                      index < currentStep ? "bg-[#4A86F7]" : "bg-white/10"
+                      index < currentStep ? "bg-[#4A86F7]" : "bg-slate-100"
                     }`}
                   />
                 )}
@@ -291,7 +291,7 @@ export default function BookingDetailsPage() {
                   className={`relative z-10 w-14 h-14 rounded-full flex items-center justify-center border-2 ${
                     index <= currentStep
                       ? "bg-[#4A86F7] border-[#4A86F7]"
-                      : "bg-[#0B1B34] border-white/20"
+                      : "bg-slate-50 border-slate-300"
                   }`}
                 >
                   {index <= currentStep ? (
@@ -305,7 +305,7 @@ export default function BookingDetailsPage() {
                   className={`mt-4 text-sm text-center leading-5 ${
                     index <= currentStep
                       ? "text-[#4A86F7] font-semibold"
-                      : "text-gray-400"
+                      : "text-slate-500"
                   }`}
                 >
                   {step}
@@ -317,14 +317,14 @@ export default function BookingDetailsPage() {
       </div>
 
       {/* Billing Summary */}
-      <div className="rounded-[28px] border border-green-500/20 bg-[#071224] p-5 md:p-8">
-        <h3 className="text-2xl md:text-3xl font-bold mb-8 text-green-400">
+      <div className="rounded-[28px] border border-green-500/20 bg-white p-5 md:p-8">
+        <h3 className="text-2xl md:text-3xl font-bold mb-8 text-emerald-700">
           Billing Summary
         </h3>
 
         <div className="space-y-5">
           <div className="flex items-center justify-between gap-4">
-            <span className="text-gray-400 text-sm md:text-base">
+            <span className="text-slate-500 text-sm md:text-base">
               Service Price
             </span>
             <span className="text-xl md:text-2xl font-bold">
@@ -334,7 +334,7 @@ export default function BookingDetailsPage() {
 
           {taxAmount > 0 && (
             <div className="flex items-center justify-between gap-4">
-              <span className="text-gray-400 text-sm md:text-base">
+              <span className="text-slate-500 text-sm md:text-base">
                 Tax ({(taxRate * 100).toFixed(0)}%)
               </span>
               <span className="text-xl md:text-2xl font-bold">
@@ -343,9 +343,9 @@ export default function BookingDetailsPage() {
             </div>
           )}
 
-          <div className="border-t border-white/10 pt-6 flex items-center justify-between gap-4">
+          <div className="border-t border-slate-200 pt-6 flex items-center justify-between gap-4">
             <span className="text-2xl md:text-3xl font-bold">Total</span>
-            <span className="text-3xl md:text-5xl font-bold text-green-400">
+            <span className="text-3xl md:text-5xl font-bold text-emerald-700">
               CAD ${totalPrice.toFixed(2)}
             </span>
           </div>

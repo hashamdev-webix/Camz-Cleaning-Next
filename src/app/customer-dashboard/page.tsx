@@ -26,8 +26,8 @@ const iconMap: Record<string, any> = {
 
 const colorMap: Record<string, string> = {
   home: "text-blue-400",
-  building2: "text-green-400",
-  truck: "text-red-400",
+  building2: "text-emerald-700",
+  truck: "text-rose-700",
   sparkles: "text-purple-400",
 };
 
@@ -136,17 +136,17 @@ export default function DashboardHomePage() {
 
   if (loading && user) {
     return (
-      <div className="min-h-screen bg-[#020817] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F7FB] text-slate-900 flex items-center justify-center">
         <Loader2 className="w-10 h-10 animate-spin text-[#4A86F7]" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020817] text-white p-4 md:p-8">
+    <div className="min-h-screen bg-[#F4F7FB] text-slate-900 px-4 py-4 sm:px-5 lg:px-6">
       {/* Greeting */}
       <div className="mb-8">
-        <p className="text-gray-400 text-sm">Welcome back,</p>
+        <p className="text-slate-500 text-sm">Welcome back,</p>
         <h2 className="text-2xl font-bold mt-1">{displayName} 👋</h2>
       </div>
 
@@ -157,32 +157,32 @@ export default function DashboardHomePage() {
             label: "Total Bookings",
             value: stats.total,
             icon: CalendarCheck,
-            color: "text-blue-400 bg-blue-500/20",
+            color: "text-blue-700 bg-blue-50",
           },
           {
             label: "Pending",
             value: stats.pending,
             icon: Clock3,
-            color: "text-yellow-400 bg-yellow-500/20",
+            color: "text-amber-700 bg-amber-50",
           },
           {
             label: "Completed",
             value: stats.completed,
             icon: CheckCircle2,
-            color: "text-green-400 bg-green-500/20",
+            color: "text-emerald-700 bg-emerald-50",
           },
           {
             label: "Cancelled",
             value: stats.cancelled,
             icon: XCircle,
-            color: "text-red-400 bg-red-500/20",
+            color: "text-rose-700 bg-rose-50",
           },
         ].map((stat) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
-              className="rounded-2xl border border-white/10 bg-[#071224] p-5"
+              className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
             >
               <div
                 className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${stat.color}`}
@@ -190,7 +190,7 @@ export default function DashboardHomePage() {
                 <Icon size={20} />
               </div>
               <p className="text-2xl font-bold">{stat.value}</p>
-              <p className="text-gray-400 text-xs mt-1">{stat.label}</p>
+              <p className="text-slate-500 text-xs mt-1">{stat.label}</p>
             </div>
           );
         })}
@@ -199,7 +199,7 @@ export default function DashboardHomePage() {
       {/* Search */}
       <div className="relative mb-8">
         <Search
-          className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-400"
+          className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"
           size={24}
         />
         <input
@@ -207,28 +207,28 @@ export default function DashboardHomePage() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder='Search for "Deep Cleaning"'
-          className="w-full rounded-3xl border border-white/10 bg-[#071224] py-5 pl-16 pr-5 text-white outline-none focus:border-blue-500"
+          className="w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-14 pr-5 text-slate-900 outline-none transition focus:border-blue-300 focus:ring-2 focus:ring-blue-100"
         />
       </div>
 
       {/* Banner */}
-      <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-r from-[#8B3DFF] to-[#4B5DFF] p-8 mb-10">
+      <div className="relative mb-8 overflow-hidden rounded-xl border border-blue-100 bg-blue-50 p-6 shadow-sm">
         <div className="relative z-10 max-w-md">
-          <span className="inline-block rounded-full bg-white/20 px-4 py-2 text-sm font-semibold mb-4">
+          <span className="mb-3 inline-block rounded-full bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#4A86F7] shadow-sm">
             LIMITED OFFER
           </span>
           <h2 className="text-4xl font-bold leading-tight mb-3">
             Kitchen Sanitization Starts at $49
           </h2>
-          <p className="text-white/80 text-lg">Expert deep cleaning service</p>
+          <p className="text-slate-600">Expert deep cleaning service</p>
         </div>
-        <div className="absolute right-0 top-0 h-full w-[40%] bg-white/5 blur-3xl" />
+        <div className="absolute right-0 top-0 h-full w-[35%] bg-white/60 blur-3xl" />
       </div>
 
       {/* Categories */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-3xl font-bold">Service Categories</h3>
-        <Link href="/booking" className="text-blue-400 font-semibold">
+        <Link href="/customer-dashboard/booking" className="text-[#4A86F7] font-semibold">
           See All
         </Link>
       </div>
@@ -240,11 +240,11 @@ export default function DashboardHomePage() {
           return (
             <div
               key={cat.id}
-              className="rounded-3xl border border-white/10 bg-[#071224] p-6 text-center hover:border-blue-500 transition cursor-pointer"
-              onClick={() => router.push(`/booking?category=${cat.id}`)}
+              className="rounded-xl border border-slate-200 bg-white p-5 text-center shadow-sm hover:border-blue-500 transition cursor-pointer"
+              onClick={() => router.push(`/customer-dashboard/booking?category=${cat.id}`)}
             >
               <div
-                className={`mx-auto mb-4 w-16 h-16 rounded-2xl bg-[#0B1B34] flex items-center justify-center ${color}`}
+                className={`mx-auto mb-4 w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center ${color}`}
               >
                 <Icon size={30} />
               </div>
@@ -260,8 +260,8 @@ export default function DashboardHomePage() {
       </h3>
 
       {filteredServices.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-[#071224] p-10 text-center">
-          <p className="text-gray-400">
+        <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center">
+          <p className="text-slate-500">
             No services found for &quot;{searchQuery}&quot;
           </p>
         </div>
@@ -272,15 +272,15 @@ export default function DashboardHomePage() {
             return (
               <div
                 key={service.id}
-                className="rounded-[24px] border border-blue-500/10 bg-[#071224] p-5 shadow-[0_0_20px_rgba(37,99,235,0.05)]"
+                className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
               >
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-[#0B1B34] flex items-center justify-center text-blue-400 flex-shrink-0 mx-auto sm:mx-0">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-blue-400 flex-shrink-0 mx-auto sm:mx-0">
                     <Icon size={24} />
                   </div>
 
                   <div className="flex-1">
-                    <span className="inline-block rounded-full bg-blue-500/20 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-blue-400 mb-3">
+                    <span className="inline-block rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-blue-400 mb-3">
                       {service.pricing_type === "both"
                         ? "FIXED & HOURLY"
                         : service.pricing_type?.toUpperCase()}
@@ -290,7 +290,7 @@ export default function DashboardHomePage() {
                       {service.title}
                     </h4>
 
-                    <p className="text-gray-400 leading-6 mb-5 text-sm">
+                    <p className="text-slate-500 leading-6 mb-5 text-sm">
                       {service.description}
                     </p>
 
@@ -302,8 +302,8 @@ export default function DashboardHomePage() {
                       </div>
 
                       <Link
-                        href="/booking"
-                        className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold hover:bg-blue-700 transition"
+                        href={`/customer-dashboard/booking?service=${service.id}`}
+                        className="inline-flex items-center justify-center rounded-lg bg-[#4A86F7] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#2563EB]"
                       >
                         Book Now
                       </Link>

@@ -1,16 +1,19 @@
 "use client";
-import { useAuth } from "@/hooks/useAuth";
+
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  X,
-  LogOut,
-  LayoutDashboard,
   CalendarCheck,
+  PlusCircle,
   Heart,
+  LayoutDashboard,
+  LogOut,
   Settings,
+  X,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 type Props = {
   open: boolean;
@@ -19,14 +22,19 @@ type Props = {
 
 const links = [
   {
-    name: "Dashboard",
+    name: "Overview",
     href: "/customer-dashboard",
     icon: LayoutDashboard,
   },
   {
-    name: "Bookings",
+    name: "My Bookings",
     href: "/customer-dashboard/bookings",
     icon: CalendarCheck,
+  },
+  {
+    name: "Book Service",
+    href: "/customer-dashboard/booking",
+    icon: PlusCircle,
   },
   {
     name: "Favorites",
@@ -42,13 +50,15 @@ const links = [
 
 export default function MobileSidebar({ open, setOpen }: Props) {
   const pathname = usePathname();
+  const { signOut } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const { signOut } = useAuth();
   const handleLogout = async () => {
     if (loggingOut) return;
+
     setLoggingOut(true);
     setOpen(false);
+
     try {
       await signOut();
     } catch (error) {
@@ -57,74 +67,99 @@ export default function MobileSidebar({ open, setOpen }: Props) {
     }
   };
 
+  const isActive = (href: string) => {
+    if (href === "/customer-dashboard") {
+      return pathname === href;
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
+  if (!open) return null;
+
   return (
-    <>
-      {/* Overlay */}
-      <div
+    <div className="fixed inset-0 z-50 lg:hidden">
+      <button
+        type="button"
+        aria-label="Close customer menu"
         onClick={() => setOpen(false)}
-        className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${
-          open ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px]"
       />
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 z-50 h-screen w-[280px] bg-[#020817] border-r border-white/10 text-white p-6 transition-transform duration-300 flex flex-col ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        {/* Top */}
-        <div className="flex items-center justify-between mb-10">
-          <img
-            src="/logo.webp"
-            alt="Logo"
-            className="h-12 brightness-0 invert"
-          />
+      <aside className="relative flex h-full w-[255px] max-w-[82vw] flex-col border-r border-white/10 bg-[#0C2134] px-4 py-4 text-white shadow-2xl">
+        <div className="mb-4 flex h-[54px] shrink-0 items-center justify-between border-b border-white/[0.07] pb-3">
+          <Link href="/" onClick={() => setOpen(false)}>
+            <Image
+              src="/logo.webp"
+              alt="Camz Cleaning"
+              width={135}
+              height={50}
+              className="h-9 w-auto brightness-0 invert"
+            />
+          </Link>
 
           <button
+            type="button"
+            aria-label="Close customer menu"
             onClick={() => setOpen(false)}
-            className="text-white/80 hover:text-white transition"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.07] transition hover:bg-white/10"
           >
-            <X size={28} />
+            <X size={17} />
           </button>
         </div>
 
-        {/* Links */}
-        <nav className="space-y-3 flex-1">
-          {links.map((link) => {
-            const active = pathname === link.href;
-            const Icon = link.icon;
+        <div className="min-h-0 flex-1 overflow-y-auto pr-2">
+          <p className="mb-2 px-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#718296]">
+            Customer
+          </p>
 
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className={`flex items-center gap-4 rounded-2xl px-5 py-4 font-semibold transition ${
-                  active
-                    ? "bg-[#4A86F7] text-white shadow-lg shadow-blue-500/20"
-                    : "text-white/70 hover:bg-white/5 hover:text-white"
-                }`}
-              >
-                <Icon size={20} />
+          <nav className="space-y-1">
+            {links.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.href);
 
-                {link.name}
-              </Link>
-            );
-          })}
-        </nav>
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={[
+                    "group relative flex h-10 items-center gap-3 overflow-hidden rounded-xl px-3",
+                    "text-[12.5px] font-semibold transition-all duration-200",
+                    active
+                      ? "bg-[#F7F9FC] text-[#10243A] shadow-sm"
+                      : "text-[#9CACBC] hover:bg-[#17344D] hover:text-white",
+                  ].join(" ")}
+                >
+                  {active && (
+                    <span className="absolute inset-y-0 left-0 w-1 rounded-r-full bg-[#4A86F7]" />
+                  )}
 
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          disabled={loggingOut}
-          className="mt-6 flex items-center gap-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-4 text-red-400 transition hover:bg-red-500/20 disabled:cursor-wait disabled:opacity-60"
-        >
-          <LogOut size={20} />
+                  <Icon
+                    size={17}
+                    strokeWidth={1.9}
+                    className={active ? "text-[#4A86F7]" : "text-[#8294A6]"}
+                  />
 
-          <span className="font-semibold">{loggingOut ? "Logging out..." : "Logout"}</span>
-        </button>
+                  <span className="truncate">{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="mt-2 shrink-0 border-t border-white/[0.07] pt-3">
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-[#30485F] bg-[#142B40] px-3 text-[13px] font-bold text-white transition hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-300 disabled:cursor-wait disabled:opacity-50"
+          >
+            <LogOut size={17} />
+            {loggingOut ? "Logging out..." : "Sign out"}
+          </button>
+        </div>
       </aside>
-    </>
+    </div>
   );
 }

@@ -141,27 +141,27 @@ export default function FavoritesPage() {
   // Loading state
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[#020817] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F7FB] text-slate-900 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-[#4A86F7] mx-auto mb-3" />
-          <p className="text-gray-400 text-sm">Loading favorite cleaners...</p>
+          <p className="text-slate-500 text-sm">Loading favorite cleaners...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020817] text-white px-4 md:px-8 py-6">
+    <div className="min-h-screen bg-[#F4F7FB] text-slate-900 px-4 py-4 sm:px-5 lg:px-6">
       {/* Heading */}
       <div className="flex items-center gap-4 mb-10">
-        <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-400">
+        <div className="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-700">
           <Heart size={28} fill="currentColor" />
         </div>
 
         <div>
           <h1 className="text-4xl md:text-5xl font-bold">Favorite Cleaners</h1>
 
-          <p className="text-gray-400 mt-2">
+          <p className="text-slate-500 mt-2">
             {favorites.length > 0
               ? `${favorites.length} favorite cleaner${favorites.length === 1 ? "" : "s"}`
               : "Your trusted cleaning professionals."}
@@ -171,31 +171,31 @@ export default function FavoritesPage() {
 
       {/* Error State */}
       {error && (
-        <div className="rounded-[22px] border border-red-500/30 bg-red-500/10 p-6 text-center mb-6">
-          <p className="text-red-400 font-bold mb-2">
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-center mb-6">
+          <p className="text-rose-700 font-bold mb-2">
             Failed to load favorite cleaners
           </p>
-          <p className="text-gray-400 text-sm">{error}</p>
+          <p className="text-slate-500 text-sm">{error}</p>
         </div>
       )}
 
       {/* Empty State */}
       {!error && favorites.length === 0 ? (
-        <div className="rounded-[32px] border border-white/10 bg-[#071224] p-10 text-center">
-          <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6 text-gray-500">
+        <div className="rounded-xl border border-slate-200 bg-white p-10 text-center">
+          <div className="w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-6 text-slate-500">
             <Heart size={40} />
           </div>
 
           <h3 className="text-3xl font-bold mb-4">No Favorite Cleaners Yet</h3>
 
-          <p className="text-gray-400 mb-8 max-w-lg mx-auto">
+          <p className="text-slate-500 mb-8 max-w-lg mx-auto">
             After a cleaner completes your booking, you can add them to your
             favorites for quick rebooking.
           </p>
 
           <Link
-            href="/booking"
-            className="inline-flex items-center justify-center rounded-2xl bg-[#4A86F7] px-8 py-4 font-bold hover:bg-[#2563EB] transition"
+            href="/customer-dashboard/booking"
+            className="inline-flex items-center justify-center rounded-lg bg-[#4A86F7] px-6 py-3 font-bold text-white transition hover:bg-[#2563EB]"
           >
             Book a Service
           </Link>
@@ -209,7 +209,7 @@ export default function FavoritesPage() {
             return (
               <div
                 key={favorite.id}
-                className="overflow-hidden rounded-[20px] border border-white/10 bg-[#071224] hover:border-[#4A86F7]/30 transition-all duration-300"
+                className="overflow-hidden rounded-[20px] border border-slate-200 bg-white hover:border-[#4A86F7]/30 transition-all duration-300"
               >
                 <div className="p-5">
                   {/* Top - Avatar & Heart */}
@@ -224,7 +224,7 @@ export default function FavoritesPage() {
                         <h3 className="text-lg font-bold leading-tight">
                           {cleaner.name}
                         </h3>
-                        <p className="text-xs text-gray-400 mt-0.5">
+                        <p className="text-xs text-slate-500 mt-0.5">
                           Professional Cleaner
                         </p>
                       </div>
@@ -233,7 +233,7 @@ export default function FavoritesPage() {
                     {/* Heart - Remove from favorites */}
                     <button
                       onClick={() => handleRemoveFavorite(favorite.id)}
-                      className="text-red-400 hover:scale-110 transition flex-shrink-0"
+                      className="text-rose-700 hover:scale-110 transition flex-shrink-0"
                       title="Remove from favorites"
                     >
                       <Heart size={20} fill="currentColor" />
@@ -251,7 +251,7 @@ export default function FavoritesPage() {
                   {/* Contact Info */}
                   <div className="space-y-2 mb-5">
                     {cleaner.email && (
-                      <div className="flex items-center gap-2 text-xs text-gray-400">
+                      <div className="flex items-center gap-2 text-xs text-slate-500">
                         <Mail size={14} className="text-[#4A86F7]" />
                         <span className="truncate">{cleaner.email}</span>
                       </div>
@@ -260,8 +260,8 @@ export default function FavoritesPage() {
 
                   {/* Action Button */}
                   <Link
-                    href="/booking"
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#4A86F7] px-4 py-2.5 text-sm font-semibold hover:bg-[#2563EB] transition"
+                    href="/customer-dashboard/booking"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#4A86F7] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2563EB]"
                   >
                     <UserCheck size={16} />
                     Book with {cleaner.name.split(" ")[0]}
