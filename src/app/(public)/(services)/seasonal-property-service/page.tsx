@@ -3,6 +3,7 @@ import SeasonalCTA from "@/components/seasonal/SeasonalTA";
 import CommonHeroSection from "@/components/common/CommonHeroSection";
 import ServiceSidebar from "@/components/common/ServiceSidebar";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import AreasServed from "@/components/home/AreasServed";
 import SeasonalPropertyContent from "@/components/seasonal/SeasonalPropertyContent";
 
 const Page = () => {
@@ -55,6 +56,7 @@ const Page = () => {
           </article>
         </div>
       </section>
+      <AreasServed />
       <CommonFAQ faqs={seasonalFaqs} />
       <TestimonialsSection />
       <SeasonalCTA />

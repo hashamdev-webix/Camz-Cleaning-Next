@@ -3,6 +3,7 @@ import VehicleCTA from "@/components/vehicle/VehicleCTA";
 import CommonHeroSection from "@/components/common/CommonHeroSection";
 import ServiceSidebar from "@/components/common/ServiceSidebar";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import AreasServed from "@/components/home/AreasServed";
 import VehicleCleaningContent from "@/components/vehicle/VehicleCleaningContent";
 
 const Page = () => {
@@ -49,6 +50,7 @@ const Page = () => {
           </article>
         </div>
       </section>
+      <AreasServed />
       <CommonFAQ faqs={vehicleFaqs} />
       <TestimonialsSection />
       <VehicleCTA />

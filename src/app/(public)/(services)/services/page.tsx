@@ -1,5 +1,9 @@
 import CommonFAQ from "@/components/common/CommonFAQ";
 import CommonHeroSection from "@/components/common/CommonHeroSection";
+import Commercial from "@/components/services/Commercial";
+import Property from "@/components/services/Property";
+import Residential from "@/components/services/Residential";
+import Vehicle from "@/components/services/Vehicle";
 import FinalCTASection from "@/components/services/FinalCTASection";
 import Services from "@/components/services/Services";
 import { pageSeo } from "@/lib/seo";
@@ -55,6 +59,10 @@ export default function Page() {
       </section>
 
       <Services />
+      <Residential />
+      <Commercial />
+      <Vehicle />
+      <Property />
       <CommonFAQ faqs={faqs} />
       <FinalCTASection />
     </main>

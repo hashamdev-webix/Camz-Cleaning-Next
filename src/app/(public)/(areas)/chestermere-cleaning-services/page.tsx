@@ -1,3 +1,5 @@
+import ChestermereCleaningServices from "@/components/chestermere/ChestermereCleaningServices";
+import AreasServed from "@/components/chestermere/AreasServed";
 import ProfessionalServicesGrid from "@/components/chestermere/ProfessionalServicesGrid";
 import AreaCTA from "@/components/common/AreaCTA";
 import CommonFAQ from "@/components/common/CommonFAQ";
@@ -23,7 +25,9 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-white">
       <CommonHeroSection backgroundImage="/p4.webp" title={<>Professional Cleaning Services in Chestermere</>} />
+      <ChestermereCleaningServices />
       <ProfessionalServicesGrid />
+      <AreasServed />
       <CommonFAQ faqs={faqData} />
       <TestimonialsSection />
       <AreaCTA city="Chestermere" />

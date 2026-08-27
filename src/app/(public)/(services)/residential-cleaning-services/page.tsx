@@ -2,6 +2,7 @@ import CommonFAQ from "@/components/common/CommonFAQ";
 import ResidentialCTA from "@/components/residential/ResidentialCTA";
 import ServiceSidebar from "@/components/common/ServiceSidebar";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import AreasServed from "@/components/home/AreasServed";
 import ResidentialCleaningContent from "@/components/residential/ResidentialCleaningContent";
 import ResidentialHero from "@/components/residential/ResidentialHero";
 import { pageSeo } from "@/lib/seo";
@@ -54,6 +55,7 @@ const Page = () => {
           </article>
         </div>
       </section>
+      <AreasServed />
       <CommonFAQ faqs={residentialFaqs} />
       <TestimonialsSection />
       <ResidentialCTA />

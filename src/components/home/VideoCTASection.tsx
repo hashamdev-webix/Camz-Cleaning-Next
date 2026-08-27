@@ -1,105 +1,75 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Phone, Play, Star } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Phone, Star } from "lucide-react";
 
 const VideoCTASection = () => {
-  const router = useRouter();
-  const [playing, setPlaying] = useState(false);
   return (
     <section
-      className="relative py-20 px-6 md:px-12 lg:px-24 overflow-hidden text-white bg-cover bg-center"
+      className="relative overflow-hidden bg-cover bg-center px-6 py-20 text-white md:px-12 lg:px-24"
       style={{
-        backgroundImage: `
-      linear-gradient(to right, rgba(0,74,140,0.9), rgba(0,74,140,0.85)),
-      url('/video-bg.webp')
-    `,
+        backgroundImage: `linear-gradient(to right, rgba(0,74,140,0.9), rgba(0,74,140,0.85)), url('/video-bg.webp')`,
       }}
     >
-      {/* Background Texture/Overlay - subtle darken */}
-      <div className="absolute inset-0  pointer-events-none"></div>
-
-      <div className="container-custom mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        {/* Left Side: Content */}
+      <div className="container-custom relative z-10 mx-auto grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-white space-y-6"
+          className="space-y-6 text-white"
         >
-          <span className="inline-block border border-cyan-400 text-cyan-400 px-4 py-1 rounded-full text-sm font-medium">
+          <span className="inline-block rounded-full border border-cyan-400 px-4 py-1 text-sm font-medium text-cyan-400">
             Quality You Deserve
           </span>
-
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+          <h2 className="text-4xl font-bold leading-tight md:text-5xl">
             Reliable Cleaning <br /> Delivered By Professionals
           </h2>
-
-          <p className="text-blue-100 text-lg max-w-lg">
+          <p className="max-w-lg text-lg text-blue-100">
             We provide reliable, detailed cleaning services ensuring spotless
             spaces, healthier environments, and complete customer satisfaction
             every time.
           </p>
 
-          {/* Ratings Divider Area */}
-          <div className="pt-4 border-t border-white/20">
+          <div className="border-t border-white/20 pt-4">
             <div className="flex flex-wrap items-center gap-6">
-              {/* Avatar Group */}
               <div className="flex -space-x-3">
                 {[
                   "/wp-admin/uploads/call-back-1.webp",
                   "/wp-admin/uploads/call-back-2.webp",
                   "/wp-admin/uploads/call-back-3.webp",
                 ].map((src, index) => (
-                  <div
-                    key={index}
-                    className="w-12 h-12 rounded-full border-2 border-white overflow-hidden bg-gray-300"
-                  >
-                    <img
-                      src={src}
-                      alt={`client-${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+                  <div key={src} className="h-12 w-12 overflow-hidden rounded-full border-2 border-white bg-gray-300">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={`client-${index + 1}`} className="h-full w-full object-cover" />
                   </div>
                 ))}
               </div>
-
-              {/* Stars & Text */}
               <div>
-                <div className="flex text-yellow-400 mb-1">
+                <div className="mb-1 flex text-yellow-400">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} size={18} fill="currentColor" />
                   ))}
                 </div>
-                <p className="font-bold text-lg">
-                  Rated 5 Out Of 5 By Our Clients
-                </p>
+                <p className="text-lg font-bold">Rated 5 Out Of 5 By Our Clients</p>
               </div>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-white/20 flex flex-wrap items-center gap-8">
-            <button
-              onClick={() => router.push("/contact-us")}
-              className="border-2 border-white hover:bg-white hover:text-[#004A8C] text-white font-bold py-3 px-8 rounded-lg transition-all"
+          <div className="flex flex-wrap items-center gap-8 border-t border-white/20 pt-6">
+            <a
+              href="/contact-us"
+              className="rounded-lg border-2 border-white px-8 py-3 font-bold text-white transition-all hover:bg-white hover:text-[#004A8C]"
             >
               Contact Us
-            </button>
-
+            </a>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full border border-white/50 flex items-center justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/50">
                 <Phone size={20} className="text-white" />
               </div>
               <div>
-                <h6 className="text-lg uppercase tracking-wider text-white font-semibold">
-                  Call Us Anytime
-                </h6>
-                <a
-                  href="tel:+15878371977"
-                  className="text-xl font-extrabold text-white hover:text-[#00B7EB] transition-colors"
-                >
+                <h6 className="text-lg font-semibold uppercase tracking-wider text-white">Call Us Anytime</h6>
+                <a href="tel:+15878371977" className="text-xl font-extrabold text-white transition-colors hover:text-[#00B7EB]">
                   +1 587-837-1977
                 </a>
               </div>
@@ -107,54 +77,24 @@ const VideoCTASection = () => {
           </div>
         </motion.div>
 
-        {/* Right Side: Video Embed */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative group"
+          className="group relative"
         >
-          <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl border-8 border-black/20">
-            {playing ? (
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/OBluXZ-qpOM?autoplay=1"
-                title="Camz Cleaning Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            ) : (
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label="Play video"
-                onClick={() => setPlaying(true)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    setPlaying(true);
-                  }
-                }}
-                className="absolute inset-0 w-full h-full cursor-pointer"
-              >
-                <img
-                  src="https://img.youtube.com/vi/OBluXZ-qpOM/hqdefault.jpg"
-                  alt="Camz Cleaning Video"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <span className="absolute inset-0 flex items-center justify-center bg-black/15">
-                  <span className="flex h-20 w-20 items-center justify-center rounded-full bg-red-600 text-white shadow-xl transition-transform hover:scale-105">
-                    <Play className="ml-1 h-10 w-10 fill-current" />
-                  </span>
-                </span>
-              </div>
-            )}
+          <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-8 border-black/20 shadow-2xl">
+            <iframe
+              className="absolute inset-0 h-full w-full"
+              src="https://www.youtube.com/embed/OBluXZ-qpOM"
+              title="Camz Cleaning Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
-
-          {/* Decorative glow behind video */}
-          <div className="absolute -inset-4 bg-cyan-500/20 blur-3xl rounded-full -z-10 group-hover:bg-cyan-500/30 transition-all"></div>
+          <div className="absolute -inset-4 -z-10 rounded-full bg-cyan-500/20 blur-3xl transition-all group-hover:bg-cyan-500/30" />
         </motion.div>
       </div>
     </section>

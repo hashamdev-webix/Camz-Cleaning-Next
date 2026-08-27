@@ -1,3 +1,5 @@
+import AirdrieCleaningServices from "@/components/airdrie/AirdrieCleaningServices";
+import AreasServed from "@/components/airdrie/AreaServed";
 import ProfessionalServicesGrid from "@/components/airdrie/ProfessionalServicesGrid";
 import AreaCTA from "@/components/common/AreaCTA";
 import CommonFAQ from "@/components/common/CommonFAQ";
@@ -46,7 +48,9 @@ export default function Page() {
         backgroundImage="/wp-admin/uploads/vehicle.webp"
         title={<>Trusted Cleaning Services in Airdrie</>}
       />
+      <AirdrieCleaningServices />
       <ProfessionalServicesGrid />
+      <AreasServed />
       <CommonFAQ faqs={faqData} />
       <TestimonialsSection />
       <AreaCTA city="Airdrie" />

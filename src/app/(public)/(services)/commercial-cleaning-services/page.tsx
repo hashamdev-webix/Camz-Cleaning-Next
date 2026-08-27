@@ -4,6 +4,7 @@ import CommercialCleaningContent from "@/components/commercial/CommercialCleanin
 import CommonFAQ from "@/components/common/CommonFAQ";
 import ServiceSidebar from "@/components/common/ServiceSidebar";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import AreasServed from "@/components/home/AreasServed";
 import { pageSeo } from "@/lib/seo";
 
 export const metadata = pageSeo({
@@ -54,6 +55,7 @@ const Page = () => {
           </article>
         </div>
       </section>
+      <AreasServed />
       <CommonFAQ faqs={commercialFaqs} />
       <TestimonialsSection />
       <CommercialCTA />

@@ -3,7 +3,10 @@ import AboutSection from "@/components/home/About";
 import AreasServed from "@/components/home/AreasServed";
 import FinalCTASection from "@/components/home/FinalCTASection";
 import Hero from "@/components/home/Hero";
+import HowItWorksSection from "@/components/home/HowItWorksSection";
+import RecentProjects from "@/components/home/RecentProjects";
 import Services from "@/components/home/Services";
+import VideoCTASection from "@/components/home/VideoCTASection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import PageJsonLd from "@/components/seo/PageJsonLd";
 import { pageSeo } from "@/lib/seo";
@@ -49,6 +52,9 @@ export default function Home() {
       <Hero />
       <Services />
       <AboutSection />
+      <HowItWorksSection />
+      <VideoCTASection />
+      <RecentProjects />
       <AreasServed />
       <CommonFAQ faqs={homeFaqs} />
       <TestimonialsSection />

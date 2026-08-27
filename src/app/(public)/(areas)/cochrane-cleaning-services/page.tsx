@@ -1,3 +1,5 @@
+import CochraneCleaningServices from "@/components/cochrane/CochraneCleaningServices";
+import AreasServed from "@/components/cochrane/AreasServed";
 import ProfessionalServicesGrid from "@/components/cochrane/ProfessionalServicesGrid";
 import AreaCTA from "@/components/common/AreaCTA";
 import CommonFAQ from "@/components/common/CommonFAQ";
@@ -23,7 +25,9 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-white">
       <CommonHeroSection backgroundImage="/wp-admin/uploads/seasonal-1.webp" title={<>Professional Cleaning Services in Cochrane for Homes &amp; Businesses</>} />
+      <CochraneCleaningServices />
       <ProfessionalServicesGrid />
+      <AreasServed />
       <CommonFAQ faqs={faqData} />
       <TestimonialsSection />
       <AreaCTA city="Cochrane" />

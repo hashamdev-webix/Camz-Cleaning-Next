@@ -1,5 +1,6 @@
 import ContactHero from "@/components/contact/ContactHero";
 import ContactSection from "@/components/contact/ContactSection";
+import FAQSection from "@/components/contact/FaqSection";
 import MapSection from "@/components/contact/MapSection";
 import { pageSeo } from "@/lib/seo";
 
@@ -15,6 +16,7 @@ export default function Page() {
     <main className="min-h-screen bg-white">
       <ContactHero />
       <ContactSection />
+      <FAQSection />
       <MapSection />
     </main>
   );
