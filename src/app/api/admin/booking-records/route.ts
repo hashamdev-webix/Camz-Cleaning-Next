@@ -1,3 +1,4 @@
+import { enforceMutationSecurity } from "@/lib/security/http";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
@@ -92,6 +93,8 @@ async function syncAssignments(supabase: Awaited<ReturnType<typeof createClient>
 }
 
 export async function POST(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "booking-records-post", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const { allowed, supabase, user, profile } = await getPortalUser();
   if (!allowed || !user) return NextResponse.json({ error: "Portal access required." }, { status: 403 });
   const body = (await request.json()) as BookingPayload;
@@ -135,6 +138,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "booking-records-patch", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const { allowed, supabase, user, profile } = await getPortalUser();
   if (!allowed || !user) return NextResponse.json({ error: "Portal access required." }, { status: 403 });
   const body = (await request.json()) as BookingPayload;
@@ -210,6 +215,8 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "booking-records-delete", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const { allowed, supabase, profile } = await getPortalUser();
   if (!allowed) return NextResponse.json({ error: "Portal access required." }, { status: 403 });
   const params = new URL(request.url).searchParams;

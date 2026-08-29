@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 const ResidentialCleaningContent = () => {
   const whyChooseItems = [
     "A clear cleaning scope based on the home and requested tasks.",
@@ -14,22 +12,22 @@ const ResidentialCleaningContent = () => {
     {
       title: "Kitchen Cleaning",
       description:
-        "Surface cleaning for counters, sinks, appliance exteriors, cabinet fronts and other agreed kitchen areas.",
+        "We clean counters, sinks, appliance exteriors, cabinet fronts and other accessible kitchen surfaces, with attention to everyday build-up and frequently used areas.",
     },
     {
       title: "Bathroom Cleaning",
       description:
-        "Cleaning and sanitizing for sinks, toilets, tubs, showers, mirrors and accessible surfaces.",
+        "Bathroom cleaning covers sinks, toilets, tubs, showers, mirrors and accessible surfaces, helping keep the space fresh, hygienic and well maintained.",
     },
     {
       title: "Bedrooms and Living Areas",
       description:
-        "Dusting, surface wiping, tidying of accessible areas and floor cleaning throughout bedrooms and living spaces.",
+        "We dust, wipe surfaces, tidy accessible areas and clean floors throughout bedrooms and living spaces for a cleaner, more comfortable home.",
     },
     {
       title: "Floors, Rugs and Carpets",
       description:
-        "Vacuuming and mopping based on the floor type.",
+        "We vacuum rugs and carpets and mop suitable hard floors based on the floor type, with attention to visible dust and debris.",
     },
   ];
 
@@ -67,18 +65,39 @@ const ResidentialCleaningContent = () => {
 
   return (
     <div className="space-y-12 text-gray-700">
-      {/* Why Choose */}
+      {/* Restored Residential Introduction */}
       <section className="space-y-6">
+        <h2 className="text-3xl font-extrabold leading-tight text-[#0B4E9B] md:text-4xl">
+          Professional House Cleaning Services in Calgary
+        </h2>
+
         <div className="overflow-hidden rounded-[2rem] shadow-md">
           <img
             src="/wp-admin/uploads/residential-hero.webp"
-            alt="Residential home cleaning service"
+            alt="Professional house cleaning service in Calgary"
             width={1200}
             height={800}
-            className="h-[350px] w-full object-cover"
+            className="block h-auto w-full"
           />
         </div>
 
+        <p className="font-medium leading-relaxed">
+          Keeping your home clean and comfortable takes time, especially when
+          daily routines leave little room for detailed cleaning. Camz Cleaning
+          provides professional house cleaning services in Calgary for
+          homeowners who want reliable, consistent care without the added
+          stress. Our residential cleaning service covers essential areas
+          throughout the home, including kitchens, bathrooms, bedrooms and
+          living spaces, with the cleaning scope tailored to your property,
+          condition and priorities. Whether you need regular upkeep, a detailed
+          deep clean or move-in/move-out cleaning, our team focuses on creating
+          a cleaner, fresher and more comfortable home with careful attention to
+          the areas that matter most.
+        </p>
+      </section>
+
+      {/* Why Choose */}
+      <section className="space-y-6">
         <h2 className="text-2xl font-extrabold text-[#0B4E9B] md:text-4xl">
           Why Choose Camz Cleaning?
         </h2>
@@ -114,7 +133,6 @@ const ResidentialCleaningContent = () => {
               <h3 className="text-xl font-bold text-[#0B4E9B]">
                 {item.title}
               </h3>
-
               <p className="leading-relaxed">{item.description}</p>
             </div>
           ))}
@@ -134,8 +152,8 @@ const ResidentialCleaningContent = () => {
                   src={img.src}
                   alt={img.alt}
                   width={1200}
-            height={800}
-            className="h-full w-full rounded-2xl object-cover"
+                  height={800}
+                  className="h-full w-full rounded-2xl object-cover"
                 />
               </div>
             ))}
@@ -155,24 +173,21 @@ const ResidentialCleaningContent = () => {
               <h3 className="text-xl font-bold text-[#0B4E9B]">
                 {item.title}
               </h3>
-
               <p className="leading-relaxed">{item.description}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slide {
           0% {
             transform: translateX(0);
           }
-
           100% {
             transform: translateX(-50%);
           }
         }
-
         .animate-slide {
           animation: slide 20s linear infinite;
         }

@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 const VehicleCleaningContent = () => {
   const services = [
     {
@@ -28,6 +26,29 @@ const VehicleCleaningContent = () => {
       title: "Wheels and Tires",
       description:
         "Wheel and tire cleaning may be included to remove ordinary road dirt and surface buildup according to the selected package.",
+    },
+  ];
+
+  const whyChooseItems = [
+    {
+      title: "Mobile Service at Your Location",
+      description:
+        "Vehicle cleaning can be arranged at your home or another suitable agreed location.",
+    },
+    {
+      title: "Interior & Exterior Care",
+      description:
+        "Cleaning options cover key areas inside and outside the vehicle based on the selected package.",
+    },
+    {
+      title: "Service Based on Your Vehicle’s Needs",
+      description:
+        "The cleaning scope is adjusted according to the vehicle size, condition and required work.",
+    },
+    {
+      title: "Simple Online Booking",
+      description:
+        "Choose your preferred service and appointment online, subject to location, weather and availability.",
     },
   ];
 
@@ -85,6 +106,29 @@ const VehicleCleaningContent = () => {
         </p>
       </section>
 
+      {/* Restored Why Choose */}
+      <section className="space-y-6">
+        <h2 className="text-2xl font-extrabold text-[#0B4E9B] md:text-4xl">
+          Why Choose Camz Cleaning?
+        </h2>
+
+        <p className="leading-relaxed">
+          Camz Cleaning provides convenient mobile vehicle cleaning based on
+          your location, vehicle condition and selected service. Our team
+          focuses on careful interior and exterior cleaning while keeping the
+          process simple, flexible and easy to schedule.
+        </p>
+
+        <ul className="space-y-4">
+          {whyChooseItems.map((item) => (
+            <li key={item.title} className="leading-relaxed">
+              <span className="font-bold text-[#0B4E9B]">{item.title}: </span>
+              <span>{item.description}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       {/* Services */}
       <section className="space-y-8">
         <h2 className="text-2xl font-extrabold text-[#0B4E9B] md:text-4xl">
@@ -102,7 +146,6 @@ const VehicleCleaningContent = () => {
               <h3 className="text-xl font-bold text-[#0B4E9B]">
                 {service.title}
               </h3>
-
               <p className="leading-relaxed">{service.description}</p>
             </div>
           ))}
@@ -139,8 +182,8 @@ const VehicleCleaningContent = () => {
                     src={img.src}
                     alt={img.alt}
                     width={1200}
-            height={800}
-            className="h-full w-full rounded-2xl object-cover"
+                    height={800}
+                    className="h-full w-full rounded-2xl object-cover"
                   />
                 </div>
               ))}
@@ -149,17 +192,15 @@ const VehicleCleaningContent = () => {
         </div>
       </section>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slide {
           0% {
             transform: translateX(0);
           }
-
           100% {
             transform: translateX(-50%);
           }
         }
-
         .animate-slide {
           animation: slide 20s linear infinite;
         }

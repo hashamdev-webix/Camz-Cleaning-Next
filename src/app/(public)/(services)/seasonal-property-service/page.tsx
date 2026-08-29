@@ -42,7 +42,7 @@ const Page = () => {
         title={
           <>
             Affordable Vacation Rentals and Seasonal
-            <br /> Property Cleaning &amp; Care Service
+            <br /> Property Cleaning &amp; Care Service in Calgary
           </>
         }
       />

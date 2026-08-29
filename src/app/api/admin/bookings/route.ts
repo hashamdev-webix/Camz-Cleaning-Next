@@ -1,3 +1,4 @@
+import { enforceMutationSecurity } from "@/lib/security/http";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
@@ -22,6 +23,8 @@ async function authorizeAdmin() {
 }
 
 export async function PATCH(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "bookings-patch", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const { allowed, supabase } = await authorizeAdmin();
   if (!allowed) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
 

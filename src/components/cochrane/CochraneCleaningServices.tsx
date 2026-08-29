@@ -18,7 +18,7 @@ const CochraneCleaningServices = () => {
         </div>
         <div className="relative group">
           <div className="absolute -inset-4 bg-gradient-to-r from-[#00CEE6]/10 to-[#004A8C]/10 rounded-3xl blur-2xl group-hover:blur-xl transition-all duration-500" />
-          <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-[10px] border-white z-10"><Image src="/wp-admin/uploads/floor cleaning.webp" alt="Professional Cleaning in Cochrane" fill className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out" priority /></div>
+          <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-[10px] border-white z-10"><Image src="/wp-admin/uploads/stairs cleaning.webp" alt="Professionally cleaned stairs in a Cochrane property" fill className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out" priority /></div>
         </div>
       </div>
     </section>

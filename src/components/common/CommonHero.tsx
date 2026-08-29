@@ -1,30 +1,40 @@
 import React from "react";
+import Image from "next/image";
 
-interface CommonHeroProps {
+interface HeroProps {
   backgroundImage: string;
   title: string | React.ReactNode;
+  imagePosition?: string;
 }
 
-const CommonHero = ({ backgroundImage, title }: CommonHeroProps) => {
+const CommonHeroSection = ({
+  backgroundImage,
+  title,
+  imagePosition = "center",
+}: HeroProps) => {
   return (
-    <section className="relative h-[300px] md:h-[400px] flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `url('${backgroundImage}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        {/* Overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-[#265995] opacity-70"></div>
+    <section className="relative flex h-[420px] items-center justify-center overflow-hidden md:h-[460px]">
+      {/* Background */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={backgroundImage}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+          style={{
+            objectPosition: imagePosition,
+          }}
+        />
+
+        {/* Blue overlay */}
+        <div className="absolute inset-0 bg-[#265995]/75" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-4">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-md whitespace-pre-line">
+      {/* Heading */}
+      <div className="relative z-10 px-4 text-center">
+        <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white drop-shadow-md md:text-6xl">
           {title}
         </h1>
       </div>
@@ -32,4 +42,4 @@ const CommonHero = ({ backgroundImage, title }: CommonHeroProps) => {
   );
 };
 
-export default CommonHero;
+export default CommonHeroSection;

@@ -20,9 +20,21 @@ import {
   TimePicker,
 } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  isSupportedAddress,
+  isSupportedCoordinates,
+  SERVICE_AREA_LABEL,
+} from "@/lib/serviceArea";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const CALGARY_TIME_ZONE = "America/Edmonton";
 
 // --- Types ---
 interface Service {
@@ -97,6 +109,21 @@ const BookingModal = ({
   const [guestEmailConfirm, setGuestEmailConfirm] = useState("");
 
   const totalSteps = 4;
+
+  const getCalgaryNow = () => dayjs().tz(CALGARY_TIME_ZONE);
+
+  const getSelectedDateTime = () => {
+    if (!date || !time) return null;
+
+    const calgaryDateTime = `${date.format("YYYY-MM-DD")}T${time.format("HH:mm")}:00`;
+    return dayjs.tz(calgaryDateTime, CALGARY_TIME_ZONE);
+  };
+
+  const isValidSchedule = () => {
+    const selected = getSelectedDateTime();
+    return !!selected && selected.isAfter(getCalgaryNow().add(15, "minute"));
+  };
+
   const nextStep = () => {
     if (step === 1 && isGuest) {
       if (guestName.trim().length < 2) {
@@ -122,8 +149,12 @@ const BookingModal = ({
         alert("Please select a time");
         return;
       }
-      if (!location || location.trim().length < 3) {
-        alert("Please enter a valid location");
+      if (!isValidSchedule()) {
+        alert("Please choose a future date and time.");
+        return;
+      }
+      if (!isSupportedAddress(location)) {
+        alert(`Please enter an address within ${SERVICE_AREA_LABEL}.`);
         return;
       }
     }
@@ -140,7 +171,12 @@ const BookingModal = ({
       );
     }
     if (step === 2) {
-      return !!date && !!time && !!location && location.trim().length >= 3;
+      return (
+        !!date &&
+        !!time &&
+        isValidSchedule() &&
+        isSupportedAddress(location)
+      );
     }
     return true;
   };
@@ -153,8 +189,22 @@ const BookingModal = ({
       return;
     }
 
-    if (!service || !date || !time) {
+    const selectedDateTime = getSelectedDateTime();
+
+    if (!service || !selectedDateTime) {
       setSubmitError("Missing required booking information");
+      return;
+    }
+
+    if (!isValidSchedule()) {
+      setSubmitError("Please choose a future appointment time.");
+      return;
+    }
+
+    if (!isSupportedAddress(location)) {
+      setSubmitError(
+        `Please enter an address within ${SERVICE_AREA_LABEL}.`,
+      );
       return;
     }
 
@@ -162,77 +212,46 @@ const BookingModal = ({
     setSubmitError(null);
 
     try {
-      const supabase = createClient();
-      const { total, taxRate } = calculatePricing();
+      const response = await fetch("/api/booking/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          serviceId: service.id,
+          isGuest,
+          guestName: isGuest ? guestName.trim() : undefined,
+          guestEmail: isGuest ? guestEmail.trim() : undefined,
+          bookingDateTime: selectedDateTime.toISOString(),
+          address: location.trim(),
+          coordinates,
+          pricingType,
+          hours,
+          formData,
+        }),
+      });
 
-      // Combine date and time into a single timestamp
-      const bookingDateTime = date
-        .hour(time.hour())
-        .minute(time.minute())
-        .second(0)
-        .toISOString();
-
-      // Build the job record (guest vs logged-in user)
-      const jobRecord: Record<string, any> = {
-        customer_id: isGuest ? null : user?.id,
-        is_guest: isGuest,
-        service_id: service.id,
-        service_name: service.title,
-        service_type: service.service_type,
-        date: bookingDateTime,
-        address: location,
-        billing_type: pricingType.toLowerCase(),
-        total_price: total,
-        tax_rate: taxRate,
-        price: `$${total.toFixed(2)}`,
-        status: "pending",
-        service_data: formData,
+      const result = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+        bookingId?: string;
       };
 
-      // Add guest contact info
-      if (isGuest) {
-        jobRecord.guest_name = guestName.trim();
-        jobRecord.guest_email = guestEmail.trim();
+      if (!response.ok || !result.ok) {
+        throw new Error(
+          result.error || "We could not create your booking. Please try again.",
+        );
       }
 
-      // Add coordinates if available
-      if (coordinates) {
-        jobRecord.job_lat = coordinates.lat;
-        jobRecord.job_lng = coordinates.lng;
-      }
-
-      // Add billing-specific fields
-      if (pricingType === "Hourly") {
-        jobRecord.estimated_hours = hours;
-        if (service.hourly_rate) {
-          jobRecord.hourly_rate = Number(service.hourly_rate);
-        }
-      }
-
-      // Add bedrooms/washrooms if present in formData
-      if (formData.bedrooms !== undefined) {
-        jobRecord.bedrooms = Number(formData.bedrooms);
-      }
-      if (formData.washrooms !== undefined) {
-        jobRecord.washrooms = Number(formData.washrooms);
-      }
-
-      console.log("Submitting booking:", jobRecord);
-
-      const { error } = await supabase
-        .from("jobs")
-        .insert(jobRecord);
-
-      if (error) {
-        console.error("Booking insert error:", error);
-        throw new Error(error.message || "Failed to create booking");
-      }
-
-      console.log("Booking created successfully");
+      setBookingId(result.bookingId || null);
       setSubmitSuccess(true);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Booking submission failed:", err);
-      setSubmitError(err.message || "Something went wrong. Please try again.");
+      setSubmitError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -463,26 +482,54 @@ const BookingModal = ({
       setSubmitError("Geolocation not supported. Please type your address.");
       return;
     }
+
     setLoadingLocation(true);
+    setSubmitError(null);
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        setCoordinates({ lat: latitude, lng: longitude });
+
+        if (!isSupportedCoordinates(latitude, longitude)) {
+          setCoordinates(null);
+          setLocation("");
+          setLoadingLocation(false);
+          alert(`Your current location is outside ${SERVICE_AREA_LABEL}.`);
+          return;
+        }
+
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
           );
           const data = await res.json();
-          setLocation(data.display_name || `${latitude}, ${longitude}`);
+          const address =
+            typeof data?.display_name === "string" ? data.display_name : "";
+
+          if (!isSupportedAddress(address)) {
+            setCoordinates(null);
+            setLocation("");
+            alert(`Your current location is outside ${SERVICE_AREA_LABEL}.`);
+          } else {
+            setCoordinates({ lat: latitude, lng: longitude });
+            setLocation(address);
+          }
         } catch {
-          setLocation(`${latitude}, ${longitude}`);
+          setCoordinates(null);
+          setLocation("");
+          setSubmitError(
+            "We could not verify this location. Please type your service address.",
+          );
+        } finally {
+          setLoadingLocation(false);
         }
-        setLoadingLocation(false);
       },
       (error) => {
         console.warn("Geolocation error:", error.message);
         setLoadingLocation(false);
-        // Don't block — let user type address manually
+        setSubmitError(
+          "We could not read your location. Please type your service address.",
+        );
       },
       {
         enableHighAccuracy: true,
@@ -960,6 +1007,7 @@ const BookingModal = ({
 
                       <DatePicker
                         value={date}
+                        minDate={getCalgaryNow().startOf("day")}
                         onChange={(newValue) => setDate(newValue)}
                         slotProps={{
                           textField: {
@@ -980,6 +1028,12 @@ const BookingModal = ({
 
                       <TimePicker
                         value={time}
+                        minTime={
+                          date?.format("YYYY-MM-DD") ===
+                          getCalgaryNow().format("YYYY-MM-DD")
+                            ? getCalgaryNow().add(15, "minute")
+                            : undefined
+                        }
                         onChange={(newValue) => setTime(newValue)}
                         slotProps={{
                           textField: {
@@ -991,6 +1045,10 @@ const BookingModal = ({
                         }}
                       />
                     </div>
+
+                    <p className="rounded-xl bg-blue-50 px-4 py-3 text-xs font-semibold leading-5 text-[#0B4E9B]">
+                      Appointment times are interpreted in Calgary local time (Mountain Time).
+                    </p>
 
                     <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
                       <h4 className="text-[11px] font-bold text-blue-600 mb-3 flex items-center gap-2 uppercase">
@@ -1009,8 +1067,11 @@ const BookingModal = ({
                       <div className="relative">
                         <input
                           value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                          placeholder="Search Address"
+                          onChange={(e) => {
+                            setLocation(e.target.value);
+                            setCoordinates(null);
+                          }}
+                          placeholder="Enter Calgary-region service address"
                           className="w-full p-3 rounded-xl border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                         />
                         {location && (
@@ -1019,6 +1080,10 @@ const BookingModal = ({
                           </span>
                         )}
                       </div>
+                      <p className="mt-2 text-[11px] leading-5 text-slate-500">
+                        Online booking is available in {SERVICE_AREA_LABEL}.
+                        Addresses outside this service area cannot be submitted.
+                      </p>
                     </div>
                   </div>
                 </motion.div>

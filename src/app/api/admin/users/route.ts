@@ -1,3 +1,5 @@
+import { validateStrongPassword } from "@/lib/security/password";
+import { enforceMutationSecurity } from "@/lib/security/http";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
@@ -42,6 +44,8 @@ function getServiceClient() {
 }
 
 export async function POST(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "users-post", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const actor = await getActor();
   if (!actor) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   const creatable = CREATABLE_ROLES_BY_ACTOR[actor.role];
@@ -58,7 +62,8 @@ export async function POST(request: NextRequest) {
   const requestedApprovalStatus = body.approval_status || "approved";
 
   if (!name || !email || !phone || !password) return NextResponse.json({ error: "Name, email, phone, and password are required." }, { status: 400 });
-  if (password.length < 6) return NextResponse.json({ error: "Password must be at least 6 characters." }, { status: 400 });
+  const passwordError = validateStrongPassword(password);
+  if (passwordError) return NextResponse.json({ error: passwordError }, { status: 400 });
   if (!creatable.has(role)) return NextResponse.json({ error: "You are not allowed to create a user with this role." }, { status: 403 });
   if (actor.role === "admin" && !APPROVAL_STATUSES.has(requestedApprovalStatus)) {
     return NextResponse.json({ error: "Selected approval status is not allowed." }, { status: 400 });
@@ -103,6 +108,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "users-patch", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const actor = await getActor();
   if (actor?.role !== "admin") return NextResponse.json({ error: "Admin access required." }, { status: 403 });
   const admin = getServiceClient();

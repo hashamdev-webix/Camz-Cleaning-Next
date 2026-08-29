@@ -1,3 +1,5 @@
+import { validateStrongPassword } from "@/lib/security/password";
+import { enforceMutationSecurity } from "@/lib/security/http";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
@@ -132,6 +134,8 @@ async function resolveRole(
 }
 
 export async function POST(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "booking-record-users-post", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const actor = await getAdminActor();
   if (!actor) {
     return NextResponse.json({ error: "Admin access required." }, { status: 403 });
@@ -156,11 +160,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (password.length < 6) {
-    return NextResponse.json(
-      { error: "Password must be at least 6 characters." },
-      { status: 400 },
-    );
+  const passwordError = validateStrongPassword(password);
+  if (passwordError) {
+    return NextResponse.json({ error: passwordError }, { status: 400 });
   }
 
   if (!APPROVAL_STATUSES.has(approvalStatus)) {
@@ -254,6 +256,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "booking-record-users-patch", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const actor = await getAdminActor();
   if (!actor) {
     return NextResponse.json({ error: "Admin access required." }, { status: 403 });
@@ -408,11 +412,9 @@ export async function PATCH(request: NextRequest) {
   if (email !== existing.email) authChanges.email = email;
 
   if (typeof body.password === "string" && body.password.length > 0) {
-    if (body.password.length < 6) {
-      return NextResponse.json(
-        { error: "Password must be at least 6 characters." },
-        { status: 400 },
-      );
+    const passwordError = validateStrongPassword(body.password);
+    if (passwordError) {
+      return NextResponse.json({ error: passwordError }, { status: 400 });
     }
     authChanges.password = body.password;
   }
@@ -439,6 +441,8 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "booking-record-users-delete", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const actor = await getAdminActor();
   if (!actor) {
     return NextResponse.json({ error: "Admin access required." }, { status: 403 });

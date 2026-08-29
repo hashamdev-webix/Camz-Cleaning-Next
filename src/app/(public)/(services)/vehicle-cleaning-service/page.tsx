@@ -38,7 +38,7 @@ const Page = () => {
     <main className="min-h-screen bg-white">
       <CommonHeroSection
         backgroundImage="/wp-admin/uploads/help-bg.webp"
-        title={<>Mobile Vehicle Cleaning and Car Detailing in Calgary</>}
+        title={<>Affordable Vehicle Cleaning Services | Car Interior and Exterior Detailing in Calgary</>}
       />
       <section className="px-6 py-16 md:px-12 lg:px-24">
         <div className="container-custom mx-auto grid grid-cols-1 items-start gap-12 lg:grid-cols-3">

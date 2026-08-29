@@ -1,3 +1,4 @@
+import { enforceMutationSecurity } from "@/lib/security/http";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
@@ -28,6 +29,8 @@ function cleanList<T extends Record<string, string>>(items: unknown, required: A
 }
 
 export async function POST(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "blogs-post", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const { allowed, supabase } = await getAdmin();
   if (!allowed) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
 
@@ -51,6 +54,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "blogs-delete", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const { allowed, supabase } = await getAdmin();
   if (!allowed) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
   const id = new URL(request.url).searchParams.get("id");

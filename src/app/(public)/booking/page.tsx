@@ -2,7 +2,6 @@ import BookingClient, {
   type Category,
   type Service,
 } from "@/components/booking/BookingClient";
-
 import { createPublicServerClient } from "@/lib/supabase/public-server";
 import { pageSeo } from "@/lib/seo";
 
@@ -14,6 +13,13 @@ export const metadata = pageSeo({
 });
 
 export const revalidate = 300;
+
+const CATEGORY_ORDER = [
+  "residential",
+  "commercial",
+  "vehicle",
+  "seasonal",
+] as const;
 
 export default async function BookingPage() {
   const supabase = createPublicServerClient();
@@ -36,10 +42,114 @@ export default async function BookingPage() {
   if (categoryResult.error) throw categoryResult.error;
   if (serviceResult.error) throw serviceResult.error;
 
+  const allCategories = (categoryResult.data ?? []) as Category[];
+
+  const getDescriptor = (category: Category) =>
+    `${category.name} ${category.type}`.toLowerCase();
+
+  const residentialCategory = allCategories.find((category) =>
+    getDescriptor(category).includes("residential"),
+  );
+
+  const actualSeasonalCategory = allCategories.find((category) =>
+    getDescriptor(category).includes("seasonal"),
+  );
+
+  // Some existing DBs still use "Specialty" for the fourth category.
+  // If a real Seasonal category does not exist, use Specialty as the
+  // Seasonal Property category on the public booking page.
+  const seasonalFallbackCategory =
+    actualSeasonalCategory ??
+    allCategories.find((category) =>
+      getDescriptor(category).includes("specialty"),
+    );
+
+  const normalizedCategories: Category[] = [];
+
+  const residential = allCategories.find((category) =>
+    getDescriptor(category).includes("residential"),
+  );
+
+  const commercial = allCategories.find((category) =>
+    getDescriptor(category).includes("commercial"),
+  );
+
+  const vehicle = allCategories.find((category) =>
+    getDescriptor(category).includes("vehicle"),
+  );
+
+  if (residential) {
+    normalizedCategories.push({
+      ...residential,
+      name: "Residential",
+    });
+  }
+
+  if (commercial) {
+    normalizedCategories.push({
+      ...commercial,
+      name: "Commercial",
+    });
+  }
+
+  if (vehicle) {
+    normalizedCategories.push({
+      ...vehicle,
+      name: "Vehicle",
+    });
+  }
+
+  if (seasonalFallbackCategory) {
+    normalizedCategories.push({
+      ...seasonalFallbackCategory,
+      name: "Seasonal Property",
+      type: "seasonal",
+    });
+  }
+
+  // Final fixed order:
+  // Residential -> Commercial -> Vehicle -> Seasonal Property
+  const categoryRank = (category: Category) => {
+    const descriptor = `${category.name} ${category.type}`.toLowerCase();
+
+    if (descriptor.includes("residential")) return CATEGORY_ORDER.indexOf("residential");
+    if (descriptor.includes("commercial")) return CATEGORY_ORDER.indexOf("commercial");
+    if (descriptor.includes("vehicle")) return CATEGORY_ORDER.indexOf("vehicle");
+    return CATEGORY_ORDER.indexOf("seasonal");
+  };
+
+  const categories = normalizedCategories.sort(
+    (a, b) => categoryRank(a) - categoryRank(b),
+  );
+
+  const visibleCategoryIds = new Set(
+    categories.map((category) => category.id),
+  );
+
+  const services = ((serviceResult.data ?? []) as Service[])
+    .map((service) => {
+      // Move-In / Move-Out stays inside Residential.
+      if (
+        service.service_type === "move_in_out" &&
+        residentialCategory
+      ) {
+        return {
+          ...service,
+          category_id: residentialCategory.id,
+          title: service.title.includes("Residential")
+            ? service.title
+            : `${service.title} (Residential)`,
+        };
+      }
+
+      return service;
+    })
+    .filter((service) => visibleCategoryIds.has(service.category_id));
+
   return (
     <BookingClient
-      categories={(categoryResult.data ?? []) as Category[]}
-      services={(serviceResult.data ?? []) as Service[]}
+      categories={categories}
+      services={services}
     />
   );
 }

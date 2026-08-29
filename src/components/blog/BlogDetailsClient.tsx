@@ -204,7 +204,8 @@ export default function BlogDetailsClient({
               </section>
             )}
 
-            <section className="rounded-3xl bg-white p-8 shadow-sm" aria-labelledby="reply-heading">
+            {!blog.id.startsWith("guide-") && (
+              <section className="rounded-3xl bg-white p-8 shadow-sm" aria-labelledby="reply-heading">
               <h2 id="reply-heading" className="text-3xl font-bold text-[#0B4E9B]">
                 Leave a Reply
               </h2>
@@ -230,7 +231,8 @@ export default function BlogDetailsClient({
                   {submitting ? <><Loader2 size={18} className="animate-spin" />Submitting...</> : "Post Comment"}
                 </button>
               </form>
-            </section>
+              </section>
+            )}
           </article>
 
           <aside className="space-y-10">

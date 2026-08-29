@@ -1,3 +1,4 @@
+import { enforceMutationSecurity } from "@/lib/security/http";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
@@ -91,6 +92,8 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "booking-roles-post", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const actor = await getAdminActor();
   if (!actor) {
     return NextResponse.json({ error: "Admin access required." }, { status: 403 });
@@ -148,6 +151,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "booking-roles-delete", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   const actor = await getAdminActor();
   if (!actor) {
     return NextResponse.json({ error: "Admin access required." }, { status: 403 });

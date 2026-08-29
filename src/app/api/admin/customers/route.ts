@@ -1,3 +1,4 @@
+import { enforceMutationSecurity } from "@/lib/security/http";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
@@ -34,6 +35,8 @@ function splitAddress(address: string) {
 }
 
 export async function POST(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "customers-post", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   if (!(await authorizeAdmin())) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
   const admin = getServiceClient();
   if (!admin) return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY is not configured on the server." }, { status: 503 });
@@ -79,6 +82,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "customers-patch", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   if (!(await authorizeAdmin())) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
   const admin = getServiceClient();
   if (!admin) return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY is not configured on the server." }, { status: 503 });
@@ -105,6 +110,8 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const securityError = await enforceMutationSecurity(request, { bucket: "customers-delete", limit: 60, windowSeconds: 60 });
+  if (securityError) return securityError;
   if (!(await authorizeAdmin())) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
   const admin = getServiceClient();
   if (!admin) return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY is not configured on the server." }, { status: 503 });

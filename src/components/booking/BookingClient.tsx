@@ -41,6 +41,16 @@ export interface Service {
   is_active: boolean;
   has_addons: boolean;
   tax_rate: number;
+  base_rate?: number;
+  bedroom_rate?: number;
+  washroom_rate?: number;
+  hourly_rate?: number;
+  sqft_rate?: number;
+  vehicle_sedan_rate?: number;
+  vehicle_suv_rate?: number;
+  fridge_price?: number;
+  oven_price?: number;
+  window_price?: number;
 }
 
 interface BookingClientProps {
@@ -57,6 +67,7 @@ const BookingClient = ({
     move_in_out: "/seasonal.webp",
     commercial: "/commercial-cleaning.webp",
     vehicle: "/vehicle.webp",
+    seasonal: "/seasonal.webp",
     specialty: "/work.webp",
   };
 
@@ -132,6 +143,7 @@ const BookingClient = ({
       Residential: "Home cleaning services",
       Commercial: "Workplace cleaning services",
       Vehicle: "Mobile vehicle cleaning",
+      "Seasonal Property": "Seasonal property cleaning services",
       Specialty: "Additional cleaning services",
     };
 

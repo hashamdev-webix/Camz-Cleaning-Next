@@ -24,7 +24,11 @@ export default function Page() {
 
   return (
     <main className="min-h-screen bg-white">
-      <CommonHeroSection backgroundImage="/p4.webp" title={<>Professional Cleaning Services in Chestermere</>} />
+      <CommonHeroSection
+        backgroundImage="/wp-admin/uploads/whole bathroom cleaning.webp"
+        imageFit="contain"
+        title={<>Professional Cleaning Services in Chestermere</>}
+      />
       <ChestermereCleaningServices />
       <ProfessionalServicesGrid />
       <AreasServed />

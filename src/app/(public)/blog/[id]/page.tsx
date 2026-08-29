@@ -8,13 +8,20 @@ import PageJsonLd from "@/components/seo/PageJsonLd";
 import { blogPostingJsonLd } from "@/lib/jsonLdSchemas";
 import { pageSeo } from "@/lib/seo";
 import { createPublicServerClient } from "@/lib/supabase/public-server";
+import { fallbackBlogs } from "@/data/fallbackBlogs";
 
 export const revalidate = 300;
 
 const blogSelect =
   "id, title, description, image_url, created_at, faqs, steps, detail_images";
 
+const getFallbackBlog = (id: string): Blog | null =>
+  (fallbackBlogs.find((blog) => blog.id === id) as Blog | undefined) ?? null;
+
 const getBlog = cache(async (id: string): Promise<Blog | null> => {
+  const fallback = getFallbackBlog(id);
+  if (fallback) return fallback;
+
   const supabase = createPublicServerClient();
   const { data, error } = await supabase
     .from("blogs")
@@ -88,7 +95,11 @@ export async function generateMetadata({
 export async function generateStaticParams() {
   const supabase = createPublicServerClient();
   const { data } = await supabase.from("blogs").select("id");
-  return (data ?? []).map(({ id }) => ({ id }));
+
+  return [
+    ...(data ?? []).map(({ id }) => ({ id })),
+    ...fallbackBlogs.map(({ id }) => ({ id })),
+  ];
 }
 
 export default async function BlogDetailsPage({
@@ -97,19 +108,27 @@ export default async function BlogDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = createPublicServerClient();
-  const [blog, recentResult] = await Promise.all([
-    getBlog(id),
-    supabase
+  const blog = await getBlog(id);
+  if (!blog) notFound();
+
+  const fallbackCurrent = getFallbackBlog(id);
+  let recentPosts: Blog[] = [];
+
+  if (fallbackCurrent) {
+    recentPosts = fallbackBlogs
+      .filter((item) => item.id !== id)
+      .slice(0, 3) as Blog[];
+  } else {
+    const supabase = createPublicServerClient();
+    const { data, error } = await supabase
       .from("blogs")
       .select(blogSelect)
       .neq("id", id)
       .order("created_at", { ascending: false })
-      .limit(3),
-  ]);
-
-  if (recentResult.error) throw recentResult.error;
-  if (!blog) notFound();
+      .limit(3);
+    if (error) throw error;
+    recentPosts = (data ?? []) as Blog[];
+  }
 
   const description = seoDescription(blog.description);
 
@@ -124,10 +143,7 @@ export default async function BlogDetailsPage({
           publishedAt: blog.created_at,
         })}
       />
-      <BlogDetailsClient
-        blog={blog}
-        recentPosts={(recentResult.data ?? []) as Blog[]}
-      />
+      <BlogDetailsClient blog={blog} recentPosts={recentPosts} />
     </>
   );
 }

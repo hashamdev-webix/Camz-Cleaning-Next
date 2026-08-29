@@ -231,7 +231,7 @@ const SeasonalPropertyContent = () => {
         </p>
       </section>
 
-      <style jsx>{`
+      <style>{`
         @keyframes slide {
           0% {
             transform: translateX(0);
