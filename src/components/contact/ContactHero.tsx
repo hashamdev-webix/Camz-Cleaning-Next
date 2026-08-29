@@ -4,7 +4,6 @@ const ContactHero = () => (
   <CommonHeroSection
     backgroundImage="/wp-admin/uploads/help-bg.webp"
     title="Contact Camz Cleaning"
-    imageFit="contain"
   />
 );
 
