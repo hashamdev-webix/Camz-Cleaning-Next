@@ -126,14 +126,15 @@ export default async function BookingRecordsPage() {
     ["admin", "cleaner", "data_entry"].includes(user.role),
   );
 
-  // Admin accounts can be managed from the Calendar, but booking assignment
-  // remains limited to operational Cleaner/Data Entry users.
-  const assignableUsers = portalUsers.filter(
-    (user) =>
-      ["cleaner", "data_entry"].includes(user.role) && !user.is_blocked,
-  );
+  // We map ALL portal users for reference so past assignments don't break
   const operationalUserMap = new Map(
-    assignableUsers.map((user) => [user.id, user]),
+    portalUsers.map((user) => [user.id, user]),
+  );
+
+  // 🔥 QA POINT 4 FIX: Only explicitly allow users with the "cleaner" role to be assigned.
+  // Admin accounts and Data Entry accounts are safely excluded from the picker.
+  const assignableCleaners = portalUsers.filter(
+    (user) => user.role === "cleaner" && !user.is_blocked,
   );
 
   const assignmentsByBooking = new Map<string, CleanerUser[]>();
@@ -145,7 +146,7 @@ export default async function BookingRecordsPage() {
     const list = assignmentsByBooking.get(assignment.booking_id) || [];
     list.push({
       id: assignedUser.id,
-      name: assignedUser.name || "Assigned User",
+      name: assignedUser.name || "Assigned Cleaner", // 🔥 QA POINT 5 FIX: Fallback label updated
       email: assignedUser.email || "",
       role: assignedUser.role,
       role_key: assignedUser.booking_role_key || assignedUser.role,
@@ -178,9 +179,9 @@ export default async function BookingRecordsPage() {
   return (
     <BookingRecordsPortal
       bookings={bookings}
-      cleaners={assignableUsers.map((user) => ({
+      cleaners={assignableCleaners.map((user) => ({
         id: user.id,
-        name: user.name || "Assigned User",
+        name: user.name || "Assigned Cleaner", // 🔥 QA POINT 5 FIX: Fallback label updated
         email: user.email || "",
         role: user.role,
         role_key: user.booking_role_key || user.role,

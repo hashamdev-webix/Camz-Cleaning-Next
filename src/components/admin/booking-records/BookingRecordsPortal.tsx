@@ -130,7 +130,9 @@ export default function BookingRecordsPortal({ bookings, cleaners, assignedUsers
     if (isDataEntry) return records.filter((booking) => booking.added_by_user === currentUser?.id);
     return records;
   }, [records, currentUser?.id, isCleaner, isDataEntry]);
-  const scopedBookings = records;
+  // Cleaners must only see bookings assigned to themselves.
+  // Admins keep access to all bookings; Data Entry keeps its own records.
+  const scopedBookings = isCleaner ? ownBookings : records;
 
   const [query, setQuery] = useState("");
   const [areaFilter, setAreaFilter] = useState("all");
@@ -2548,7 +2550,7 @@ function TextArea({ label, value, onChange }: { label: string; value: string; on
 function CleanerPicker({ cleaners, selected, onChange }: { cleaners: CleanerUser[]; selected: string[]; onChange: (ids: string[]) => void }) {
   return <div>
     <div className="mb-2 flex items-center justify-between gap-3">
-      <p className="text-[10px] font-bold text-[#13263A]">Assign User <span className="font-normal text-slate-400">(one or more)</span></p>
+      <p className="text-[10px] font-bold text-[#13263A]">Assign Cleaner <span className="font-normal text-slate-400">(one or more)</span></p>
       <span className="rounded-md bg-slate-100 px-2 py-1 text-[8px] font-bold text-slate-500">{selected.length} selected</span>
     </div>
     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

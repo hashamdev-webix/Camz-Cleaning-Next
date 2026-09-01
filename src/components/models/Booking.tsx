@@ -29,6 +29,7 @@ import {
   isSupportedAddress,
   isSupportedCoordinates,
   SERVICE_AREA_LABEL,
+  validateAddressWithAPI, // <-- Naya import yahan add hua
 } from "@/lib/serviceArea";
 
 dayjs.extend(utc);
@@ -87,11 +88,13 @@ const BookingModal = ({
   const [step, setStep] = useState(1);
   const [config, setConfig] = useState<ServiceConfig>({});
   const [loadingConfig, setLoadingConfig] = useState(false);
+  
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [bookingId, setBookingId] = useState<string | null>(null);
+  
   // Coordinates from geolocation
   const [coordinates, setCoordinates] = useState<{
     lat: number;
@@ -103,7 +106,11 @@ const BookingModal = ({
   const [date, setDate] = useState<Dayjs | null>(null);
   const [time, setTime] = useState<Dayjs | null>(null);
   const [location, setLocation] = useState("");
+  
+  // Nayi states yahan hain
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [isValidatingAddress, setIsValidatingAddress] = useState(false);
+  
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
   const [guestEmailConfirm, setGuestEmailConfirm] = useState("");
@@ -124,7 +131,8 @@ const BookingModal = ({
     return !!selected && selected.isAfter(getCalgaryNow().add(15, "minute"));
   };
 
-  const nextStep = () => {
+  // Naya async nextStep function
+  const nextStep = async () => {
     if (step === 1 && isGuest) {
       if (guestName.trim().length < 2) {
         alert("Please enter your name");
@@ -153,14 +161,21 @@ const BookingModal = ({
         alert("Please choose a future date and time.");
         return;
       }
-      if (!isSupportedAddress(location)) {
-        alert(`Please enter an address within ${SERVICE_AREA_LABEL}.`);
+      
+      // --> API Address Validation <--
+      setIsValidatingAddress(true);
+      const isRealAddress = await validateAddressWithAPI(location);
+      setIsValidatingAddress(false);
+
+      if (!isRealAddress) {
+        alert(`Please enter a valid actual address within ${SERVICE_AREA_LABEL}.`);
         return;
       }
     }
     setStep((prev) => Math.min(prev + 1, totalSteps));
   };
 
+  // Updated isStepValid
   const isStepValid = () => {
     if (step === 1 && isGuest) {
       const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail);
@@ -175,7 +190,7 @@ const BookingModal = ({
         !!date &&
         !!time &&
         isValidSchedule() &&
-        isSupportedAddress(location)
+        location.trim().length > 5 // Sirf string length check karega, API Next button par call hogi
       );
     }
     return true;
@@ -183,6 +198,7 @@ const BookingModal = ({
 
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
+  // Updated handleConfirm
   const handleConfirm = async () => {
     if (!isGuest && !user) {
       setSubmitError("Please log in to book a service");
@@ -201,10 +217,13 @@ const BookingModal = ({
       return;
     }
 
-    if (!isSupportedAddress(location)) {
-      setSubmitError(
-        `Please enter an address within ${SERVICE_AREA_LABEL}.`,
-      );
+    // --> API Check on Final Submit <--
+    setIsValidatingAddress(true);
+    const isRealAddress = await validateAddressWithAPI(location);
+    setIsValidatingAddress(false);
+
+    if (!isRealAddress) {
+      setSubmitError(`Please enter a valid actual address within ${SERVICE_AREA_LABEL}.`);
       return;
     }
 
@@ -385,8 +404,6 @@ const BookingModal = ({
     }
 
     const rawTaxRate = Number(service.tax_rate) || 0;
-    // Auto-detect: if value > 1, assume it's stored as whole number (e.g., 5 = 5%)
-    // If value <= 1, assume decimal (e.g., 0.05 = 5%)
     const taxRate = rawTaxRate > 1 ? rawTaxRate / 100 : rawTaxRate;
     const tax = subtotal * taxRate;
     const total = subtotal + tax;
@@ -474,6 +491,7 @@ const BookingModal = ({
       setGuestName("");
       setGuestEmail("");
       setGuestEmailConfirm("");
+      setIsValidatingAddress(false);
     }
   }, [isOpen]);
 
@@ -506,6 +524,7 @@ const BookingModal = ({
           const address =
             typeof data?.display_name === "string" ? data.display_name : "";
 
+          // Simple location check based on string for current location button
           if (!isSupportedAddress(address)) {
             setCoordinates(null);
             setLocation("");
@@ -1012,7 +1031,6 @@ const BookingModal = ({
                         slotProps={{
                           textField: {
                             fullWidth: true,
-
                             className:
                               "bg-slate-50 rounded-xl border border-slate-200",
                           },
@@ -1038,7 +1056,6 @@ const BookingModal = ({
                         slotProps={{
                           textField: {
                             fullWidth: true,
-
                             className:
                               "bg-slate-50 rounded-xl border border-slate-200",
                           },
@@ -1364,21 +1381,21 @@ const BookingModal = ({
           <div className="flex gap-3 mt-10">
             <button
               onClick={step === 1 ? onClose : prevStep}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isValidatingAddress} // Update back button state too
               className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {step === 1 ? "Cancel" : "Back"}
             </button>
             <button
               onClick={step === totalSteps ? handleConfirm : nextStep}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isValidatingAddress}
               className={`flex-1 py-3 rounded-xl text-white text-xs font-black flex items-center justify-center gap-2 shadow-xl shadow-blue-200 transition-all ${
-                !isStepValid() || isSubmitting
+                !isStepValid() || isSubmitting || isValidatingAddress
                   ? "bg-blue-300 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
-              {isSubmitting ? (
+              {isSubmitting || isValidatingAddress ? (
                 <>
                   <Loader2 size={16} className="animate-spin" />
                   Processing...

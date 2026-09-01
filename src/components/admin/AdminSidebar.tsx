@@ -272,7 +272,8 @@ export default function AdminSidebar({
     <>
       {/* MOBILE HEADER */}
       <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-white/10 bg-[#0C2134] px-4 lg:hidden">
-        <Link href="/admin-dashboard">
+        {/* Changed href from /admin-dashboard to / */}
+        <Link href="/">
           <Image
             src="/logo.webp"
             alt="Camz Cleaning"
@@ -295,8 +296,9 @@ export default function AdminSidebar({
 
       {/* DESKTOP SIDEBAR */}
       <aside className="fixed inset-y-0 left-0 z-50 hidden w-[236px] flex-col border-r border-white/[0.08] bg-[#0C2134] px-4 py-4 lg:flex">
+        {/* Changed href from /admin-dashboard to / */}
         <Link
-          href="/admin-dashboard"
+          href="/"
           className="mb-4 flex h-[58px] shrink-0 items-center border-b border-white/[0.07] pb-3"
         >
           <Image
@@ -324,13 +326,16 @@ export default function AdminSidebar({
 
           <aside className="relative flex h-full w-[255px] max-w-[82vw] flex-col border-r border-white/10 bg-[#0C2134] px-4 py-4 text-white shadow-2xl">
             <div className="mb-4 flex h-[54px] shrink-0 items-center justify-between border-b border-white/[0.07] pb-3">
-              <Image
-                src="/logo.webp"
-                alt="Camz Cleaning"
-                width={135}
-                height={50}
-                className="h-9 w-auto brightness-0 invert"
-              />
+              {/* Added Link wrapper here pointing to / */}
+              <Link href="/">
+                <Image
+                  src="/logo.webp"
+                  alt="Camz Cleaning"
+                  width={135}
+                  height={50}
+                  className="h-9 w-auto brightness-0 invert"
+                />
+              </Link>
 
               <button
                 type="button"
