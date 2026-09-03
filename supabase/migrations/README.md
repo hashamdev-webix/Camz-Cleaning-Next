@@ -61,3 +61,19 @@ blog_comments (
 - Only approved comments are publicly visible
 - Admins have full access to manage comments
 - Email addresses are stored but not displayed publicly
+
+---
+
+## 2026-08-27 Security Hardening
+
+After the existing migrations have been applied, run:
+
+`20260827_security_hardening.sql`
+
+This migration replaces the broad Booking Calendar RLS policies with role/ownership-aware policies, adds a server-only distributed rate-limit table/function, prevents public blog comments from self-approving, tightens custom-request uploads, and applies additional least-privilege rules.
+
+Important:
+- Keep `SUPABASE_SERVICE_ROLE_KEY` server-side only. Never expose it with a `NEXT_PUBLIC_` prefix.
+- The rate-limit RPC is executable only by `service_role`.
+- Test Admin, Data Entry, Cleaner, and Customer flows after applying the migration.
+- Keep Supabase Auth refresh-token rotation, leaked-password protection, and CAPTCHA enabled in production where available.

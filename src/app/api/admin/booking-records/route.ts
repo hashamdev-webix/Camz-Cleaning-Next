@@ -1,6 +1,7 @@
 import { enforceMutationSecurity } from "@/lib/security/http";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { sendAssignmentEmail } from "@/lib/email"; 
 
 type BookingPayload = Record<string, unknown> & {
   id?: string;
@@ -92,6 +93,33 @@ async function syncAssignments(supabase: Awaited<ReturnType<typeof createClient>
   await supabase.from("booking_record_assignments").insert(cleanerIds.map((cleaner_id) => ({ booking_id: bookingId, cleaner_id, assigned_by: assignedBy })));
 }
 
+async function notifyCleaners(supabase: Awaited<ReturnType<typeof createClient>>, cleanerIds: string[], bookingData: any) {
+  if (!cleanerIds || cleanerIds.length === 0) return;
+
+  const { data: cleaners } = await supabase
+    .from("users")
+    .select("id, name, email")
+    .in("id", cleanerIds);
+
+  if (!cleaners) return;
+
+  for (const cleaner of cleaners) {
+    if (cleaner.email) {
+      await sendAssignmentEmail(
+        cleaner.email,
+        cleaner.name || "Cleaner",
+        {
+          full_name: bookingData.full_name,
+          service_date: bookingData.service_date,
+          service_time: bookingData.service_time,
+          full_address: bookingData.full_address,
+          cleaning_type: bookingData.cleaning_type
+        }
+      );
+    }
+  }
+}
+
 export async function POST(request: NextRequest) {
   const securityError = await enforceMutationSecurity(request, { bucket: "booking-records-post", limit: 60, windowSeconds: 60 });
   if (securityError) return securityError;
@@ -133,7 +161,13 @@ export async function POST(request: NextRequest) {
 
   const { data, error } = await supabase.from("booking_records").insert({ ...payload, added_by_user: user.id, added_by: profile?.name || user.email || "Portal User" }).select("*").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  
   await syncAssignments(supabase, data.id, body.assigned_cleaner_ids || [], user.id);
+  
+  if (body.assigned_cleaner_ids && body.assigned_cleaner_ids.length > 0) {
+    await notifyCleaners(supabase, body.assigned_cleaner_ids, data);
+  }
+
   return NextResponse.json({ booking: data });
 }
 
@@ -184,6 +218,12 @@ export async function PATCH(request: NextRequest) {
   if (Array.isArray(body.assigned_cleaner_ids) && Object.keys(body).length <= 2) {
     if (role !== "admin") return NextResponse.json({ error: "Only admin can assign cleaners." }, { status: 403 });
     await syncAssignments(supabase, body.id, body.assigned_cleaner_ids, user.id);
+    
+    const { data: bookingData } = await supabase.from("booking_records").select("*").eq("id", body.id).single();
+    if (bookingData && body.assigned_cleaner_ids.length > 0) {
+      await notifyCleaners(supabase, body.assigned_cleaner_ids, bookingData);
+    }
+
     return NextResponse.json({ ok: true });
   }
 
@@ -205,11 +245,17 @@ export async function PATCH(request: NextRequest) {
   if (manpowerError) return NextResponse.json({ error: manpowerError }, { status: 400 });
   const { added_by: _ignoredAddedBy, ...updatePayload } = payload;
   void _ignoredAddedBy;
-  const { error } = await supabase.from("booking_records").update(updatePayload).eq("id", body.id);
+  
+  const { data: updatedBooking, error } = await supabase.from("booking_records").update(updatePayload).eq("id", body.id).select("*").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  
   if (Array.isArray(body.assigned_cleaner_ids)) {
     if (role !== "admin") return NextResponse.json({ error: "Only admin can assign cleaners." }, { status: 403 });
     await syncAssignments(supabase, body.id, body.assigned_cleaner_ids, user.id);
+    
+    if (body.assigned_cleaner_ids.length > 0 && updatedBooking) {
+      await notifyCleaners(supabase, body.assigned_cleaner_ids, updatedBooking);
+    }
   }
   return NextResponse.json({ ok: true });
 }
