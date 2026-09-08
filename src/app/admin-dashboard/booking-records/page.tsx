@@ -21,8 +21,8 @@ export default async function BookingRecordsPage() {
     supabase
       .from("booking_records")
       .select("*")
-      .order("service_date", { ascending: false })
-      .order("service_time", { ascending: false }),
+      .order("service_date", { ascending: true }) // ✅ Yahan FALSE ko TRUE kar diya hai!
+      .order("service_time", { ascending: true }),
 
     supabase
       .from("booking_record_assignments")

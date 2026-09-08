@@ -24,7 +24,7 @@ export default async function AdminBookingsPage() {
     supabase
       .from("jobs")
       .select("id, customer_id, cleaner_id, service_name, service_type, date, address, price, final_price, total_price, status, created_at, payment_method, billing_type, booking_type")
-      .order("created_at", { ascending: false })
+      .order("date", { ascending: true }) // ✅ Yahan change kiya hai: Booking Date ke hisaab se seedhi tarteeb
       .limit(200),
     supabase
       .from("users")
